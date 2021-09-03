@@ -1,11 +1,10 @@
 {
-  "name": "pointing-poker",
+  "name": "pointing-poker-client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "webpack serve --mode development",
-    "build": "webpack -w --config webpack.config.js --mode development",
-    "test": "react-scripts test"
+    "build": "webpack -w --config webpack.config.js --mode development"
   },
   "eslintConfig": {
     "extends": [
@@ -32,9 +31,15 @@
     "@types/jest": "^26.0.24",
     "@types/node": "^12.20.23",
     "antd": "^4.16.13",
+    "axios": "^0.21.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.1",
     "react-scripts": "4.0.3",
+    "redux": "^4.1.1",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.3.0",
     "typescript": "^4.4.2",
     "web-vitals": "^1.1.2"
   },
@@ -42,6 +47,7 @@
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
+    "@types/ws": "^7.4.7",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.30.0",
     "clean-webpack-plugin": "^4.0.0",
@@ -62,6 +68,7 @@
     "react-devtools": "^4.18.0",
     "sass-loader": "^12.1.0",
     "scss": "^0.2.4",
+    "shortid": "^2.2.16",
     "ts-loader": "^9.2.5",
     "webpack": "^5.51.2",
     "webpack-cli": "^4.8.0",
