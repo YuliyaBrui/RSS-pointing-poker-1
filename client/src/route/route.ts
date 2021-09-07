@@ -1,6 +1,6 @@
 import React from 'react';
-import NotFoundPage from '../components/NotFoundPage';
-import StartPage from '../components/StartPage';
+import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
+import StartPage from '../pages/StartPage/StartPage';
 
 export interface IRoute {
   path: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { privateRoutes, publicRoutes } from '../route/route';
+import { privateRoutes, publicRoutes } from '../../route/route';
 
 const AppRouter = (): JSX.Element => {
   const auth = true;
