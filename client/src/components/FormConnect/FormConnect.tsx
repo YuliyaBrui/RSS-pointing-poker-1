@@ -2,41 +2,46 @@ import {
   Form,
   Input,
   Button,
+  Checkbox,
   Avatar,
   Upload,
+  Switch,
   Col,
   Row,
 } from "antd";
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
+import styles from "./Forms.module.scss";
 import { ChangeEvent, ImgHTMLAttributes, useState } from "react";
+import { url } from "inspector";
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const FormCreateGame = ({ setActive }: formProps) => {
+export const FormConnect = ({ setActive }: formProps) => {
+  const [toggle, setToggle] = useState(false);
   const [isAvatar, setAvatar] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
   /* const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const target= event.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    console.log(file)
-    
-  };
-  const onPreview = async (file ) => {
-    
-    let src = file.url;
-    if (!src) {
-      src = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    
-    }
-    setAvatarURL(src)
-    console.log(src)
-  }*/
+      const target= event.target as HTMLInputElement;
+      const file: File = (target.files as FileList)[0];
+      console.log(file)
+      
+    };
+    const onPreview = async (file ) => {
+      
+      let src = file.url;
+      if (!src) {
+        src = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file.originFileObj);
+          reader.onload = () => resolve(reader.result);
+        });
+      
+      }
+      setAvatarURL(src)
+      console.log(src)
+    }*/
   const onFinish = (values: {}) => {
     console.log("Success:", values);
   };
@@ -47,8 +52,15 @@ export const FormCreateGame = ({ setActive }: formProps) => {
 
   return (
     <div>
-      <Row>
-        <h2>Create new game </h2>
+     <Row justify="space-between">
+        <h2>Connect to lobby </h2>
+        <label >
+          Connect as observer
+          <Switch
+            checked={toggle}
+            onChange={() => setToggle((prev) => !prev)}
+          />
+        </label>
       </Row>
       <Form
         layout="vertical"
