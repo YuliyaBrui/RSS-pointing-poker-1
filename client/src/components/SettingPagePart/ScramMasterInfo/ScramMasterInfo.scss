@@ -1,0 +1,11 @@
+.main {
+  &__scram-master-info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__scram-master-description {
+    display: flex;
+    flex-direction: column;
+  }
+}

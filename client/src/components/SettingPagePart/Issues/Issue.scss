@@ -1,0 +1,57 @@
+.main {
+  &__content-wrapper {
+    display: flex;
+  }
+
+  &__create-issue-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__issue-title {
+    margin: 0;
+  }
+
+  &__priority {
+    margin: 0;
+  }
+
+  &__input-disabled {
+    font-size: 1rem;
+    border: none;
+    padding: 0;
+  }
+
+  &__button-wrapper {
+    display: flex;
+  }
+}
+
+.issue-form {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: scale(0);
+
+  &__active {
+    transform: scale(1);
+  }
+
+  &__content {
+    width: 450px;
+    padding: 20px;
+    background-color: white;
+  }
+}
+
+.ant-card-body {
+  padding: 10px;
+}
