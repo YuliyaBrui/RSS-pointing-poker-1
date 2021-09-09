@@ -24,7 +24,6 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className="main__panel">
           <h3>Members:</h3>
-          <Member />
         </div>
         <div className="main__panel">
           <h3>Issues:</h3>
@@ -34,7 +33,10 @@ const SettingPage = (): JSX.Element => {
             justify="space-between"
           >
             {issues.map((issue) => (
-              <Col span={8}>{issue}</Col>
+              /* add key */
+              <Col span={8} key={Math.random()}>
+                {issue}
+              </Col>
             ))}
             <Col span={8}>
               <button

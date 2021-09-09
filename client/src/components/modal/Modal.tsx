@@ -1,5 +1,4 @@
 import React, { ReactChild, ReactChildren } from 'react';
-
 import style from './Modal.module.scss';
 
 interface modalProps {

@@ -1,48 +1,41 @@
-import {
-  Form,
-  Input,
-  Button,
-  Avatar,
-  Upload,
-  Col,
-  Row,
-} from "antd";
-import { UploadOutlined, UserOutlined } from "@ant-design/icons";
-import { ChangeEvent, ImgHTMLAttributes, useState } from "react";
+import React, { useState } from 'react';
+import { Form, Input, Button, Avatar, Upload, Col, Row } from 'antd';
+import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { IFormCreateGame } from '../../redux/types/forms';
+import { saveParams } from '../../redux/actions/formCreateGame';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const FormCreateGame = ({ setActive }: formProps) => {
+export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   const [isAvatar, setAvatar] = useState(false);
-  const [avatarURL, setAvatarURL] = useState("");
-  /* const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const target= event.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    console.log(file)
-    
-  };
-  const onPreview = async (file ) => {
-    
-    let src = file.url;
-    if (!src) {
-      src = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    
-    }
-    setAvatarURL(src)
-    console.log(src)
-  }*/
-  const onFinish = (values: {}) => {
-    console.log("Success:", values);
-  };
+  const [avatarURL, setAvatarURL] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [jobPosition, setJobPosition] = useState('');
+  const [form] = Form.useForm();
 
-  const onFinishFailed = (errorInfo: {}) => {
-    console.log("Failed:", errorInfo);
+  const dispatch = useDispatch();
+  const reset = (): void => {
+    setFirstName('');
+    setLastName('');
+    setJobPosition('');
+  };
+  const history = useHistory();
+  const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>): void => {
+    const value: IFormCreateGame = {
+      name: firstName,
+      lastName,
+      jobPosition,
+    };
+    dispatch(saveParams(value));
+    setActive(false);
+    reset();
+    form.resetFields();
+    history.push('/setting');
   };
 
   return (
@@ -51,21 +44,26 @@ export const FormCreateGame = ({ setActive }: formProps) => {
         <h2>Create new game </h2>
       </Row>
       <Form
+        form={form}
+        onFinish={handleSubmit}
         layout="vertical"
         name="basic"
         labelCol={{ span: 18 }}
         wrapperCol={{ span: 18 }}
         initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
           label="Your first name:"
           name="first-name"
-          rules={[{ required: true, message: "Enter your name" }]}
+          rules={[{ required: true, message: 'Enter your name' }]}
         >
-          <Input />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = e.target.value;
+              setFirstName(newValue);
+            }}
+          />
         </Form.Item>
 
         <Form.Item
@@ -73,14 +71,24 @@ export const FormCreateGame = ({ setActive }: formProps) => {
           name="last-name"
           rules={[{ required: false }]}
         >
-          <Input />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = e.target.value;
+              setLastName(newValue);
+            }}
+          />
         </Form.Item>
         <Form.Item
           label="Your job position(optional):"
           name="job-position"
           rules={[{ required: false }]}
         >
-          <Input />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = e.target.value;
+              setJobPosition(newValue);
+            }}
+          />
         </Form.Item>
         <Form.Item label="Image:" name="Image">
           <Upload
@@ -95,10 +103,10 @@ export const FormCreateGame = ({ setActive }: formProps) => {
             <Avatar size={64} icon={<UserOutlined />} />
           )}
         </Form.Item>
-        <Form.Item wrapperCol={{ span: 24 }}>
+        <Form.Item wrapperCol={{ span: 24 }} name="buttons">
           <Row justify="space-between">
             <Col>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" name="btn-submit">
                 Confirm
               </Button>
             </Col>
@@ -107,6 +115,8 @@ export const FormCreateGame = ({ setActive }: formProps) => {
                 type="default"
                 htmlType="button"
                 onClick={() => {
+                  reset();
+                  form.resetFields();
                   setActive(false);
                 }}
               >
