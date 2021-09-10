@@ -3,8 +3,8 @@ import Button from 'antd/lib/button/button';
 import Form from 'antd/lib/form/Form';
 import FormItem from 'antd/lib/form/FormItem';
 import Input from 'antd/lib/input/Input';
-import './Issue';
 import Select from 'antd/lib/select';
+import styles from './Issue.module.scss';
 
 const { Option } = Select;
 
@@ -15,10 +15,17 @@ type IIsueform = {
 
 const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => (
   <div
-    className={formVisible ? 'issue-form issue-form__active' : 'issue-form'}
+    className={
+      formVisible
+        ? `${styles.issue_form} ${styles.issue_form__active}`
+        : `${styles.issue_form}`
+    }
     onClick={() => setFormVisible(false)}
   >
-    <div className="issue-form__content" onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.issue_form__content}
+      onClick={(e) => e.stopPropagation()}
+    >
       <Form layout="horizontal">
         <FormItem
           rules={[{ required: true }]}

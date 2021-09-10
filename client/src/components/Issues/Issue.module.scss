@@ -1,16 +1,16 @@
 .main {
-  &__content-wrapper {
+  &__content_wrapper {
     display: flex;
   }
 
-  &__create-issue-wrapper {
+  &__create_issue_wrapper {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  &__issue-title {
+  &__issue_title {
     margin: 0;
   }
 
@@ -18,18 +18,25 @@
     margin: 0;
   }
 
-  &__input-disabled {
+  &__input_disabled {
     font-size: 1rem;
     border: none;
     padding: 0;
   }
 
-  &__button-wrapper {
+  &__button_wrapper {
     display: flex;
+  }
+
+  &__icon {
+    &:hover {
+      transition: 1s;
+      transform: rotate(360deg);
+    }
   }
 }
 
-.issue-form {
+.issue_form {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -50,8 +57,4 @@
     padding: 20px;
     background-color: white;
   }
-}
-
-.ant-card-body {
-  padding: 10px;
 }
