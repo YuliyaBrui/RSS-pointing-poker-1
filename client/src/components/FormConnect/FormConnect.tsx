@@ -1,3 +1,4 @@
+import React, { ChangeEvent, ImgHTMLAttributes, useState } from 'react';
 import {
   Form,
   Input,
@@ -8,11 +9,10 @@ import {
   Switch,
   Col,
   Row,
-} from "antd";
-import { UploadOutlined, UserOutlined } from "@ant-design/icons";
-import styles from "./Forms.module.scss";
-import { ChangeEvent, ImgHTMLAttributes, useState } from "react";
-import { url } from "inspector";
+} from 'antd';
+import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { url } from 'inspector';
+import styles from './Forms.module.scss';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,15 +21,15 @@ interface formProps {
 export const FormConnect = ({ setActive }: formProps) => {
   const [toggle, setToggle] = useState(false);
   const [isAvatar, setAvatar] = useState(false);
-  const [avatarURL, setAvatarURL] = useState("");
+  const [avatarURL, setAvatarURL] = useState('');
   /* const onChange = (event: ChangeEvent<HTMLInputElement>) => {
       const target= event.target as HTMLInputElement;
       const file: File = (target.files as FileList)[0];
       console.log(file)
-      
+
     };
     const onPreview = async (file ) => {
-      
+
       let src = file.url;
       if (!src) {
         src = await new Promise(resolve => {
@@ -37,24 +37,24 @@ export const FormConnect = ({ setActive }: formProps) => {
           reader.readAsDataURL(file.originFileObj);
           reader.onload = () => resolve(reader.result);
         });
-      
+
       }
       setAvatarURL(src)
       console.log(src)
-    }*/
+    } */
   const onFinish = (values: {}) => {
-    console.log("Success:", values);
+    console.log('Success:', values);
   };
 
   const onFinishFailed = (errorInfo: {}) => {
-    console.log("Failed:", errorInfo);
+    console.log('Failed:', errorInfo);
   };
 
   return (
     <div>
-     <Row justify="space-between">
+      <Row justify="space-between">
         <h2>Connect to lobby </h2>
-        <label >
+        <label>
           Connect as observer
           <Switch
             checked={toggle}
@@ -75,7 +75,7 @@ export const FormConnect = ({ setActive }: formProps) => {
         <Form.Item
           label="Your first name:"
           name="first-name"
-          rules={[{ required: true, message: "Enter your name" }]}
+          rules={[{ required: true, message: 'Enter your name' }]}
         >
           <Input />
         </Form.Item>
