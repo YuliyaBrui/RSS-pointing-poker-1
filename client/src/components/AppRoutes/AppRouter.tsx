@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { privateRoutes } from '../../route/route';
-
+import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
 
 const { Header, Footer, Content } = Layout;
@@ -10,7 +10,9 @@ const { Header, Footer, Content } = Layout;
 const AppRouter = (): JSX.Element => (
   <>
     <Layout>
-      <Header>Header</Header>
+      <Header style={{ background: '#FFC482' }}>
+        <HeaderPoker />
+      </Header>
       <Content>
         <Switch>
           {privateRoutes.map((route) => (
@@ -24,7 +26,7 @@ const AppRouter = (): JSX.Element => (
           <Redirect to="/not-found-page" />
         </Switch>
       </Content>
-      <Footer>
+      <Footer style={{ background: '#66999B' }}>
         <FooterPoker />
       </Footer>
     </Layout>

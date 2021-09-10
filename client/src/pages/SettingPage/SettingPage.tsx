@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Content } from 'antd/lib/layout/layout';
 import Col from 'antd/lib/grid/col';
 import Row from 'antd/lib/grid/row';
 import Button from 'antd/lib/button/button';
@@ -16,7 +15,7 @@ const SettingPage = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
 
   return (
-    <Content className="wrapper">
+    <div className="wrapper">
       <div className="main">
         <div className="main__panel">
           <SessionInfo />
@@ -51,7 +50,7 @@ const SettingPage = (): JSX.Element => {
         </div>
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
-    </Content>
+    </div>
   );
 };
 
