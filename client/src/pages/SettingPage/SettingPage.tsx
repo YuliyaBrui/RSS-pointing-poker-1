@@ -86,7 +86,7 @@ const SettingPage = (): JSX.Element => {
         </div>
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
-    </div>
+    </Content>
   );
 };
 

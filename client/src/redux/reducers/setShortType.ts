@@ -1,4 +1,4 @@
-import { SET_SHORT_TYPE } from '../actions/actions';
+import { SET_SHORT_TYPE } from '../actions/setShortScoreType';
 
 const initialState = {
   shortScoreType: 'ST',

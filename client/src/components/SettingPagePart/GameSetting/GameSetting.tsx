@@ -1,13 +1,12 @@
 import Form from 'antd/lib/form/Form';
 import FormItem from 'antd/lib/form/FormItem';
 import Col from 'antd/lib/grid/col';
-import Row from 'antd/lib/grid/row';
 import Input from 'antd/lib/input/Input';
 import Slider from 'antd/lib/slider';
 import Switch from 'antd/lib/switch';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setShortScoreType } from '../../../redux/actions/actions';
+import { setShortScoreType } from '../../../redux/actions/setShortScoreType';
 import styles from './GameSetting.module.scss';
 
 const GameSetting = (): JSX.Element => {

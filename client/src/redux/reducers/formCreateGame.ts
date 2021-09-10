@@ -10,7 +10,7 @@ const initialState: IFormCreateGameState = {
 
 export const formReducer = (
   state: IFormCreateGameState = initialState,
-  action: IFetchCreateGameAction
+  action: IFetchCreateGameAction,
 ): IFormCreateGameState => {
   switch (action.type) {
     case CreateGameActionTypes.FETCH_CREATE_GAME:
