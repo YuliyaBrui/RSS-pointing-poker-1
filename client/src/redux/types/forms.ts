@@ -2,6 +2,7 @@ export interface IFormCreateGame {
   name: string;
   lastName: string;
   jobPosition: string;
+  avatarURL: string | ArrayBuffer | null;
 }
 export enum CreateGameActionTypes {
   FETCH_CREATE_GAME = 'FETCH_CREATE_GAME',

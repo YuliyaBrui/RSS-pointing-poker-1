@@ -10,7 +10,12 @@ const ScramMasterInfo = (): JSX.Element => {
   return (
     <Card title="Scram master:" style={{ width: '30%', height: '100%' }}>
       <div className="main__scram-master-info">
-        <UserOutlined style={{ fontSize: '500%' }} />
+        {typeof state.formCreateGame.masters[0].avatarURL === 'string' ? (
+          <img src={state.formCreateGame.masters[0].avatarURL} alt="avatar" />
+        ) : (
+          <UserOutlined style={{ fontSize: '500%' }} />
+        )}
+
         <div className="main__scram-master-description">
           <h3>
             {state.formCreateGame.masters.length < 1

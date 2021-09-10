@@ -5,19 +5,18 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { IFormCreateGame } from '../../redux/types/forms';
 import { saveParams } from '../../redux/actions/formCreateGame';
+import { UploadAvatar } from '../UploadAvatar/UploadAvatar';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
-  const [isAvatar, setAvatar] = useState(false);
-  const [avatarURL, setAvatarURL] = useState('');
+  const [avatarURL, setAvatarURL] = useState<string | ArrayBuffer | null>('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
   const [form] = Form.useForm();
-
   const dispatch = useDispatch();
   const reset = (): void => {
     setFirstName('');
@@ -30,6 +29,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       name: firstName,
       lastName,
       jobPosition,
+      avatarURL,
     };
     dispatch(saveParams(value));
     setActive(false);
@@ -65,7 +65,6 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
             }}
           />
         </Form.Item>
-
         <Form.Item
           label="Your last name(optional):"
           name="last-name"
@@ -91,18 +90,24 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
           />
         </Form.Item>
         <Form.Item label="Image:" name="Image">
-          <Upload
-            maxCount={1}
+          <input
             accept="image/x-png,image/gif,image/jpeg,image/svg"
-          >
-            <Button icon={<UploadOutlined />}>Choose file</Button>
-          </Upload>
-          {isAvatar ? (
+            type="file"
+            id="imgInp"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (e.target.files && e.target.files[0]) {
+                setAvatarURL(URL.createObjectURL(e.target.files[0]));
+              }
+            }}
+          />
+
+          {typeof avatarURL === 'string' ? (
             <Avatar src={avatarURL} />
           ) : (
             <Avatar size={64} icon={<UserOutlined />} />
           )}
         </Form.Item>
+
         <Form.Item wrapperCol={{ span: 24 }} name="buttons">
           <Row justify="space-between">
             <Col>

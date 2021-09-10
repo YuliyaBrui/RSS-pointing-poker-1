@@ -5,7 +5,6 @@ import Input from 'antd/lib/input/Input';
 import Button from 'antd/lib/button/button';
 import ScramMasterInfo from '../ScramMasterInfo/ScramMasterInfo';
 import './SessionInfo.scss';
-import { store } from '../../../redux';
 
 const SessionInfo = (): JSX.Element => {
   const [editSession, setEditSession] = useState(false);
