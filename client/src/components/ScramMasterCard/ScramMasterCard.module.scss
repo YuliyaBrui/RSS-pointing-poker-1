@@ -1,0 +1,13 @@
+.main {
+  &__scram_master_info {
+    height: 100px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  &__scram_master_description {
+    display: flex;
+    flex-direction: column;
+  }
+}

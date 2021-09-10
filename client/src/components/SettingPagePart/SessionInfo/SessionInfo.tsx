@@ -3,7 +3,7 @@ import { EditOutlined } from '@ant-design/icons';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import Button from 'antd/lib/button/button';
-import ScramMasterInfo from '../ScramMasterInfo/ScramMasterInfo';
+import ScramMasterInfo from '../../ScramMasterCard/ScramMasterCard';
 import './SessionInfo.scss';
 
 const SessionInfo = (): JSX.Element => {

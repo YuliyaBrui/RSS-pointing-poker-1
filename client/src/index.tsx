@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Button } from 'antd';
 import App from './App';
 import { store } from './redux';
 
