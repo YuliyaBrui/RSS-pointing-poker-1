@@ -3,7 +3,7 @@ import styles from './Footer.module.scss';
 
 export function FooterPoker(): JSX.Element {
   return (
-    <footer>
+    <>
       <div className={styles.footer_container}>
         <a
           className={styles.github}
@@ -38,6 +38,6 @@ export function FooterPoker(): JSX.Element {
           <span className={styles.rss_year}>&apos;21</span>
         </a>
       </div>
-    </footer>
+    </>
   );
 }

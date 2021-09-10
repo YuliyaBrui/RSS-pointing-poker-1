@@ -7,11 +7,7 @@ const { Search } = Input;
 const StartPage = (): JSX.Element => (
   <div className={styles.start_page}>
     <div className={styles.wrapper}>
-      <img
-        src="../../assets/images/poker.png"
-        alt="poker"
-        className={styles.main_poker}
-      />
+      <div className={styles.main_poker}> </div>
       <h2 className={styles.title}>Start your planning:</h2>
       <div className={styles.session}>
         <p className={styles.subtitle}>Create session:</p>

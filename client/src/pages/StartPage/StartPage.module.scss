@@ -1,55 +1,52 @@
 .start_page {
     background: #E5E5E5;
-    height: 85vh;
 }
 
 .wrapper {
     max-width: 1000px;
+    padding: 5% 1%;
     margin: 0 auto;
 }
 
 .main_poker {
-    padding-top: 130px;
-    padding-bottom: 30px;
-    text-align: center;
+    background-image: url(../../assets/images/poker.png);
+	height: 149px;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .session {
-    width: 515px;
+    max-width: 515px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .session p {
-    padding-top: 15px;
+    padding-top: 3%;
 }
 
 .title {
-    font-family: Roboto;
     font-style: normal;
     font-weight: bold;
     font-size: 48px;
     line-height: 56px;
     text-align: left;
     color: #66999B;
-    padding-left: 30px;
-    padding-bottom: 50px;
-    padding-top: 50px;
+    padding-left: 1%;
+    padding-bottom: 3%;
 }
 
 .subtitle {
-    font-family: Roboto;
     font-style: normal;
     font-weight: 300;
     font-size: 24px;
     line-height: 28px;
     color: #000000;
-    padding-left: 30px;
 }
 
 .button {
-    width: 241px;
+    max-width: 241px;
     height: 47px;
     border: none;
     border-radius: 3px;
@@ -58,9 +55,6 @@
 }
 
 .input {
-    width: 276px;
+    max-width: 276px;
     height: 47px;
-    padding-left: 30px;
-    // padding-top: 6px;
 }
-
