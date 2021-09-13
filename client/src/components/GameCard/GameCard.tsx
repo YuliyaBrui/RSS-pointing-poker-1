@@ -4,16 +4,44 @@ import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
+import {
+  changeGameCardValue,
+  deleteGameCard,
+} from '../../redux/actions/gameCards';
+import { IGameCard } from '../../redux/types/gameCard';
 import styles from './GameCard.module.scss';
 
-const GameCard = (): JSX.Element => {
+const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
+  const dispatch = useDispatch();
   const shortType = useSelector(
-    (state: RootState) => state.shortScoreType.shortScoreType,
+    (state: RootState) => state.gameSetting.shortScoreType,
   );
-  const [cardValue, setCardValue] = useState('1');
+  const gameCards = useSelector((state: RootState) => state.gameCards);
   const [editCardValue, setEditCardValue] = useState(false);
+
+  const changeCardValue = (inputCardValue: string): void => {
+    gameCards.map((value: IGameCard) => {
+      const newValue = value;
+      if (newValue.id === id) {
+        newValue.cardValue = +inputCardValue;
+      }
+      return newValue;
+    });
+    dispatch(changeGameCardValue(gameCards));
+  };
+
+  const deleteCard = (): void => {
+    gameCards.map((value: IGameCard, index: number) => {
+      const newValue = value;
+      if (newValue.id === id) {
+        gameCards.splice(index, 1);
+      }
+      return newValue;
+    });
+    dispatch(deleteGameCard(gameCards));
+  };
 
   return (
     <Card style={{ width: 150, height: 200, margin: '5px' }}>
@@ -22,7 +50,11 @@ const GameCard = (): JSX.Element => {
           <h3>{`${shortType}`}</h3>
           <div className={styles.main__button_wrapper}>
             <div className={editCardValue ? '' : styles.main__close_icon}>
-              <Button type="default" style={{ border: 'none', padding: 0 }}>
+              <Button
+                type="default"
+                style={{ border: 'none', padding: 0 }}
+                onClick={() => deleteCard()}
+              >
                 <CloseOutlined
                   style={{ fontSize: '150%', margin: '1%', color: 'red' }}
                 />
@@ -43,7 +75,7 @@ const GameCard = (): JSX.Element => {
           size="large"
           disabled={!editCardValue}
           defaultValue={cardValue}
-          onChange={(e) => setCardValue(e.target.value)}
+          onChange={(e) => changeCardValue(e.target.value)}
           onPressEnter={() => setEditCardValue(false)}
         />
         <h3 style={{ transform: 'rotate(180deg)' }}>{`${shortType}`}</h3>
@@ -51,4 +83,5 @@ const GameCard = (): JSX.Element => {
     </Card>
   );
 };
+
 export default GameCard;

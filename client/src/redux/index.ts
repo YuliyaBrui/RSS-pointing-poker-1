@@ -1,12 +1,16 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
+import { addIssue } from './reducers/issues';
 import { formReducer } from './reducers/formCreateGame';
-import { setShortScoreType } from './reducers/setShortType';
+import { addGameCards } from './reducers/gameCards';
+import { setGameSetting } from './reducers/setGameSetting';
 
 const rootReducer = combineReducers({
-  shortScoreType: setShortScoreType,
+  gameSetting: setGameSetting,
   formReducer,
+  issues: addIssue,
+  gameCards: addGameCards,
 });
 
 export const store = createStore(

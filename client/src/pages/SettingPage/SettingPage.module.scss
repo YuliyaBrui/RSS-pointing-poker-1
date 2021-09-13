@@ -3,12 +3,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E5E5E5;
   padding: 1%;
 }
 
 .main {
-  max-width: 1000px;
+  width: 80%;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -25,7 +24,7 @@
   }
 
   &__button_invis {
-    all:unset;
+    all: unset;
     cursor: pointer;
   }
 }
