@@ -1,12 +1,18 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { formReducer } from './reducers/formCreateGame';
+import {
+  formConnectMemberReducer,
+  formConnectObserverReducer,
+} from './reducers/formConnect';
+import { formCreateReducer } from './reducers/formCreateGame';
 import { setShortScoreType } from './reducers/setShortType';
 
 const rootReducer = combineReducers({
   shortScoreType: setShortScoreType,
-  formReducer,
+  formCreateReducer,
+  formConnectObserverReducer,
+  formConnectMemberReducer,
 });
 
 export const store = createStore(
