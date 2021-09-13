@@ -1,11 +1,12 @@
-import React from 'react';
 import {
   CreateGameActionTypes,
   IFetchCreateGameAction,
-  IFormCreateGame,
+  IFormGameValue,
 } from '../types/forms';
 
-export const saveParams = (value: IFormCreateGame): IFetchCreateGameAction => ({
+export const saveMasterParams = (
+  value: IFormGameValue,
+): IFetchCreateGameAction => ({
   type: CreateGameActionTypes.FETCH_CREATE_GAME,
   payload: { masters: [value] },
 });

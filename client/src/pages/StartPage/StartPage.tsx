@@ -5,8 +5,6 @@ import { Modal } from '../../components/modal/Modal';
 import { FormCreateGame } from '../../components/FormCreateGame/FormCreateGame';
 import { FormConnect } from '../../components/FormConnect/FormConnect';
 
-const { Search } = Input;
-
 const StartPage = (): JSX.Element => {
   const [activeFormCreate, setActiveFormCreate] = useState(false);
   const [activeFormConnect, setActiveFormConnect] = useState(false);
