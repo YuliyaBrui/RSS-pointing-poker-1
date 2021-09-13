@@ -1,3 +1,5 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable indent */
 import React from 'react';
 import Card from 'antd/lib/card';
 import { UserOutlined } from '@ant-design/icons';
