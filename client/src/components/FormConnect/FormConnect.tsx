@@ -1,75 +1,75 @@
-import React, { ChangeEvent, ImgHTMLAttributes, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Form,
-  Input,
-  Button,
-  Checkbox,
-  Avatar,
-  Upload,
-  Switch,
-  Col,
-  Row,
+  Form, Input, Button, Avatar, Switch, Col, Row,
 } from 'antd';
-import { UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { url } from 'inspector';
-import styles from './Forms.module.scss';
+import { UserOutlined } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import styles from './FormConnect.module.scss';
+import { IFormGameValue } from '../../redux/types/forms';
+import {
+  saveMemberParams,
+  saveObserverParams,
+} from '../../redux/actions/formConnectGame';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const FormConnect = ({ setActive }: formProps) => {
-  const [toggle, setToggle] = useState(false);
-  const [isAvatar, setAvatar] = useState(false);
-  const [avatarURL, setAvatarURL] = useState('');
-  /* const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-      const target= event.target as HTMLInputElement;
-      const file: File = (target.files as FileList)[0];
-      console.log(file)
+export const FormConnect = ({ setActive }: formProps): JSX.Element => {
+  const [avatarURL, setAvatarURL] = useState<string | ArrayBuffer | null>('');
+  const [isToggle, setToggle] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [jobPosition, setJobPosition] = useState('');
 
-    };
-    const onPreview = async (file ) => {
-
-      let src = file.url;
-      if (!src) {
-        src = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file.originFileObj);
-          reader.onload = () => resolve(reader.result);
-        });
-
-      }
-      setAvatarURL(src)
-      console.log(src)
-    } */
-  const onFinish = (values: {}) => {
-    console.log('Success:', values);
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const reset = (): void => {
+    setFirstName('');
+    setLastName('');
+    setJobPosition('');
+    setAvatarURL('');
   };
-
-  const onFinishFailed = (errorInfo: {}) => {
-    console.log('Failed:', errorInfo);
+  const history = useHistory();
+  const handleSubmit = (): void => {
+    const value: IFormGameValue = {
+      name: firstName,
+      lastName,
+      jobPosition,
+      avatarURL,
+    };
+    setActive(false);
+    if (isToggle) {
+      dispatch(saveObserverParams(value));
+      history.push('/observer');
+    } else {
+      dispatch(saveMemberParams(value));
+      history.push('/team_member');
+    }
+    reset();
+    form.resetFields();
   };
 
   return (
     <div>
       <Row justify="space-between">
         <h2>Connect to lobby </h2>
-        <label>
-          Connect as observer
-          <Switch
-            checked={toggle}
-            onChange={() => setToggle((prev) => !prev)}
-          />
-        </label>
+        <label htmlFor="observer_switch">Connect as observer</label>
+        <Switch
+          className="observer_switch"
+          checked={isToggle}
+          onChange={() => setToggle((prev) => !prev)}
+        />
       </Row>
       <Form
+        form={form}
+        onFinish={handleSubmit}
         layout="vertical"
         name="basic"
         labelCol={{ span: 18 }}
         wrapperCol={{ span: 18 }}
         initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
@@ -77,7 +77,12 @@ export const FormConnect = ({ setActive }: formProps) => {
           name="first-name"
           rules={[{ required: true, message: 'Enter your name' }]}
         >
-          <Input />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = e.target.value;
+              setFirstName(newValue);
+            }}
+          />
         </Form.Item>
 
         <Form.Item
@@ -85,26 +90,45 @@ export const FormConnect = ({ setActive }: formProps) => {
           name="last-name"
           rules={[{ required: false }]}
         >
-          <Input />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = e.target.value;
+              setLastName(newValue);
+            }}
+          />
         </Form.Item>
         <Form.Item
           label="Your job position(optional):"
           name="job-position"
           rules={[{ required: false }]}
         >
-          <Input />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = e.target.value;
+              setJobPosition(newValue);
+            }}
+          />
         </Form.Item>
         <Form.Item label="Image:" name="Image">
-          <Upload
-            maxCount={1}
+          <div className={styles.btn_container_avatar}>
+            <label htmlFor="input_img-file">Choose file</label>
+          </div>
+          <input
             accept="image/x-png,image/gif,image/jpeg,image/svg"
-          >
-            <Button icon={<UploadOutlined />}>Choose file</Button>
-          </Upload>
-          {isAvatar ? (
-            <Avatar src={avatarURL} />
-          ) : (
+            type="file"
+            id="input_img-file"
+            className={styles.hidden}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (e.target.files && e.target.files[0]) {
+                setAvatarURL(URL.createObjectURL(e.target.files[0]));
+              }
+            }}
+          />
+
+          {typeof avatarURL !== 'string' || avatarURL === '' ? (
             <Avatar size={64} icon={<UserOutlined />} />
+          ) : (
+            <Avatar size={64} src={avatarURL} />
           )}
         </Form.Item>
         <Form.Item wrapperCol={{ span: 24 }}>
@@ -119,6 +143,8 @@ export const FormConnect = ({ setActive }: formProps) => {
                 type="default"
                 htmlType="button"
                 onClick={() => {
+                  reset();
+                  form.resetFields();
                   setActive(false);
                 }}
               >

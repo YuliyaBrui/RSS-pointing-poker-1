@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Avatar, Upload, Col, Row } from 'antd';
-import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  Form, Input, Button, Avatar, Col, Row,
+} from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { IFormCreateGame } from '../../redux/types/forms';
-import { saveParams } from '../../redux/actions/formCreateGame';
-import { UploadAvatar } from '../UploadAvatar/UploadAvatar';
+import { IFormGameValue } from '../../redux/types/forms';
+import { saveMasterParams } from '../../redux/actions/formCreateGame';
+import styles from './FormCreateGame.module.scss';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,16 +24,17 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
     setFirstName('');
     setLastName('');
     setJobPosition('');
+    setAvatarURL('');
   };
   const history = useHistory();
-  const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>): void => {
-    const value: IFormCreateGame = {
+  const handleSubmit = (): void => {
+    const value: IFormGameValue = {
       name: firstName,
       lastName,
       jobPosition,
       avatarURL,
     };
-    dispatch(saveParams(value));
+    dispatch(saveMasterParams(value));
     setActive(false);
     reset();
     form.resetFields();
@@ -90,10 +93,14 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
           />
         </Form.Item>
         <Form.Item label="Image:" name="Image">
+          <div className={styles.btn_container_avatar}>
+            <label htmlFor="input_file">Choose file</label>
+          </div>
           <input
             accept="image/x-png,image/gif,image/jpeg,image/svg"
             type="file"
-            id="imgInp"
+            id="input_file"
+            className={styles.hidden}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               if (e.target.files && e.target.files[0]) {
                 setAvatarURL(URL.createObjectURL(e.target.files[0]));
@@ -101,10 +108,10 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
             }}
           />
 
-          {typeof avatarURL === 'string' ? (
-            <Avatar src={avatarURL} />
-          ) : (
+          {typeof avatarURL !== 'string' || avatarURL === '' ? (
             <Avatar size={64} icon={<UserOutlined />} />
+          ) : (
+            <Avatar size={64} src={avatarURL} />
           )}
         </Form.Item>
 

@@ -5,8 +5,6 @@ import { Modal } from '../../components/modal/Modal';
 import { FormCreateGame } from '../../components/FormCreateGame/FormCreateGame';
 import { FormConnect } from '../../components/FormConnect/FormConnect';
 
-const { Search } = Input;
-
 const StartPage = (): JSX.Element => {
   const [activeFormCreate, setActiveFormCreate] = useState(false);
   const [activeFormConnect, setActiveFormConnect] = useState(false);
@@ -27,9 +25,13 @@ const StartPage = (): JSX.Element => {
         </div>
         <h2 className={styles.title}>OR:</h2>
         <p className={styles.subtitle}>Connect to lobby by URL:</p>
-        <Space direction="vertical" className={styles.input}>
-          <Input placeholder="Basic usage" />
-          <Button type="primary" onClick={() => setActiveFormConnect(true)}>
+        <Space direction="vertical">
+          <Input placeholder="Basic usage" className={styles.input} />
+          <Button
+            type="primary"
+            className={styles.button}
+            onClick={() => setActiveFormConnect(true)}
+          >
             Connect
           </Button>
         </Space>

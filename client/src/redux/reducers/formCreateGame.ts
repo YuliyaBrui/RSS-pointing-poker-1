@@ -8,7 +8,7 @@ const initialState: IFormCreateGameState = {
   masters: [],
 };
 
-export const formReducer = (
+export const formCreateReducer = (
   state: IFormCreateGameState = initialState,
   action: IFetchCreateGameAction,
 ): IFormCreateGameState => {
