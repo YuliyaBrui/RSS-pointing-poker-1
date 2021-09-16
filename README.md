@@ -1,1 +1,1 @@
-# RSS-pointing-poker
+RSS-pointing-poker

@@ -1,0 +1,60 @@
+.start_page {
+    height: 85vh;
+}
+
+.wrapper {
+    width: 80%;
+    padding: 5% 1%;
+    margin: 0 auto;
+}
+
+.main_poker {
+    background-image: url(../../assets/images/poker.png);
+    height: 149px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.session {
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.session p {
+    padding-top: 3%;
+}
+
+.title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 48px;
+    line-height: 56px;
+    text-align: left;
+    color: #66999B;
+    padding-left: 1%;
+    padding-bottom: 3%;
+}
+
+.subtitle {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+    color: #000000;
+}
+
+.button {
+    max-width: 241px;
+    height: 47px;
+    border: none;
+    border-radius: 3px;
+    font-size: 24px;
+    line-height: 30px;
+}
+
+.input {
+    max-width: 276px;
+    height: 47px;   
+}

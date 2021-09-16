@@ -1,0 +1,15 @@
+.ant-layout {
+  background: none;
+}
+
+.ant-card-body {
+  padding: 10px;
+}
+
+.ant-space {
+  display: flex;
+}
+
+.ant-space-vertical {
+  flex-direction: row;
+}
