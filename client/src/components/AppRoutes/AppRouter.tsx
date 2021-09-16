@@ -8,7 +8,7 @@ import { FooterPoker } from '../Footer/Footer';
 const { Header, Footer, Content } = Layout;
 
 const AppRouter = (): JSX.Element => (
-  <Layout>
+  <Layout style={{ minHeight: '100vh' }}>
     <Header style={{ background: '#FFC482' }}>
       <HeaderPoker />
     </Header>

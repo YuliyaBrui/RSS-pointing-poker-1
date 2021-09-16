@@ -18,6 +18,7 @@ import { RootState } from '../../redux';
 import { IIssue } from '../../redux/types/issues';
 import { addGameCards } from '../../redux/actions/gameCards';
 import { IGameCard } from '../../redux/types/gameCard';
+import Chat from '../../components/Chat/Chat';
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const SettingPage = (): JSX.Element => {
                 name={user.name}
                 avatar={user.avatar}
                 position={user.position}
-                visibility="visible"
+                visibil="visible"
                 key={user.name}
               />
             ))}
@@ -117,6 +118,7 @@ const SettingPage = (): JSX.Element => {
         </div>
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
+      <Chat />
     </Content>
   );
 };

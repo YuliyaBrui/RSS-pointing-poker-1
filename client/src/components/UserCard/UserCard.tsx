@@ -10,14 +10,14 @@ type IUsercard = {
   name: string;
   position: string;
   avatar: string;
-  visibility: 'visible' | 'hidden';
+  visibil: 'visible' | 'hidden';
 };
 
 const UserCard = ({
   name,
   position,
   avatar,
-  visibility = 'hidden',
+  visibil = 'hidden',
 }: IUsercard): JSX.Element => {
   const asd = 123;
   return (
@@ -30,7 +30,12 @@ const UserCard = ({
         </div>
         <Popconfirm title="Kick player?" okText="Yes" cancelText="No">
           <StopOutlined
-            style={{ fontSize: '200%', margin: '1%', color: 'red' }}
+            style={{
+              fontSize: '200%',
+              margin: '1%',
+              color: 'red',
+              visibility: visibil,
+            }}
           />
         </Popconfirm>
       </div>

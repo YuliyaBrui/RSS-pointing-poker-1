@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Input, Space } from 'antd';
 import styles from './StartPage.module.scss';
-import { Modal } from '../../components/modal/Modal';
 import { FormCreateGame } from '../../components/FormCreateGame/FormCreateGame';
 import { FormConnect } from '../../components/FormConnect/FormConnect';
+import { Modal } from '../../components/modal/Modal';
 
 const StartPage = (): JSX.Element => {
   const [activeFormCreate, setActiveFormCreate] = useState(false);
