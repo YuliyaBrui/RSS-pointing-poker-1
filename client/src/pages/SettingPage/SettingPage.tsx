@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Content } from 'antd/lib/layout/layout';
 import Row from 'antd/lib/grid/row';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +22,13 @@ import Chat from '../../components/Chat/Chat';
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
-
+  const socket = new WebSocket('ws://localhost:3001/');
+  socket.onopen = () => {
+    console.log('подключение установлено');
+  };
+  socket.onmessage = (event) => {
+    console.log(event.data);
+  };
   const issues = useSelector((state: RootState) => state.issues);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
@@ -48,7 +54,7 @@ const SettingPage = (): JSX.Element => {
         'https://avatars.mds.yandex.net/get-zen_doc/1245815/pub_5bc9d59d3491a600a9655d81_5bc9d9229989ff00ae413c2a/scale_1200',
     },
   ];
-
+ 
   return (
     <Content className={styles.wrapper}>
       <div className={styles.main}>
@@ -86,7 +92,8 @@ const SettingPage = (): JSX.Element => {
             <button
               className={styles.main__button_invis}
               type="button"
-              onClick={() => setFormVisible(true)}
+              onClick={() => { setFormVisible(true);
+             }}
             >
               <CreateIssue />
             </button>
