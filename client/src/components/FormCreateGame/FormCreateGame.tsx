@@ -6,8 +6,9 @@ import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { IFormGameValue } from '../../redux/types/forms';
-import { saveMasterParams } from '../../redux/actions/formCreateGame';
+
 import styles from './FormCreateGame.module.scss';
+import { useAction } from '../../redux/hooks/useAction';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,7 +20,6 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
   const reset = (): void => {
     setFirstName('');
     setLastName('');
@@ -27,6 +27,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
     setAvatarURL('');
   };
   const history = useHistory();
+  const { saveMasterParams } = useAction();
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
@@ -34,7 +35,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       jobPosition,
       avatarURL,
     };
-    dispatch(saveMasterParams(value));
+    saveMasterParams(value);
     setActive(false);
     reset();
     form.resetFields();
