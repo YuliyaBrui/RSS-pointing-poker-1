@@ -1,11 +1,12 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
+import { formConnectMemberReducer, formConnectObserverReducer } from './reducers/formConnect';
 import {
-  formConnectMemberReducer,
-  formConnectObserverReducer,
-} from './reducers/formConnect';
-import { formCreateReducer } from './reducers/formCreateGame';
+  chatReducer,
+  formCreateReducer,
+  formGetMasterReducer,
+} from './reducers/formCreateGame';
 import { addGameCards } from './reducers/gameCards';
 import { addIssue } from './reducers/issues';
 import { setGameSetting } from './reducers/setGameSetting';
@@ -15,8 +16,10 @@ const rootReducer = combineReducers({
   issues: addIssue,
   gameCards: addGameCards,
   formCreateReducer,
+  formGetMasterReducer,
   formConnectObserverReducer,
   formConnectMemberReducer,
+  chatReducer,
 });
 
 export const store = createStore(

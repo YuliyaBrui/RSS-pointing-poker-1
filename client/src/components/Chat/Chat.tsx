@@ -1,6 +1,6 @@
 import { ArrowsAltOutlined, ShrinkOutlined } from '@ant-design/icons/lib/icons';
 import { Button, Input } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Chat.module.scss';
 import MessagesPlace from './MessagesPlace';
 import SendingForm from './SendingForm';
@@ -30,7 +30,9 @@ const Chat = (): JSX.Element => {
       });
     }
   };
-
+  useEffect(() => {
+   
+  },[]);
   return (
     <div
       className={styles.chat__wrapper}

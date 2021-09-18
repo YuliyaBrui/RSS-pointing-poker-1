@@ -5,11 +5,12 @@ import Input from 'antd/lib/input/Input';
 import Button from 'antd/lib/button/button';
 import ScramMasterInfo from '../../ScramMasterCard/ScramMasterCard';
 import './SessionInfo.scss';
+import { RootState, store } from '../../../redux';
 
 const SessionInfo = (): JSX.Element => {
   const [editSession, setEditSession] = useState(false);
   const [sessionName, setSessionName] = useState('New session');
-
+  const state: RootState = store.getState();
   return (
     <div className="main__card-link-wrapper">
       <ScramMasterInfo />
@@ -39,7 +40,7 @@ const SessionInfo = (): JSX.Element => {
       </Card>
       <Card title="Link to lobby:" style={{ width: '30%', height: '100%' }}>
         <div className="main__link-wrapper">
-          <Input size="middle" value="https://pokerstars.com" />
+          <Input size="middle" value={state.formCreateReducer.IDGame} />
           <Button size="middle" type="primary">
             Copy
           </Button>
@@ -50,3 +51,4 @@ const SessionInfo = (): JSX.Element => {
 };
 
 export default SessionInfo;
+/* "https://pokerstars.com" */
