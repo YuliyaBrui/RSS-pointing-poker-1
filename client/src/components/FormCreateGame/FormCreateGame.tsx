@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import {
-  Form, Input, Button, Avatar, Col, Row,
-} from 'antd';
+import { Form, Input, Button, Avatar, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { IFormGameValue } from '../../redux/types/forms';
-
 import styles from './FormCreateGame.module.scss';
-import { useAction } from '../../redux/hooks/useAction';
+import { socket } from '../../socket';
+import { saveMasterParams } from '../../redux/actions/createSession';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,7 +25,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
     setAvatarURL('');
   };
   const history = useHistory();
-  const { saveMasterParams } = useAction();
+  const dispatch = useDispatch();
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
@@ -35,10 +33,15 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       jobPosition,
       avatarURL,
     };
-    saveMasterParams(value);
-    setActive(false);
+    dispatch(saveMasterParams(value));
+    const joinState = {
+      value,
+      gameID: '1111',
+    };
+    socket.emit('GAME_JOIN_MASTER', joinState);
     reset();
     form.resetFields();
+    setActive(false);
     history.push('/setting');
   };
 

@@ -20,17 +20,33 @@ import { addGameCards } from '../../redux/actions/gameCards';
 import { IGameCard } from '../../redux/types/gameCard';
 import Chat from '../../components/Chat/Chat';
 import { users } from './users';
+import { socket } from '../../socket';
+import { IChatUsers } from '../../redux/types/chat';
+import { getUsersParams } from '../../redux/actions/createSession';
+import { chatParams, newMessageParams } from '../../redux/actions/chat';
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
-  const socket = new WebSocket('ws://localhost:3001/');
+  const getUsers = ({ members, observers, master }: IChatUsers): void => {
+    dispatch(chatParams({ members, observers, master }));
+  };
+  useEffect(() => {
+    socket.on('MEMBER_JOINED', getUsers);
+    socket.on('MEMBER_LEAVED', getUsers);
+    dispatch(getUsersParams('1111'));
+    socket.on('GAME_NEW_MESSAGE', (message) => {
+      dispatch(newMessageParams(message));
+    });
+  }, []);
+  /* const socket = new WebSocket('ws://localhost:3002/');
   socket.onopen = () => {
     console.log('подключение установлено');
   };
   socket.onmessage = (event) => {
     console.log(event.data);
-  };
-  const issues = useSelector((state: RootState) => state.issues);
+  */
+
+  const issues = useSelector((state: RootState) => state.addIssueReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
 
@@ -51,11 +67,12 @@ const SettingPage = (): JSX.Element => {
         <div className={styles.main__panel}>
           <h3>Members:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {users.map((user) => (
+            {joinMember.users.members.map((user) => (
               <UserCard
                 name={user.name}
-                avatar={user.avatar}
-                position={user.position}
+                lastName={user.lastName}
+                avatar={user.avatarURL}
+                position={user.jobPosition}
                 visibil="visible"
                 key={user.name}
               />
@@ -66,7 +83,7 @@ const SettingPage = (): JSX.Element => {
           <h3>Issues:</h3>
           <Row style={{ width: '100%' }} justify="start">
             {issues &&
-              issues.map((issue: IIssue) => (
+              issues.issues.map((issue: IIssue) => (
                 <Issue
                   title={issue.title}
                   priority={issue.priority}
@@ -78,8 +95,9 @@ const SettingPage = (): JSX.Element => {
             <button
               className={styles.main__button_invis}
               type="button"
-              onClick={() => { setFormVisible(true);
-             }}
+              onClick={() => {
+                setFormVisible(true);
+              }}
             >
               <CreateIssue />
             </button>
