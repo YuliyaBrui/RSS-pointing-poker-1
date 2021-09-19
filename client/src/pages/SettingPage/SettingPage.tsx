@@ -45,7 +45,7 @@ const SettingPage = (): JSX.Element => {
     console.log(event.data);
   */
 
-  const issues = useSelector((state: RootState) => state.issues);
+  const issues = useSelector((state: RootState) => state.addIssueReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
 
@@ -97,7 +97,7 @@ const SettingPage = (): JSX.Element => {
           <h3>Issues:</h3>
           <Row style={{ width: '100%' }} justify="start">
             {issues &&
-              issues.map((issue: IIssue) => (
+              issues.issues.map((issue: IIssue) => (
                 <Issue
                   title={issue.title}
                   priority={issue.priority}

@@ -6,36 +6,35 @@ import Popconfirm from 'antd/lib/popconfirm';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
-import { changeIssue, deleteIssue } from '../../redux/actions/issues';
+
 import { IIssue } from '../../redux/types/issues';
 import styles from './Issue.module.scss';
 
 const Issue = ({ title, priority, id }: IIssue): JSX.Element => {
   const dispatch = useDispatch();
-  const issues = useSelector((state: RootState) => state.issues);
+  const issues = useSelector((state: RootState) => state.chatReducer);
   const [issueName, setIssueName] = useState(title);
   const [editIssueName, setEditIssueName] = useState(false);
-
   const changeTitle = (): void => {
-    issues.map((issue: IIssue) => {
+    issues.issues.map((issue: IIssue) => {
       const newIssue = issue;
       if (newIssue.id === id) {
         newIssue.title = issueName;
       }
       return newIssue;
     });
-    dispatch(changeIssue(issues));
+  //  dispatch(changeIssue(issues));
   };
 
   const removeIssue = (): void => {
-    issues.map((issue: IIssue, index: number) => {
+    issues.issues.map((issue: IIssue, index: number) => {
       const newIssue = issue;
       if (newIssue.id === id) {
-        issues.splice(index, 1);
+        issues.issues.splice(index, 1);
       }
       return newIssue;
     });
-    dispatch(deleteIssue(issues));
+   // dispatch(deleteIssue(issues));
   };
 
   return (

@@ -5,7 +5,9 @@ import { Form, Input } from 'antd';
 import Select from 'antd/lib/select';
 import { useDispatch } from 'react-redux';
 import styles from './Issue.module.scss';
-import { addIssue } from '../../redux/actions/issues';
+
+import { socket } from '../../socket';
+import { addIssue } from '../../redux/actions/chat';
 
 type IIsueform = {
   formVisible: boolean;
@@ -29,6 +31,14 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   };
 
   const handleSubmit = (): void => {
+    const newIssue = {
+      title,
+      link,
+      priority,
+      id,
+      gameID: '1111',
+    };
+    socket.emit('GAME_NEW_ISSUE', newIssue);
     dispatch(
       addIssue({
         title,

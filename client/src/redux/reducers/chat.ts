@@ -11,6 +11,7 @@ const initialUsersState: IChatState = {
     master: { name: '', lastName: '', jobPosition: '', avatarURL: '' },
   },
   messages: [],
+  issues: [],
 };
 export const chatReducer = (
   state: IChatState = initialUsersState,
@@ -31,6 +32,16 @@ export const chatReducer = (
       return {
         ...state,
         messages: [...state.messages, action.payload.message],
+      };
+    case GetUsersInfoActionTypes.FETCH_SET_ISSUES:
+      return {
+        ...state,
+        issues: action.payload.issues,
+      };
+    case GetUsersInfoActionTypes.FETCH_ADD_ISSUE:
+      return {
+        ...state,
+        issues: [...state.issues, action.payload.issue],
       };
     default:
       return state;

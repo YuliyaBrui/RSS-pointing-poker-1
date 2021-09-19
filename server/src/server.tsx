@@ -39,7 +39,7 @@ start();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const games = new Map();
+export const games = new Map();
 const guid = (): string => {
   const s4 = (): string =>
     Math.floor((1 + Math.random()) * 0x10000)
@@ -58,6 +58,9 @@ app.post('/', (req, res) => {
       ['members', new Map()],
       ['observers', new Map()],
       ['messages', []],
+      ['issues', []],
+      ['setting', []],
+      ['gameCards', []],
     ]),
   );
   res.json(gameID);
@@ -69,10 +72,11 @@ app.get('/:id', async (req, res) => {
     const observers = [...games.get(gameID).get('observers').values()];
     const master = games.get(gameID).get('master');
     const messages = games.get(gameID).get('messages');
+    const issues = games.get(gameID).get('issues');
     console.log({ users: { members, observers, master }, messages });
-    res.send({ users: { members, observers, master }, messages });
+    res.send({ users: { members, observers, master }, messages, issues });
   } else {
-    res.send({ master: {}, members: [], observers: [], messages: [] });
+    res.send({ master: {}, members: [], observers: [], messages: [], issues: [] });
   }
 });
 /* app.post('/:id/observers', (req, res) => {
@@ -131,6 +135,23 @@ io.on('connection', (socket: Socket) => {
     games.get(gameID).get('messages').push(message);
     socket.to(gameID).emit('GAME_ADD_MESSAGE', message);
   });
+  // issue
+  socket.on('GAME_NEW_ISSUE', ({ gameID, title, link, priority, id }) => {
+    console.log({ gameID, title, link, priority })
+    const issue = {
+      id,
+      title,
+      link,
+      priority,
+      
+    };
+    games.get(gameID).get('issues').push(issue);
+   /* const members = [...games.get(gameID).get('members').values()];
+    const observers = [...games.get(gameID).get('observers').values()];
+    const master = games.get(gameID).get('master');*/
+    console.log(games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
+  })
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
       if (
