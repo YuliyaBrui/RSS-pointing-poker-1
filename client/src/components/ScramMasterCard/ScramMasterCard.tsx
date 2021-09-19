@@ -16,7 +16,7 @@ const ScramMasterInfo = (): JSX.Element => {
   }, []);
 
   return (
-    <Card title="Scram master:" style={{ width: '30%', height: '100%' }}>
+    <Card title="Scram master:" style={{ width: '250px', height: '200px' }}>
       <div className={styles.main__scram_master_info}>
         {typeof masterInfo.master.avatarURL !== 'string' ||
         masterInfo.master.avatarURL === '' ? (

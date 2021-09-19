@@ -1,0 +1,31 @@
+.timer_wrapper {
+  margin: 0 auto;
+}
+
+.timer {
+	width:105px;
+	height: 50px;
+	margin: 10px auto;
+	border: 6px solid #c7eafd;
+	border-image: linear-gradient(to left, #7ee8fa 0%, #eec0c6 100%);
+	border-image-slice: 1;
+  text-align: center;
+}
+
+.timer_seconds {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 24px;
+  color: #333;
+  font-weight: 900;
+  text-align: center;
+}
+
+.timer_button {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.button {
+  margin-left: 50px;
+}
