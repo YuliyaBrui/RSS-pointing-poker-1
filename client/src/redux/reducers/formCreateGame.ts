@@ -1,33 +1,33 @@
 import {
   createGameAction,
   CreateGameActionTypes,
-  IMasterState,
+  IGetGameState,
 } from '../types/forms';
 
-const initialState: IMasterState = {
-  master: { name: '', lastName: '', jobPosition: '', avatarURL: '' },
+const initialGameState: IGetGameState = {
+  IDGame: '',
   error: null,
 };
 
 export const formCreateReducer = (
-  state: IMasterState = initialState,
+  state: IGetGameState = initialGameState,
   action: createGameAction,
-): IMasterState => {
+): IGetGameState => {
   switch (action.type) {
     case CreateGameActionTypes.FETCH_CREATE_GAME:
       return {
-        master: { name: '', lastName: '', jobPosition: '', avatarURL: '' },
+        IDGame: '',
         error: null,
       };
     case CreateGameActionTypes.FETCH_CREATE_GAME_SUCCESS:
       return {
         ...state,
         error: null,
-        master: action.payload?.master,
+        IDGame: action.payload.IDGame,
       };
     case CreateGameActionTypes.FETCH_CREATE_GAME_ERROR:
       return {
-        master: { name: '', lastName: '', jobPosition: '', avatarURL: '' },
+        IDGame: '',
         error: action.payload?.error,
       };
     default:

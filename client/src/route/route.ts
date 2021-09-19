@@ -19,5 +19,6 @@ export const privateRoutes: IRoute[] = [
   { path: '/', exact: true, component: StartPage },
   { path: '/not-found-page', exact: true, component: NotFoundPage },
   { path: '/setting', exact: true, component: SettingPage },
+  { path: '/setting/:id', exact: true, component: SettingPage },
   { path: '/lobby', exact: true, component: MembersLobby },
 ];

@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Form, Input, Button, Avatar, Switch, Col, Row,
-} from 'antd';
+import { Form, Input, Button, Avatar, Switch, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
-import {
-  saveMemberParams,
-  saveObserverParams,
-} from '../../redux/actions/formConnectGame';
+import { socket } from '../../socket';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +18,6 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
   const [jobPosition, setJobPosition] = useState('');
 
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
   const reset = (): void => {
     setFirstName('');
     setLastName('');
@@ -39,13 +32,17 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       jobPosition,
       avatarURL,
     };
+    const joinState = {
+      user: value,
+      gameID: '1111',
+    };
     setActive(false);
     if (isToggle) {
-      dispatch(saveObserverParams(value));
-      history.push('/observer');
+      socket.emit('GAME_JOIN_OBSERVER', joinState);
+      history.push('/lobby');
     } else {
-      dispatch(saveMemberParams(value));
-      history.push('/team_member');
+      socket.emit('GAME_JOIN_MEMBER', joinState);
+      history.push('/lobby');
     }
     reset();
     form.resetFields();
