@@ -5,7 +5,7 @@ import styles from './Issue.module.scss';
 
 const CreateIssue = (): JSX.Element => (
   <Card
-    style={{ width: '250px', height: '74px', margin: '5px' }}
+    style={{ width: '225px', height: '74px', margin: '5px' }}
     bodyStyle={{ height: '74px', display: 'flex', alignItems: 'center' }}
   >
     <div className={styles.main__create_issue_wrapper}>

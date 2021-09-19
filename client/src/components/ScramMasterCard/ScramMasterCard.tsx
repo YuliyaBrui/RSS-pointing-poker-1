@@ -9,7 +9,7 @@ import { RootState, store } from '../../redux';
 const ScramMasterInfo = (): JSX.Element => {
   const state: RootState = store.getState();
   return (
-    <Card title="Scram master:" style={{ width: '30%', height: '100%' }}>
+    <Card title="Scram master:" style={{ width: '250px', height: '200px' }}>
       <div className={styles.main__scram_master_info}>
         {typeof state.formCreateReducer.masters[0].avatarURL !== 'string' ||
         state.formCreateReducer.masters[0].avatarURL === '' ? (

@@ -1,0 +1,52 @@
+.game_wrapper {
+  width: 90%;
+  height: 85vh;
+  padding: 1% 1%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center; 
+}
+
+.game_part {
+  width: 60%; 
+  margin-right: 5%;
+}
+
+.score_part {
+    width: 40%;
+}
+
+.game_title {
+    text-align: center;
+    font-weight: bold;
+}
+
+.game_info {
+  
+}
+
+.game_side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ 
+
+.issue {
+  margin-top: 30%;
+}
+
+
+.line {
+    border-left: 1px solid rgba(0, 0, 0, 0.5);
+    height: 100vh;
+}
+
+.score_title {
+font-weight: bold;
+display: flex;
+align-items: center;
+text-align: center;
+justify-content: space-around;
+}
