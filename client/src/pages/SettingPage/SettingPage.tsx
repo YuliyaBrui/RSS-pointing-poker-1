@@ -19,7 +19,6 @@ import { IIssue } from '../../redux/types/issues';
 import { addGameCards } from '../../redux/actions/gameCards';
 import { IGameCard } from '../../redux/types/gameCard';
 import Chat from '../../components/Chat/Chat';
-import { users } from './users';
 import { socket } from '../../socket';
 import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
@@ -45,7 +44,7 @@ const SettingPage = (): JSX.Element => {
   socket.onmessage = (event) => {
     console.log(event.data);
   */
-
+  const joinMember = useSelector((state: RootState) => state.chatReducer);
   const issues = useSelector((state: RootState) => state.addIssueReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);

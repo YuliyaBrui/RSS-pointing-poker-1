@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
@@ -12,15 +13,23 @@ import IssueForm from '../../components/Issues/IssueForm';
 import UserCard from '../../components/UserCard/UserCard';
 import GameCard from '../../components/GameCard/GameCard';
 import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
-import { users } from '../SettingPage/users';
 import { RootState } from '../../redux';
 import { IIssue } from '../../redux/types/issues';
 import { IGameCard } from '../../redux/types/gameCard';
 
 const GamePageMember = (): JSX.Element => {
-  const issues = useSelector((state: RootState) => state.issues);
+  // const issues = useSelector((state: RootState) => state.cdissues);
+  const issues = [
+    {
+      title: 'string',
+      link: 'string',
+      priority: 'string',
+      id: 'string',
+    },
+  ];
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
+  const users = useSelector((state: RootState) => state.chatReducer);
 
   const history = useHistory();
   const exit = (): void => {
@@ -84,27 +93,29 @@ const GamePageMember = (): JSX.Element => {
           <div>
             <h1>Score:</h1>
             <Col style={{ width: '100%' }}>
-              {users.map((user) => (
+              {users.users.members.map((user) => (
                 <UserCard
                   name={user.name}
-                  avatar={user.avatar}
-                  position={user.position}
-                  visibility="visible"
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
                   key={user.name}
+                  lastName={user.lastName}
                 />
               ))}
             </Col>
           </div>
-          <div >
+          <div>
             <h1>Players:</h1>
             <Col style={{ width: '100%' }}>
-              {users.map((user) => (
+              {users.users.members.map((user) => (
                 <UserCard
                   name={user.name}
-                  avatar={user.avatar}
-                  position={user.position}
-                  visibility="visible"
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
                   key={user.name}
+                  lastName={user.lastName}
                 />
               ))}
             </Col>

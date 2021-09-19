@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import React from 'react';
 import Col from 'antd/lib/grid/col';
 import { useSelector } from 'react-redux';
@@ -7,7 +8,15 @@ import { IIssue } from '../../redux/types/issues';
 import styles from './ResultPage.module.scss';
 
 const ResultPage = (): JSX.Element => {
-  const issues = useSelector((state: RootState) => state.issues);
+  // const issues = useSelector((state: RootState) => state.issues);
+  const issues = [
+    {
+      title: 'string',
+      link: 'string',
+      priority: 'string',
+      id: 'string',
+    },
+  ];
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.result_title}>
@@ -29,6 +38,6 @@ const ResultPage = (): JSX.Element => {
       </div>
     </div>
   );
-}
+};
 
 export default ResultPage;
