@@ -8,8 +8,8 @@ import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 import ScramMasterCard from '../../components/ScramMasterCard/ScramMasterCard';
 import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
-import { chatParams } from '../../redux/actions/formConnectGame';
-import { getUsersParams } from '../../redux/actions/formCreateGame';
+import { chatParams } from '../../redux/actions/chat';
+import { getUsersParams } from '../../redux/actions/createSession';
 import { IChatState, IChatUsers } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './MembersLobby.module.scss';
@@ -22,9 +22,9 @@ const MembersLobby = (): JSX.Element => {
   };
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
-    socket.on('MEMBER_LEAVED', getUsers);
     dispatch(getUsersParams('1111'));
   }, []);
+  socket.on('MEMBER_LEAVED', getUsers);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const users = [
     {

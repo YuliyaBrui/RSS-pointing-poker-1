@@ -38,9 +38,10 @@ start();
 */
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const games = new Map();
 const guid = (): string => {
-  const s4 = () =>
+  const s4 = (): string =>
     Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
@@ -48,7 +49,7 @@ const guid = (): string => {
 };
 app.post('/', (req, res) => {
   const { master } = req.body;
-  //const IDGame = guid();
+  // const IDGame = guid();
   const gameID = '1111';
   games.set(
     gameID,
@@ -57,17 +58,22 @@ app.post('/', (req, res) => {
       ['members', new Map()],
       ['observers', new Map()],
       ['messages', []],
-    ])
+    ]),
   );
   res.json(gameID);
 });
 app.get('/:id', async (req, res) => {
   const gameID = req.params.id;
-  const members = [...games.get(gameID).get('members').values()];
-  const observers = [...games.get(gameID).get('observers').values()];
-  const master = games.get(gameID).get('master');
-  console.log(members, observers, master);
-  res.send({ members, observers, master });
+  if (games.has(gameID)) {
+    const members = [...games.get(gameID).get('members').values()];
+    const observers = [...games.get(gameID).get('observers').values()];
+    const master = games.get(gameID).get('master');
+    const messages = games.get(gameID).get('messages');
+    console.log({ users: { members, observers, master }, messages });
+    res.send({ users: { members, observers, master }, messages });
+  } else {
+    res.send({ master: {}, members: [], observers: [], messages: [] });
+  }
 });
 /* app.post('/:id/observers', (req, res) => {
   const gameID = req.params.id;
@@ -114,6 +120,16 @@ io.on('connection', (socket: Socket) => {
     const observers = [...games.get(gameID).get('observers').values()];
     const master = games.get(gameID).get('master');
     socket.to(gameID).emit('MEMBER_JOINED', { members, observers, master });
+  });
+  socket.on('GAME_NEW_MESSAGE', ({ gameID, name, text, avatar }) => {
+    console.log({ gameID, name, text, avatar })
+    const message = {
+      name,
+      text,
+      avatar,
+    };
+    games.get(gameID).get('messages').push(message);
+    socket.to(gameID).emit('GAME_ADD_MESSAGE', message);
   });
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {

@@ -20,10 +20,9 @@ import { addGameCards } from '../../redux/actions/gameCards';
 import { IGameCard } from '../../redux/types/gameCard';
 import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
-import { IChatState, IChatUsers } from '../../redux/types/chat';
-import { IFormGameValue } from '../../redux/types/forms';
-import { getUsersParams } from '../../redux/actions/formCreateGame';
-import { chatParams } from '../../redux/actions/formConnectGame';
+import { IChatUsers } from '../../redux/types/chat';
+import { getUsersParams } from '../../redux/actions/createSession';
+import { chatParams, newMessageParams } from '../../redux/actions/chat';
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -34,6 +33,9 @@ const SettingPage = (): JSX.Element => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
     dispatch(getUsersParams('1111'));
+    socket.on('GAME_NEW_MESSAGE', (message) => {
+      dispatch(newMessageParams(message));
+    });
   }, []);
   /* const socket = new WebSocket('ws://localhost:3002/');
   socket.onopen = () => {
@@ -42,7 +44,7 @@ const SettingPage = (): JSX.Element => {
   socket.onmessage = (event) => {
     console.log(event.data);
   */
-  
+
   const issues = useSelector((state: RootState) => state.issues);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
@@ -68,7 +70,7 @@ const SettingPage = (): JSX.Element => {
         'https://avatars.mds.yandex.net/get-zen_doc/1245815/pub_5bc9d59d3491a600a9655d81_5bc9d9229989ff00ae413c2a/scale_1200',
     },
   ];
-  
+
   return (
     <Content className={styles.wrapper}>
       <div className={styles.main}>

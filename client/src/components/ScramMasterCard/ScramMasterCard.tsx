@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Card from 'antd/lib/card';
 import { UserOutlined } from '@ant-design/icons';
 import { RootState } from '../../redux';
-import { getUsersParams } from '../../redux/actions/formCreateGame';
+import { getUsersParams } from '../../redux/actions/createSession';
 import styles from './ScramMasterCard.module.scss';
 
 const ScramMasterInfo = (): JSX.Element => {

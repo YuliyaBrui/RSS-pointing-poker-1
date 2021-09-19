@@ -1,11 +1,19 @@
 import { ArrowsAltOutlined, ShrinkOutlined } from '@ant-design/icons/lib/icons';
 import { Button, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { newMessageParams } from '../../redux/actions/chat';
+import { IMessage } from '../../redux/types/chat';
+import { socket } from '../../socket';
 import styles from './Chat.module.scss';
 import MessagesPlace from './MessagesPlace';
 import SendingForm from './SendingForm';
 
 const Chat = (): JSX.Element => {
+  const dispatch = useDispatch();
+  const addMessage = (message: IMessage): void => {
+    dispatch(newMessageParams(message));
+  };
   const [collapsed, setCollapsed] = useState(false);
   const [dragState, setDragState] = useState({});
   const [offset, setOffset] = useState({ offsetX: 0, offsetY: 0 });
@@ -31,8 +39,8 @@ const Chat = (): JSX.Element => {
     }
   };
   useEffect(() => {
-   
-  },[]);
+    socket.on('GAME_ADD_MESSAGE', addMessage);
+  }, []);
   return (
     <div
       className={styles.chat__wrapper}

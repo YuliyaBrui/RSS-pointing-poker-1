@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { IFormGameValue } from '../../redux/types/forms';
 import styles from './FormCreateGame.module.scss';
 import { socket } from '../../socket';
-import { saveMasterParams } from '../../redux/actions/formCreateGame';
+import { saveMasterParams } from '../../redux/actions/createSession';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;

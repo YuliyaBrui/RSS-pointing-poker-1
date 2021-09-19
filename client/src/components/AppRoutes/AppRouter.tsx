@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { Layout } from 'antd';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { privateRoutes } from '../../route/route';
 import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux';
 import { socket } from '../../socket';
-import { chatParams } from '../../redux/actions/formConnectGame';
+import { chatParams } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 
 const { Header, Footer, Content } = Layout;
@@ -18,6 +17,7 @@ const AppRouter = (): JSX.Element => {
     console.log({ members, observers, master });
     dispatch(chatParams({ members, observers, master }));
   };
+
   useEffect(() => {
     socket.on('MASTER_JOINED', ({ master }) => {
       console.log({ master });

@@ -1,19 +1,23 @@
 import Button from 'antd/lib/button/button';
 import Input from 'antd/lib/input/Input';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { newMessageParams } from '../../redux/actions/chat';
+import { socket } from '../../socket';
 import styles from './Chat.module.scss';
 
 export const SendingForm = (): JSX.Element => {
+  const dispatch = useDispatch();
   const [message, setMessage] = useState('');
- // const socket = new WebSocket('ws://localhost:3002/');
   const sendMessage = (): void => {
-  /*  socket.send(
-      JSON.stringify({
-        method:''
-        type: 'message',
-        message: { message },
-      }),
-    );*/
+    const newMessage = {
+      text: message,
+      avatar: '',
+      name: '',
+      gameID: '1111',
+    };
+    socket.emit('GAME_NEW_MESSAGE', newMessage);
+    dispatch(newMessageParams(newMessage));
     setMessage('');
   };
   return (
