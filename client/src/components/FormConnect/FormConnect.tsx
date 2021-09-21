@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Avatar, Switch, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import shortid from 'shortid';
+import { useDispatch } from 'react-redux';
 import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
 import { socket } from '../../socket';
+import { userParams } from '../../redux/actions/chat';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +19,6 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
-
   const [form] = Form.useForm();
   const reset = (): void => {
     setFirstName('');
@@ -25,6 +27,8 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
     setAvatarURL('');
   };
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
@@ -37,13 +41,21 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       gameID: '1111',
     };
     setActive(false);
+   
+    
     if (isToggle) {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
+              dispatch(userParams(value));
+      
       history.push('/lobby');
     } else {
       socket.emit('GAME_JOIN_MEMBER', joinState);
+             dispatch(userParams(value));
+      
+     // socket.on('MEMBER_INFO', value);
       history.push('/lobby');
     }
+    
     reset();
     form.resetFields();
   };

@@ -13,7 +13,8 @@ import {
   IFormGameValue,
 } from '../types/forms';
 
-export const saveMasterParams = (value: IFormGameValue) =>
+export const saveMasterParams =
+  (value: IFormGameValue) =>
   async (dispatch: Dispatch<createGameAction>): Promise<void> => {
     console.log(value);
     try {
@@ -35,7 +36,6 @@ export const saveMasterParams = (value: IFormGameValue) =>
     }
   };
 
-
 export const getUsersParams = (IDGame: string) =>
   async (dispatch: Dispatch<chatInfoAction>): Promise<void> => {
     const response: AxiosResponse<IChatState> = await instance.get(
@@ -51,6 +51,12 @@ export const getUsersParams = (IDGame: string) =>
       type: GetUsersInfoActionTypes.FETCH_SET_MESSAGES,
       payload: {
         messages: response.data.messages,
+      },
+    });
+    dispatch({
+      type: GetUsersInfoActionTypes.FETCH_SET_ISSUES,
+      payload: {
+        issues: response.data.issues,
       },
     });
   };

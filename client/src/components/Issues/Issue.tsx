@@ -3,38 +3,47 @@ import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import Popconfirm from 'antd/lib/popconfirm';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
+import { getUsersParams } from '../../redux/actions/createSession';
 
 import { IIssue } from '../../redux/types/issues';
+import { socket } from '../../socket';
 import styles from './Issue.module.scss';
 
-const Issue = ({ title, priority, id }: IIssue): JSX.Element => {
+const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUsersParams('1111'));
+  }, []);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const [issueName, setIssueName] = useState(title);
   const [editIssueName, setEditIssueName] = useState(false);
   const changeTitle = (): void => {
-    issues.issues.map((issue: IIssue) => {
+    /* issues.issues.map((issue: IIssue) => {
       const newIssue = issue;
       if (newIssue.id === id) {
-        newIssue.title = issueName;
+       newIssue.title = issueName;
       }
       return newIssue;
     });
-  //  dispatch(changeIssue(issues));
+     dispatch(changeIssue(issues));*/
   };
 
   const removeIssue = (): void => {
     issues.issues.map((issue: IIssue, index: number) => {
       const newIssue = issue;
-      if (newIssue.id === id) {
+      if (newIssue.id === issue.id) {
         issues.issues.splice(index, 1);
+        const issueDelete = {
+          gameID: '1111',
+          id: issue.id,
+        };
+        socket.emit('GAME_DELETE_ISSUE', issueDelete);
       }
       return newIssue;
     });
-   // dispatch(deleteIssue(issues));
   };
 
   return (
@@ -47,7 +56,7 @@ const Issue = ({ title, priority, id }: IIssue): JSX.Element => {
           value={issueName}
           onChange={(e) => {
             setIssueName(e.target.value);
-            changeTitle();
+            // changeTitle();
           }}
           onPressEnter={() => {
             setEditIssueName(!editIssueName);

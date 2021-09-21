@@ -26,7 +26,6 @@ const GamePage = (): JSX.Element => {
   ];
   const [formVisible, setFormVisible] = useState(false);
   const users = useSelector((state: RootState) => state.chatReducer);
-
   const history = useHistory();
   const result = (): void => {
     history.push('/result');

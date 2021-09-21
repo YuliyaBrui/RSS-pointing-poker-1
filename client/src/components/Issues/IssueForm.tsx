@@ -38,7 +38,6 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
       id,
       gameID: '1111',
     };
-    socket.emit('GAME_NEW_ISSUE', newIssue);
     dispatch(
       addIssue({
         title,
@@ -47,6 +46,8 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
         id,
       }),
     );
+    socket.emit('GAME_NEW_ISSUE', newIssue);
+   
     resetForm();
   };
 

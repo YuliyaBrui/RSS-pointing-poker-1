@@ -7,6 +7,7 @@ import { IFormGameValue } from '../../redux/types/forms';
 import styles from './FormCreateGame.module.scss';
 import { socket } from '../../socket';
 import { saveMasterParams } from '../../redux/actions/createSession';
+import { userParams } from '../../redux/actions/chat';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,6 +40,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       gameID: '1111',
     };
     socket.emit('GAME_JOIN_MASTER', joinState);
+    dispatch(userParams(value));
     reset();
     form.resetFields();
     setActive(false);

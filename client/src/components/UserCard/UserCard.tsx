@@ -3,7 +3,10 @@ import Avatar from 'antd/lib/avatar/avatar';
 import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Popconfirm from 'antd/lib/popconfirm';
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
+import { socket } from '../../socket';
 import styles from './UserCard.module.scss';
 
 type IUsercard = {
@@ -21,7 +24,16 @@ const UserCard = ({
   avatar,
   visibil = 'hidden',
 }: IUsercard): JSX.Element => {
-  const asd = 123;
+  const user = useSelector((state: RootState) => state.chatReducer);
+
+  const handleOk = (): void => {
+    console.log(`${name} ${lastName},${user.user.name} ${user.user.lastName} `);
+    const kick = {
+      kickedUser: `${name} ${lastName}`,
+      user: `${user.user.name} ${user.user.lastName}`,
+    };
+    socket.emit('KICK_MEMBER', kick);
+  };
   return (
     <Card style={{ width: '280px', height: '100%', margin: '5px' }}>
       <div className={styles.main__user_info}>
@@ -34,7 +46,12 @@ const UserCard = ({
           <h3>{`${name} ${lastName}`}</h3>
           <p>{position}</p>
         </div>
-        <Popconfirm title="Kick player?" okText="Yes" cancelText="No">
+        <Popconfirm
+          title="Kick player?"
+          okText="Yes"
+          cancelText="No"
+          onConfirm={handleOk}
+        >
           <StopOutlined
             style={{
               fontSize: '200%',

@@ -1,5 +1,7 @@
 import Button from 'antd/lib/button';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
 import styles from './KickMemberForm.module.scss';
 
 type IKickForm = {
@@ -11,8 +13,7 @@ const KickMemberForm = ({
   formVisible,
   setFormVisible,
 }: IKickForm): JSX.Element => {
-  const asd = 123;
-
+  const user = useSelector((state: RootState) => state.chatReducer);
   return (
     <div
       className={
@@ -24,7 +25,7 @@ const KickMemberForm = ({
         <h2>Kick member</h2>
         <div className={styles.kick__description_wrapper}>
           <p className={styles.kick__description}>
-            Keanu Reeves want to kick member Tom Cruise
+            {`${user.user.name} want to kick member`}
           </p>
           <p className={styles.kick__description}>Do you Agree with it?</p>
         </div>

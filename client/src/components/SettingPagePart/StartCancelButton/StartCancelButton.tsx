@@ -2,11 +2,13 @@ import React from 'react';
 import Button from 'antd/lib/button/button';
 import './StartCancelButtons.scss';
 import { useHistory } from 'react-router-dom';
+import { socket } from '../../../socket';
 
 const StartCancelButtons = (): JSX.Element => {
   const asd = 123;
   const history = useHistory();
   const StartGame = (): void => {
+    socket.emit('START_GAME', '1111');
     history.push('/game');
   };
   const MemberGame = (): void => {
