@@ -13,3 +13,21 @@
 .ant-space-vertical {
   flex-direction: row;
 }
+
+.ant-btn {
+  font-size: 24px;
+  line-height: 30px;
+  height: 47px;
+}
+
+.ant-btn-primary {
+  background-color: #496A81;
+  border:#496A81;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:active,
+.ant-btn-primary:focus {
+  background-color: #66999B;
+  border:#66999B;
+}

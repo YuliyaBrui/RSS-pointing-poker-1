@@ -107,18 +107,20 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
             />
           </Form.Item>
           <Form.Item wrapperCol={{ span: 14, offset: 4 }}>
-            <Button type="primary" size="large" htmlType="submit">
-              Submit
-            </Button>
-            <Button
-              type="default"
-              size="large"
-              style={{ marginLeft: '10px' }}
-              htmlType="button"
-              onClick={resetForm}
-            >
-              Cancel
-            </Button>
+            <div style={{ display: 'flex' }}>
+              <Button type="primary" size="large" htmlType="submit">
+                Submit
+              </Button>
+              <Button
+                type="default"
+                size="large"
+                style={{ marginLeft: '10px' }}
+                htmlType="button"
+                onClick={resetForm}
+              >
+                Cancel
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </div>

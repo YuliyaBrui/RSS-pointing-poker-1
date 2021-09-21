@@ -1,19 +1,17 @@
 .timer_wrapper {
   margin: 0 auto;
+  width: 100%;
 }
 
 .timer {
-	width:105px;
+	width: 100%;
 	height: 50px;
 	margin: 10px auto;
-	border: 6px solid #c7eafd;
-	border-image: linear-gradient(to left, #7ee8fa 0%, #eec0c6 100%);
-	border-image-slice: 1;
+	border: 6px solid #FFC482;;
   text-align: center;
 }
 
 .timer_seconds {
-  font-family: 'Noto Sans', sans-serif;
   font-size: 24px;
   color: #333;
   font-weight: 900;
@@ -21,11 +19,17 @@
 }
 
 .timer_button {
+  width: 100%;
    display: flex;
-   justify-content: center;
+   justify-content:center;
    align-items: center;
 }
 
-.button {
-  margin-left: 50px;
+.buttons {
+  width: 100%;
+   display: flex;
+   justify-content:space-between;
+   align-items: center;
 }
+
+

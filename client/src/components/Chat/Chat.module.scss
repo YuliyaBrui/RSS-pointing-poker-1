@@ -2,7 +2,7 @@
   &__wrapper {
     position: fixed;
     width: 250px;
-    height: 300px;
+    height: 350px;
     visibility: visible;
     bottom: 10px;
     right: 10px;
@@ -16,24 +16,27 @@
 
   &__title {
     margin: 0 10px;
+    color: white;
+    text-transform: uppercase;
   }
 
   &__collapsed {
     margin-right: 5px;
-    background-color: #40a9ff;
+    background-color: #496A81;
+    color: white;
 
     &:hover {
       border: none;
-      background-color: #40a9ff;
+      background-color: #496A81;;
       color: black;
     }
   }
 
   &__header {
-    height: 30px;
+    height: 45px;
     display: flex;
     justify-content: space-between;
-    background-color: #40a9ff;
+    background-color: #496A81;
     transition: 1s;
     align-items: center;
   }
@@ -50,7 +53,7 @@
   }
 
   &__add_messages {
-    height: 38px;
+    height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;

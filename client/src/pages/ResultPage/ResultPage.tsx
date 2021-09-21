@@ -19,22 +19,24 @@ const ResultPage = (): JSX.Element => {
   ];
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.result_title}>
-        Sprint 23 planning (issues 13, 533, 5623, 3252, 6623, ...)
-      </h1>
-      <div className={styles.issue}>
-        <Col style={{ width: '100%' }}>
-          {issues &&
-            issues.map((issue: IIssue) => (
-              <Issue
-                title={issue.title}
-                priority={issue.priority}
-                link={issue.link}
-                id={issue.id}
-                key={issue.id}
-              />
-            ))}
-        </Col>
+      <div className={styles.result_wrapper}>
+        <h1 className={styles.result_title}>
+          Sprint 23 planning (issues 13, 533, 5623, 3252, 6623, ...)
+        </h1>
+        <div className={styles.issue}>
+          <Col style={{ width: '100%' }}>
+            {issues &&
+              issues.map((issue: IIssue) => (
+                <Issue
+                  title={issue.title}
+                  priority={issue.priority}
+                  link={issue.link}
+                  id={issue.id}
+                  key={issue.id}
+                />
+              ))}
+          </Col>
+        </div>
       </div>
     </div>
   );
