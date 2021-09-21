@@ -2,13 +2,17 @@ import React from 'react';
 import Button from 'antd/lib/button/button';
 import './StartCancelButtons.scss';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux';
 import { socket } from '../../../socket';
 
 const StartCancelButtons = (): JSX.Element => {
-  const asd = 123;
+  const store = useSelector((state: RootState) => state);
+
   const history = useHistory();
   const StartGame = (): void => {
-    socket.emit('START_GAME', '1111');
+    socket.emit('ADD_GAME_SETTING', '1111', store.gameSetting);
+    socket.emit('ADD_GAME_CARDS', '1111', store.gameCards);
     history.push('/game');
   };
   const MemberGame = (): void => {

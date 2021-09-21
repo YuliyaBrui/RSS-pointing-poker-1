@@ -26,20 +26,7 @@ const MembersLobby = (): JSX.Element => {
   }, []);
   socket.on('MEMBER_LEAVED', getUsers);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
-  const users = [
-    {
-      name: 'Keanu Reeves',
-      position: 'JS-developer',
-      avatar:
-        'https://avatars.mds.yandex.net/get-pdb/2846431/30e3043d-7e95-4653-bca7-5bb61219df86/s1200?webp=false',
-    },
-    {
-      name: 'Tom Cruise',
-      position: 'Backend-developer',
-      avatar:
-        'https://avatars.mds.yandex.net/get-zen_doc/1245815/pub_5bc9d59d3491a600a9655d81_5bc9d9229989ff00ae413c2a/scale_1200',
-    },
-  ];
+  const currentUser = useSelector((state: RootState) => state.currentUser);
 
   return (
     <Content className={styles.wrapper}>
@@ -67,7 +54,9 @@ const MembersLobby = (): JSX.Element => {
                 lastName={user.lastName}
                 avatar={user.avatarURL}
                 position={user.jobPosition}
-                visibil="visible"
+                visibil={
+                  currentUser.lastName === user.lastName ? 'hidden' : 'visible'
+                }
                 key={user.name}
               />
             ))}

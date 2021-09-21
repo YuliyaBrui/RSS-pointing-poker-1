@@ -66,16 +66,17 @@ const SettingPage = (): JSX.Element => {
         <div className={styles.main__panel}>
           <h3>Members:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {joinMember.users.members.map((user) => (
-              <UserCard
-                name={user.name}
-                lastName={user.lastName}
-                avatar={user.avatarURL}
-                position={user.jobPosition}
-                visibil="visible"
-                key={user.name}
-              />
-            ))}
+            {joinMember.users.members &&
+              joinMember.users.members.map((user) => (
+                <UserCard
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
+                  key={user.name}
+                />
+              ))}
           </Row>
         </div>
         <div className={styles.main__panel}>

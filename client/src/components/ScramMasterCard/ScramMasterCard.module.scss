@@ -5,20 +5,28 @@
     justify-content: space-around;
     align-items: center;
   }
+
   &__scram_master__container_img {
     width: 70px;
     height: 70px;
     border: 1px inherit;
     border-radius: 50%;
   }
+
   &__scram_master__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
+
   &__scram_master_description {
     display: flex;
     flex-direction: column;
+  }
+
+  &__card {
+     width: 30%;
+     height: 100%;
   }
 }

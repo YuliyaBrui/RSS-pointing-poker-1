@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Form, Input, Button, Avatar, Switch, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import shortid from 'shortid';
-import { useDispatch } from 'react-redux';
 import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
 import { socket } from '../../socket';
-import { userParams } from '../../redux/actions/chat';
+// import { userParams } from '../../redux/actions/chat';
+import { addCurrentUser } from '../../redux/actions/currentUser';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,6 +20,8 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
+  const dispatch = useDispatch();
+
   const [form] = Form.useForm();
   const reset = (): void => {
     setFirstName('');
@@ -26,8 +29,8 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
     setJobPosition('');
     setAvatarURL('');
   };
+
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
@@ -40,17 +43,20 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       user: value,
       gameID: '1111',
     };
+
+    dispatch(addCurrentUser(value));
+
     setActive(false);
    
     
     if (isToggle) {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
-              dispatch(userParams(value));
+              // dispatch(userParams(value));
       
       history.push('/lobby');
     } else {
       socket.emit('GAME_JOIN_MEMBER', joinState);
-             dispatch(userParams(value));
+            //  dispatch(userParams(value));
       
      // socket.on('MEMBER_INFO', value);
       history.push('/lobby');

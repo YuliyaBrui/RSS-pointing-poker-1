@@ -1,12 +1,11 @@
 import { StopOutlined, UserOutlined } from '@ant-design/icons/lib/icons';
 import Avatar from 'antd/lib/avatar/avatar';
-import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Popconfirm from 'antd/lib/popconfirm';
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux';
 import { socket } from '../../socket';
+import { RootState } from '../../redux';
 import styles from './UserCard.module.scss';
 
 type IUsercard = {
@@ -24,16 +23,16 @@ const UserCard = ({
   avatar,
   visibil = 'hidden',
 }: IUsercard): JSX.Element => {
-  const user = useSelector((state: RootState) => state.chatReducer);
-
-  const handleOk = (): void => {
-    console.log(`${name} ${lastName},${user.user.name} ${user.user.lastName} `);
-    const kick = {
-      kickedUser: `${name} ${lastName}`,
-      user: `${user.user.name} ${user.user.lastName}`,
-    };
-    socket.emit('KICK_MEMBER', kick);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const kickData = {
+    visibil: true,
+    initiator: { name: currentUser.name, lastName: currentUser.lastName },
+    exclusion: { name, lastName },
   };
+  const sendKickData = (): void => {
+    socket.emit('KICK_DATA', '1111', kickData);
+  };
+
   return (
     <Card style={{ width: '280px', height: '100%', margin: '5px' }}>
       <div className={styles.main__user_info}>
@@ -50,7 +49,7 @@ const UserCard = ({
           title="Kick player?"
           okText="Yes"
           cancelText="No"
-          onConfirm={handleOk}
+          onConfirm={sendKickData}
         >
           <StopOutlined
             style={{
