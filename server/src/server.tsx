@@ -5,6 +5,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import express from 'express';
 import { isAwaitExpression } from 'typescript';
 import { Server, Socket } from 'socket.io';
+import { ISetting } from './types';
 
 const app = express();
 app.use(cors());
@@ -43,8 +44,8 @@ export const games = new Map();
 const guid = (): string => {
   const s4 = (): string =>
     Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
+    .toString(16)
+    .substring(1);
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 };
 app.post('/', (req, res) => {
@@ -61,6 +62,7 @@ app.post('/', (req, res) => {
       ['issues', []],
       ['setting', []],
       ['gameCards', []],
+      ['kickForm', []],
     ]),
   );
   res.json(gameID);
@@ -73,10 +75,29 @@ app.get('/:id', async (req, res) => {
     const master = games.get(gameID).get('master');
     const messages = games.get(gameID).get('messages');
     const issues = games.get(gameID).get('issues');
-    console.log({ users: { members, observers, master }, messages });
-    res.send({ users: { members, observers, master }, messages, issues });
+    const setting = games.get(gameID).get('setting');
+    const gameCards = games.get(gameID).get('gameCards');
+    const kickForm = games.get(gameID).get('kickForm');
+
+    res.send({
+      users: { members, observers, master },
+      messages,
+      issues,
+      setting,
+      gameCards,
+      kickForm,
+    });
   } else {
-    res.send({ master: {}, members: [], observers: [], messages: [], issues: [] });
+    res.send({
+      master: {},
+      members: [],
+      observers: [],
+      messages: [],
+      issues: [],
+      setting: [],
+      gameCards: [],
+      kickForm: [],
+    });
   }
 });
 /* app.post('/:id/observers', (req, res) => {
@@ -126,7 +147,12 @@ io.on('connection', (socket: Socket) => {
     socket.to(gameID).emit('MEMBER_JOINED', { members, observers, master });
   });
   socket.on('GAME_NEW_MESSAGE', ({ gameID, name, text, avatar }) => {
-    console.log({ gameID, name, text, avatar })
+    console.log({
+      gameID,
+      name,
+      text,
+      avatar,
+    });
     const message = {
       name,
       text,
@@ -137,26 +163,66 @@ io.on('connection', (socket: Socket) => {
   });
   // issue
   socket.on('GAME_NEW_ISSUE', ({ gameID, title, link, priority, id }) => {
-    console.log({ gameID, title, link, priority })
+    console.log({
+      gameID,
+      title,
+      link,
+      priority,
+    });
     const issue = {
       id,
       title,
       link,
       priority,
-      
     };
     games.get(gameID).get('issues').push(issue);
-   /* const members = [...games.get(gameID).get('members').values()];
+    /* const members = [...games.get(gameID).get('members').values()];
     const observers = [...games.get(gameID).get('observers').values()];
-    const master = games.get(gameID).get('master');*/
-    console.log(games.get(gameID).get('issues'));
+    const master = games.get(gameID).get('master'); */
     socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
-  })
+  });
+
+  socket.on(
+    'ADD_GAME_SETTING',
+    (
+      gameID,
+      {
+        masterPlayer,
+        changingCard,
+        needTimer,
+        scoreType,
+        shortScoreType,
+        roundTime,
+      }: ISetting,
+    ) => {
+      games.get(gameID).get('setting').push({
+        masterPlayer,
+        changingCard,
+        needTimer,
+        scoreType,
+        shortScoreType,
+        roundTime,
+      });
+    },
+  );
+
+  socket.on('ADD_GAME_CARDS', (gameID, [...gameCards]) => {
+    games
+      .get(gameID)
+      .get('gameCards')
+      .push(...gameCards);
+  });
+
+  socket.on('KICK_DATA', (gameID, kickData) => {
+    games.get(gameID).get('kickForm').push(kickData);
+    io.sockets.in(gameID).emit('KICK_DATA', kickData);
+  });
+
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
       if (
-        value.get('members').delete(socket.id) ||
-        value.get('observers').delete(socket.id)
+        value.get('members').delete(socket.id)
+        || value.get('observers').delete(socket.id)
       ) {
         const members = [...games.get(gameID).get('members').values()];
         const observers = [...games.get(gameID).get('observers').values()];
