@@ -20,10 +20,6 @@ const Timer = (): JSX.Element => {
 
   return (
     <div className={styles.timer_wrapper}>
-      <div className={styles.timer}>
-        <span className={styles.timer_seconds}>{seconds}</span>
-        <span className={styles.timer_seconds}> sec</span>
-      </div>
       <div className={styles.timer_button}>
         {!isRunning ? (
           <Button
@@ -35,7 +31,7 @@ const Timer = (): JSX.Element => {
             Run Round
           </Button>
         ) : (
-          <div>
+          <div className={styles.buttons}>
             <Button
               type="primary"
               onClick={() => {
@@ -50,6 +46,10 @@ const Timer = (): JSX.Element => {
             </Button>
           </div>
         )}
+      </div>
+      <div className={styles.timer}>
+        <span className={styles.timer_seconds}>{seconds}</span>
+        <span className={styles.timer_seconds}> sec</span>
       </div>
     </div>
   );
