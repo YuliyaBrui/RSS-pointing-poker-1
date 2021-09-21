@@ -49,7 +49,7 @@ const Chat = (): JSX.Element => {
       draggable
       style={
         collapsed
-          ? { height: '30px', marginTop: `${sizeHidingField}px`, ...dragState }
+          ? { height: '45px', marginTop: `${sizeHidingField}px`, ...dragState }
           : { ...dragState, cursor: 'grab' }
       }
     >
@@ -61,7 +61,7 @@ const Chat = (): JSX.Element => {
           style={{
             border: 'none',
             padding: 0,
-            height: '30px',
+            height: '45px',
           }}
           htmlType="button"
         >

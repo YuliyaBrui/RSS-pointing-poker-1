@@ -27,6 +27,7 @@ export const SendingForm = (): JSX.Element => {
           onChange={(e) => setMessage(e.target.value)}
           required
           value={message}
+          style={{ height: '47px' }}
         />
         <Button type="primary" htmlType="submit" onClick={sendMessage}>
           Send
