@@ -42,10 +42,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 export const games = new Map();
 const guid = (): string => {
-  const s4 = (): string =>
-    Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
+  const s4 = (): string => Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 };
 app.post('/', (req, res) => {
@@ -100,36 +99,14 @@ app.get('/:id', async (req, res) => {
     });
   }
 });
-/* app.post('/:id/observers', (req, res) => {
-  const gameID = req.params.id;
-  const { observer } = req.body;
-  const observerID = guid();
-  if (games.has(gameID)) {
-    games.get(gameID).get('observers').set(observerID, observer);
-    res.send([...games.get(gameID).get('observers')]);
-  } else {
-    res.send('check if the address is correct');
-  }
-});
-app.post('/:id/members', (req, res) => {
-  const gameID = req.params.id;
-  const { member } = req.body;
-  const memberID = guid();
-  if (games.has(gameID)) {
-    games.get(gameID).get('members').push(member);
-    res.send(games.get(gameID).get('members'));
-  } else {
-    res.send('check if the address is correct');
-  }
-});
-*/
+
 io.on('connection', (socket: Socket) => {
   console.log('connect');
   socket.on('GAME_JOIN_MASTER', ({ gameID, master }) => {
     socket.join(gameID);
     socket.to(gameID).emit('MASTER_JOINED', master);
     console.log(master);
-    //socket.to(socket.id).emit('MASTER_INFO', master);
+    // socket.to(socket.id).emit('MASTER_INFO', master);
   });
   socket.on('GAME_JOIN_MEMBER', ({ gameID, user }) => {
     socket.join(gameID);
@@ -140,7 +117,7 @@ io.on('connection', (socket: Socket) => {
     const master = games.get(gameID).get('master');
     console.log(user);
     socket.to(gameID).emit('MEMBER_JOINED', { members, observers, master });
-    //socket.to(socket.id).emit('MEMBER_INFO', user);
+    // socket.to(socket.id).emit('MEMBER_INFO', user);
   });
   socket.on('GAME_JOIN_OBSERVER', ({ gameID, user }) => {
     socket.join(gameID);
@@ -150,10 +127,17 @@ io.on('connection', (socket: Socket) => {
     const master = games.get(gameID).get('master');
     socket.to(gameID).emit('MEMBER_JOINED', { members, observers, master });
     console.log(user);
-    //socket.to(socket.id).emit('OBSERVER_INFO', user);
+    // socket.to(socket.id).emit('OBSERVER_INFO', user);
   });
-  socket.on('GAME_NEW_MESSAGE', ({ gameID, name, text, avatar }) => {
-    console.log({ gameID, name, text, avatar });
+  socket.on('GAME_NEW_MESSAGE', ({
+ gameID, name, text, avatar 
+}) => {
+    console.log({
+      gameID,
+      name,
+      text,
+      avatar,
+    });
     const message = {
       name,
       text,
@@ -163,8 +147,15 @@ io.on('connection', (socket: Socket) => {
     socket.to(gameID).emit('GAME_ADD_MESSAGE', message);
   });
   // issue
-  socket.on('GAME_NEW_ISSUE', ({ gameID, title, link, priority, id }) => {
-    console.log({ gameID, title, link, priority });
+  socket.on('GAME_NEW_ISSUE', ({
+ gameID, title, link, priority, id 
+}) => {
+    console.log({
+      gameID,
+      title,
+      link,
+      priority,
+    });
     const issue = {
       id,
       title,
@@ -172,12 +163,10 @@ io.on('connection', (socket: Socket) => {
       priority,
     };
     games.get(gameID).get('issues').push(issue);
-    /* const members = [...games.get(gameID).get('members').values()];
-    const observers = [...games.get(gameID).get('observers').values()];
-    const master = games.get(gameID).get('master'); */
     console.log(games.get(gameID).get('issues'));
     socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
   });
+
   socket.on('GAME_DELETE_ISSUE', (gameID, id) => {
     console.log(gameID, id);
     games.get(gameID).get('issues').splice(id, 1);
@@ -187,13 +176,13 @@ io.on('connection', (socket: Socket) => {
     console.log(games.get(gameID).get('issues'));
     socket.to(gameID).emit('GAME_DELETE_ISSUE', { members, observers, master });
   });
+
   socket.on('KICK_MEMBER', ({ user, kickedUser }) => {
     console.log({ user, kickedUser });
   });
+
   socket.on('START_GAME', (gameID, address) => {
     socket.to(gameID).emit('START_GAME', address);
-  });
-    socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
   });
 
   socket.on(
@@ -235,8 +224,8 @@ io.on('connection', (socket: Socket) => {
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
       if (
-        value.get('members').delete(socket.id)
-        || value.get('observers').delete(socket.id)
+        value.get('members').delete(socket.id) ||
+        value.get('observers').delete(socket.id)
       ) {
         const members = [...games.get(gameID).get('members').values()];
         const observers = [...games.get(gameID).get('observers').values()];
