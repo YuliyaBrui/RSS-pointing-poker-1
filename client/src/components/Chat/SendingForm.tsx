@@ -11,17 +11,19 @@ import styles from './Chat.module.scss';
 export const SendingForm = (): JSX.Element => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
-  const user = useSelector((state: RootState) => state.chatReducer);
+  const user = useSelector((state: RootState) => state.currentUser);
   const sendMessage = (): void => {
-     
     const newMessage = {
       text: message,
-      avatar: user.user.avatarURL,
-      name: user.user.name,
+      avatar: user.avatarURL,
+      name: user.name,
+      lastName: user.lastName,
       gameID: '1111',
     };
-    socket.emit('GAME_NEW_MESSAGE', newMessage);
-    dispatch(newMessageParams(newMessage));
+    if (message !== '') {
+      socket.emit('GAME_NEW_MESSAGE', newMessage);
+      dispatch(newMessageParams(newMessage));
+    }
     setMessage('');
   };
   return (

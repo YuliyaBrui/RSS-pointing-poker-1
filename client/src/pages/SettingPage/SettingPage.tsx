@@ -23,6 +23,7 @@ import { socket } from '../../socket';
 import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
 import { chatParams, newMessageParams } from '../../redux/actions/chat';
+import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -69,6 +70,7 @@ const SettingPage = (): JSX.Element => {
             {joinMember.users.members &&
               joinMember.users.members.map((user) => (
                 <UserCard
+                id={user.id}
                   name={user.name}
                   lastName={user.lastName}
                   avatar={user.avatarURL}
@@ -130,6 +132,10 @@ const SettingPage = (): JSX.Element => {
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
       <Chat />
+      <KickMemberForm
+        formVisible={formVisible}
+        setFormVisible={() => console.log('asd')}
+      />
     </Content>
   );
 };

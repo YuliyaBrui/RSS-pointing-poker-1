@@ -4,6 +4,8 @@ const initialState = {
   visibil: false,
   initiator: { name: '', lastName: '' },
   exclusion: { name: '', lastName: '' },
+  yes: [],
+  no: [],
 };
 
 export const kickForm = (state = initialState, action: any): any => {

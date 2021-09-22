@@ -10,6 +10,7 @@ import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
 import { chatParams } from '../../redux/actions/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
+import { kickForm } from '../../redux/actions/kickForm';
 import { IChatState, IChatUsers } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './MembersLobby.module.scss';
@@ -20,10 +21,13 @@ const MembersLobby = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
+  
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
+   
     dispatch(getUsersParams('1111'));
   }, []);
+
   socket.on('MEMBER_LEAVED', getUsers);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const currentUser = useSelector((state: RootState) => state.currentUser);
@@ -50,13 +54,12 @@ const MembersLobby = (): JSX.Element => {
           <Row style={{ width: '100%' }} justify="start">
             {joinMember.users.members.map((user) => (
               <UserCard
+                id={user.id}
                 name={user.name}
                 lastName={user.lastName}
                 avatar={user.avatarURL}
                 position={user.jobPosition}
-                visibil={
-                  currentUser.lastName === user.lastName ? 'hidden' : 'visible'
-                }
+                visibil={currentUser.id === user.id ? 'hidden' : 'visible'}
                 key={user.name}
               />
             ))}

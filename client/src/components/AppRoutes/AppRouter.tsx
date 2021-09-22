@@ -9,6 +9,7 @@ import { socket } from '../../socket';
 import { chatParams, userParams } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { IFormGameValue } from '../../redux/types/forms';
+import { kickForm } from '../../redux/actions/kickForm';
 
 const { Header, Footer, Content } = Layout;
 
@@ -18,6 +19,9 @@ const AppRouter = (): JSX.Element => {
     console.log({ members, observers, master });
     dispatch(chatParams({ members, observers, master }));
   };
+  const formData = (kickData: any): void => {
+    dispatch(kickForm(kickData));
+  };
   const history = useHistory();
   useEffect(() => {
     socket.on('MASTER_JOINED', ({ master }) => {
@@ -26,6 +30,13 @@ const AppRouter = (): JSX.Element => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
     socket.on('GAME_DELETE_ISSUE', getUsers);
+    socket.on('KICKED_MEMBER', getUsers);
+    socket.on('FINISH_VOITING', formData);
+    socket.on('STOP_JOIN', (id): void => {
+      if (socket.id === id) {
+        history.push('/');
+      }
+    });
     socket.on('START_GAME', (): void => {
       history.push('/game-member');
     });

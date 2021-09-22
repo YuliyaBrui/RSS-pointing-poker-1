@@ -3,6 +3,7 @@ export interface IFormGameValue {
   lastName: string;
   jobPosition: string;
   avatarURL: string | ArrayBuffer | null;
+  id: string;
 }
 
 export interface IGetGameState {

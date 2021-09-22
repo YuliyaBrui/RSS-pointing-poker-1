@@ -10,6 +10,7 @@ export interface IChatUsers {
 export interface IMessage {
   text: string;
   name: string;
+  lastName: string;
   avatar: string | ArrayBuffer | null;
 }
 export interface IChatState {

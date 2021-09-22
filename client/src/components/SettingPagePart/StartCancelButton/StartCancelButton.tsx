@@ -13,6 +13,7 @@ const StartCancelButtons = (): JSX.Element => {
   const StartGame = (): void => {
     socket.emit('ADD_GAME_SETTING', '1111', store.gameSetting);
     socket.emit('ADD_GAME_CARDS', '1111', store.gameCards);
+    socket.emit('START_GAME', '1111', '/game-member');
     history.push('/game');
   };
   const MemberGame = (): void => {

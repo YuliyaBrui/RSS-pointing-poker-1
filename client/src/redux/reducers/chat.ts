@@ -8,9 +8,9 @@ const initialUsersState: IChatState = {
   users: {
     members: [],
     observers: [],
-    master: { name: '', lastName: '', jobPosition: '', avatarURL: '' },
+    master: { name: '', lastName: '', jobPosition: '', avatarURL: '', id: '' },
   },
-  user: { name: '', lastName: '', jobPosition: '', avatarURL: '' },
+  user: { name: '', lastName: '', jobPosition: '', avatarURL: '', id: '' },
   messages: [],
   issues: [],
 };

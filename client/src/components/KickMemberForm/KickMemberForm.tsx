@@ -2,20 +2,30 @@ import Button from 'antd/lib/button';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
+import { chatParams } from '../../redux/actions/chat';
 import { kickForm } from '../../redux/actions/kickForm';
+import { IChatUsers } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './KickMemberForm.module.scss';
 
 const KickMemberForm = ({ formVisible, setFormVisible }: any): JSX.Element => {
   const dispatch = useDispatch();
-
   const formData = (kickData: any): void => {
     dispatch(kickForm(kickData));
   };
-  const kickUserData = useSelector((state: RootState) => state.kickUserData);
 
+  const kickUserData = useSelector((state: RootState) => state.kickUserData);
+  const agreeKickMember = (): void => {
+    socket.emit('AGREE_KICK_MEMBER', '1111', socket.id);
+    dispatch(kickForm({ ...kickUserData, visibil: false }));
+  };
+  const disagreeKickMember = (): void => {
+    socket.emit('DISAGREE_KICK_MEMBER', '1111', socket.id);
+    dispatch(kickForm({ ...kickUserData, visibil: false }));
+  };
   useEffect(() => {
     socket.on('KICK_DATA', formData);
+    socket.on('FINISH_VOITING', formData);
   }, []);
   return (
     <div
@@ -35,13 +45,17 @@ const KickMemberForm = ({ formVisible, setFormVisible }: any): JSX.Element => {
           <p className={styles.kick__description}>Do you agree with it?</p>
         </div>
         <div className={styles.kick__buttons}>
-          <Button type="primary" style={{ width: '100px' }}>
+          <Button
+            type="primary"
+            style={{ width: '100px' }}
+            onClick={agreeKickMember}
+          >
             Yes
           </Button>
           <Button
             type="default"
             style={{ width: '100px' }}
-            onClick={() => dispatch(kickForm({ ...kickUserData, visibil: false }))}
+            onClick={disagreeKickMember}
           >
             No
           </Button>

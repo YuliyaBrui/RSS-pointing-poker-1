@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -106,6 +106,7 @@ const GamePageMember = (): JSX.Element => {
               <Col style={{ width: '100%' }}>
                 {users.users.members.map((user) => (
                   <UserCard
+                    id={user.id}
                     name={user.name}
                     avatar={user.avatarURL}
                     position={user.jobPosition}
@@ -121,6 +122,7 @@ const GamePageMember = (): JSX.Element => {
               <Col style={{ width: '100%' }}>
                 {users.users.members.map((user) => (
                   <UserCard
+                    id={user.id}
                     name={user.name}
                     avatar={user.avatarURL}
                     position={user.jobPosition}

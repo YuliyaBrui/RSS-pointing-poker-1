@@ -8,6 +8,7 @@ import styles from './FormCreateGame.module.scss';
 import { socket } from '../../socket';
 import { saveMasterParams } from '../../redux/actions/createSession';
 import { userParams } from '../../redux/actions/chat';
+import { addCurrentUser } from '../../redux/actions/currentUser';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,12 +28,13 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   };
   const history = useHistory();
   const dispatch = useDispatch();
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<any> => {
     const value: IFormGameValue = {
       name: firstName,
       lastName,
       jobPosition,
       avatarURL,
+      id: socket.id,
     };
     dispatch(saveMasterParams(value));
     const joinState = {
@@ -40,7 +42,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       gameID: '1111',
     };
     socket.emit('GAME_JOIN_MASTER', joinState);
-    dispatch(userParams(value));
+    dispatch(addCurrentUser(value));
     reset();
     form.resetFields();
     setActive(false);
