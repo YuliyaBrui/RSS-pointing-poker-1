@@ -4,6 +4,7 @@ import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import {
@@ -20,6 +21,8 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
   );
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [editCardValue, setEditCardValue] = useState(false);
+
+  const location = useLocation();
 
   const changeCardValue = (inputCardValue: string): void => {
     gameCards.map((value: IGameCard) => {
@@ -48,26 +51,28 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
       <div className={styles.main__coffee_card}>
         <div className={styles.main__title}>
           <h3>{`${shortType}`}</h3>
-          <div className={styles.main__button_wrapper}>
-            <div className={editCardValue ? '' : styles.main__close_icon}>
+          {location.pathname === '/setting' && (
+            <div className={styles.main__button_wrapper}>
+              <div className={editCardValue ? '' : styles.main__close_icon}>
+                <Button
+                  type="default"
+                  style={{ border: 'none', padding: 0 }}
+                  onClick={() => deleteCard()}
+                >
+                  <CloseOutlined
+                    style={{ fontSize: '150%', margin: '1%', color: 'red' }}
+                  />
+                </Button>
+              </div>
               <Button
                 type="default"
                 style={{ border: 'none', padding: 0 }}
-                onClick={() => deleteCard()}
+                onClick={() => setEditCardValue(!editCardValue)}
               >
-                <CloseOutlined
-                  style={{ fontSize: '150%', margin: '1%', color: 'red' }}
-                />
+                <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
               </Button>
             </div>
-            <Button
-              type="default"
-              style={{ border: 'none', padding: 0 }}
-              onClick={() => setEditCardValue(!editCardValue)}
-            >
-              <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
-            </Button>
-          </div>
+          )}
         </div>
         <Input
           className={!editCardValue ? styles.main__input_disabled : ''}

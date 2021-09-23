@@ -17,20 +17,18 @@ import { RootState } from '../../redux';
 import { IIssue } from '../../redux/types/issues';
 import { IGameCard } from '../../redux/types/gameCard';
 import Statistics from '../../components/Statistics/Statistics';
+import ScoreCard from '../../components/ScoreCard/ScoreCard';
 
 const GamePageMember = (): JSX.Element => {
-  // const issues = useSelector((state: RootState) => state.cdissues);
-  const issues = [
-    {
-      title: 'string',
-      link: 'string',
-      priority: 'string',
-      id: 'string',
-    },
-  ];
+  const issues = useSelector((state: RootState) => state.addIssueReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
-  const users = useSelector((state: RootState) => state.chatReducer);
+  const joinMember = useSelector((state: RootState) => state.chatReducer);
+
+  const masters = useSelector(
+    (state: RootState) => state.gameSetting.masterPlayer,
+  );
+  const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
 
   const history = useHistory();
   const exit = (): void => {
@@ -54,16 +52,18 @@ const GamePageMember = (): JSX.Element => {
                   EXIT
                 </Button>
               </div>
-              <div style={{ width: '35%' }}>
-                <Timer />
-              </div>
+              {timer && (
+                <div style={{ width: '40%' }}>
+                  <Timer />
+                </div>
+              )}
             </div>
             <div className={styles.process}>
               <div className={styles.issue}>
                 <h2 className={styles.game_title}>Issues: </h2>
-                <Row style={{ width: '100%' }} justify="start">
+                <Col>
                   {issues &&
-                    issues.map((issue: IIssue) => (
+                    issues.issues.map((issue: IIssue) => (
                       <Issue
                         title={issue.title}
                         priority={issue.priority}
@@ -72,25 +72,23 @@ const GamePageMember = (): JSX.Element => {
                         key={issue.id}
                       />
                     ))}
-                </Row>
+                </Col>
               </div>
               <div>
-                <div>
-                  <h2 className={styles.game_title}>Statistics:</h2>
-                  <Statistics />
-                </div>
-                <div>
-                  <Row style={{ width: '100%' }} justify="center">
-                    <CoffeeGameCard />
-                    {gameCards.map((gameCard: IGameCard) => (
-                      <GameCard
-                        cardValue={gameCard.cardValue}
-                        id={gameCard.id}
-                        key={gameCard.id}
-                      />
-                    ))}
-                  </Row>
-                </div>
+                <h2 className={styles.game_title}>Statistics:</h2>
+                <Statistics />
+              </div>
+              <div>
+                <Row style={{ width: '100%' }} justify="center">
+                  <CoffeeGameCard />
+                  {gameCards.map((gameCard: IGameCard) => (
+                    <GameCard
+                      cardValue={gameCard.cardValue}
+                      id={gameCard.id}
+                      key={gameCard.id}
+                    />
+                  ))}
+                </Row>
               </div>
             </div>
           </div>
@@ -101,37 +99,46 @@ const GamePageMember = (): JSX.Element => {
         </div>
         <div className={styles.game__part_score}>
           <div className={styles.score_title}>
-            <div>
-              <h1>Score:</h1>
-              <Col style={{ width: '100%' }}>
-                {users.users.members.map((user) => (
-                  <UserCard
-                    name={user.name}
-                    avatar={user.avatarURL}
-                    position={user.jobPosition}
-                    visibil="visible"
-                    key={user.name}
-                    lastName={user.lastName}
-                  />
-                ))}
-              </Col>
-            </div>
-            <div>
-              <h1>Players:</h1>
-              <Col style={{ width: '100%' }}>
-                {users.users.members.map((user) => (
-                  <UserCard
-                    name={user.name}
-                    avatar={user.avatarURL}
-                    position={user.jobPosition}
-                    visibil="visible"
-                    key={user.name}
-                    lastName={user.lastName}
-                  />
-                ))}
-              </Col>
-            </div>
+            <h1>Score:</h1>
+            <h1>Players:</h1>
           </div>
+          <Col style={{ width: '100%' }}>
+            {masters && (
+              <div className={styles.score}>
+                <div>
+                  <ScoreCard />
+                </div>
+                <div>
+                  <UserCard
+                    name={joinMember.users.master.name}
+                    lastName={joinMember.users.master.lastName}
+                    avatar={joinMember.users.master.avatarURL}
+                    position={joinMember.users.master.jobPosition}
+                    visibil="visible"
+                    key={joinMember.users.master.name}
+                  />
+                </div>
+              </div>
+            )}
+            {joinMember.users.members &&
+              joinMember.users.members.map((user) => (
+                <div className={styles.score}>
+                  <div>
+                    <ScoreCard />
+                  </div>
+                  <div>
+                    <UserCard
+                      name={user.name}
+                      lastName={user.lastName}
+                      avatar={user.avatarURL}
+                      position={user.jobPosition}
+                      visibil="visible"
+                      key={user.name}
+                    />
+                  </div>
+                </div>
+              ))}
+          </Col>
         </div>
       </div>
     </div>

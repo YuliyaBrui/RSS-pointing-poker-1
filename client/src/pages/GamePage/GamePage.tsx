@@ -18,12 +18,18 @@ import Statistics from '../../components/Statistics/Statistics';
 import GameCard from '../../components/GameCard/GameCard';
 import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
 import { IGameCard } from '../../redux/types/gameCard';
+import ScoreCard from '../../components/ScoreCard/ScoreCard';
 
 const GamePage = (): JSX.Element => {
   const issues = useSelector((state: RootState) => state.addIssueReducer);
   const [formVisible, setFormVisible] = useState(false);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
+
+  const masters = useSelector(
+    (state: RootState) => state.gameSetting.masterPlayer,
+  );
+  const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
 
   const history = useHistory();
   const result = (): void => {
@@ -51,9 +57,11 @@ const GamePage = (): JSX.Element => {
                   Stop game
                 </Button>
               </div>
-              <div style={{ width: '40%' }}>
-                <Timer />
-              </div>
+              {timer && (
+                <div style={{ width: '40%' }}>
+                  <Timer />
+                </div>
+              )}
             </div>
             <div className={styles.process}>
               <div className={styles.issue}>
@@ -82,18 +90,20 @@ const GamePage = (): JSX.Element => {
                 <h2 className={styles.game_title}>Statistics:</h2>
                 <Statistics />
               </div>
-              <div>
-                <Row style={{ width: '100%' }} justify="center">
-                  <CoffeeGameCard />
-                  {gameCards.map((gameCard: IGameCard) => (
-                    <GameCard
-                      cardValue={gameCard.cardValue}
-                      id={gameCard.id}
-                      key={gameCard.id}
-                    />
-                  ))}
-                </Row>
-              </div>
+              {masters && (
+                <div>
+                  <Row style={{ width: '100%' }} justify="center">
+                    <CoffeeGameCard />
+                    {gameCards.map((gameCard: IGameCard) => (
+                      <GameCard
+                        cardValue={gameCard.cardValue}
+                        id={gameCard.id}
+                        key={gameCard.id}
+                      />
+                    ))}
+                  </Row>
+                </div>
+              )}
             </div>
           </div>
           <IssueForm
@@ -103,37 +113,46 @@ const GamePage = (): JSX.Element => {
         </div>
         <div className={styles.game__part_score}>
           <div className={styles.score_title}>
-            <div>
-              <h1>Score:</h1>
-              <Col style={{ width: '100%' }}>
-                {joinMember.users.members.map((user) => (
-                  <UserCard
-                    name={user.name}
-                    lastName={user.lastName}
-                    avatar={user.avatarURL}
-                    position={user.jobPosition}
-                    visibil="visible"
-                    key={user.name}
-                  />
-                ))}
-              </Col>
-            </div>
-            <div>
-              <h1>Players:</h1>
-              <Col style={{ width: '100%' }}>
-                {joinMember.users.members.map((user) => (
-                  <UserCard
-                    name={user.name}
-                    lastName={user.lastName}
-                    avatar={user.avatarURL}
-                    position={user.jobPosition}
-                    visibil="visible"
-                    key={user.name}
-                  />
-                ))}
-              </Col>
-            </div>
+            <h1>Score:</h1>
+            <h1>Players:</h1>
           </div>
+          <Col style={{ width: '100%' }}>
+            {masters && (
+              <div className={styles.score}>
+                <div>
+                  <ScoreCard />
+                </div>
+                <div>
+                  <UserCard
+                    name={joinMember.users.master.name}
+                    lastName={joinMember.users.master.lastName}
+                    avatar={joinMember.users.master.avatarURL}
+                    position={joinMember.users.master.jobPosition}
+                    visibil="visible"
+                    key={joinMember.users.master.name}
+                  />
+                </div>
+              </div>
+            )}
+            {joinMember.users.members &&
+              joinMember.users.members.map((user) => (
+                <div className={styles.score}>
+                  <div>
+                    <ScoreCard />
+                  </div>
+                  <div>
+                    <UserCard
+                      name={user.name}
+                      lastName={user.lastName}
+                      avatar={user.avatarURL}
+                      position={user.jobPosition}
+                      visibil="visible"
+                      key={user.name}
+                    />
+                  </div>
+                </div>
+              ))}
+          </Col>
         </div>
       </div>
     </div>

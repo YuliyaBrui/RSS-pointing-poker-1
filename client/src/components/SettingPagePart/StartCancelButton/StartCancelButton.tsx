@@ -16,16 +16,13 @@ const StartCancelButtons = (): JSX.Element => {
     socket.emit('ADD_GAME_CARDS', '1111', store.gameCards);
     history.push('/game');
   };
-  const MemberGame = (): void => {
-    history.push('/game-member');
-  };
 
   return (
     <div className="main__start-or-cancel">
       <Button size="large" type="primary" onClick={StartGame}>
         Start Game
       </Button>
-      <Button size="large" type="default" onClick={MemberGame}>
+      <Button size="large" type="default">
         Cancel Game
       </Button>
     </div>
