@@ -30,7 +30,7 @@ const SettingPage = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
- 
+
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
@@ -61,7 +61,7 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className={styles.main__panel}>
           <h3>Members:</h3>
-          <Row style={{ width: '100%' }} justify="start">
+          <Row style={{ width: '100%' }} justify="center">
             {joinMember.users.members &&
               joinMember.users.members.map((user) => (
                 <UserCard
@@ -78,7 +78,7 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className={styles.main__panel}>
           <h3>Issues:</h3>
-          <Row style={{ width: '100%' }} justify="start">
+          <Row style={{ width: '100%' }} justify="center">
             {issues &&
               issues.issues.map((issue: IIssue) => (
                 <Issue
@@ -106,7 +106,7 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className={styles.main__panel}>
           <h3>Add card values:</h3>
-          <Row style={{ width: '100%' }} justify="start">
+          <Row style={{ width: '100%' }} justify="center">
             <CoffeeGameCard />
             {gameCards.map((gameCard: IGameCard) => (
               <GameCard

@@ -90,4 +90,3 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
 };
 
 export default GameCard;
-

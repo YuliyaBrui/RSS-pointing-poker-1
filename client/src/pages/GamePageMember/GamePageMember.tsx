@@ -61,7 +61,7 @@ const GamePageMember = (): JSX.Element => {
             <div className={styles.process}>
               <div className={styles.issue}>
                 <h2 className={styles.game_title}>Issues: </h2>
-                <Col>
+                <Row style={{ width: '100%' }} justify="center">
                   {issues &&
                     issues.issues.map((issue: IIssue) => (
                       <Issue
@@ -72,7 +72,7 @@ const GamePageMember = (): JSX.Element => {
                         key={issue.id}
                       />
                     ))}
-                </Col>
+                </Row>
               </div>
               <div>
                 <h2 className={styles.game_title}>Statistics:</h2>

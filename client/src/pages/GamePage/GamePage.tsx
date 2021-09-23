@@ -65,7 +65,7 @@ const GamePage = (): JSX.Element => {
             <div className={styles.process}>
               <div className={styles.issue}>
                 <h2 className={styles.game_title}>Issues: </h2>
-                <Col>
+                <Row style={{ width: '100%' }} justify="center">
                   {issues &&
                     issues.issues.map((issue: IIssue) => (
                       <Issue
@@ -76,14 +76,7 @@ const GamePage = (): JSX.Element => {
                         key={issue.id}
                       />
                     ))}
-                  <button
-                    className={styles.button_issue}
-                    type="button"
-                    onClick={() => setFormVisible(true)}
-                  >
-                    <CreateIssue />
-                  </button>
-                </Col>
+                </Row>
               </div>
               <div>
                 <h2 className={styles.game_title}>Statistics:</h2>

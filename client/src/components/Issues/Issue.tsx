@@ -5,6 +5,7 @@ import Input from 'antd/lib/input/Input';
 import Popconfirm from 'antd/lib/popconfirm';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { RootState } from '../../redux';
 import { getUsersParams } from '../../redux/actions/createSession';
 import { gameIssues } from '../../redux/actions/chat';
@@ -14,6 +15,8 @@ import styles from './Issue.module.scss';
 
 const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   const dispatch = useDispatch();
+
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(getUsersParams('1111'));
@@ -56,7 +59,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   };
 
   return (
-    <Card style={{ width: '250px', margin: '5px' }}>
+    <Card style={{ width: '250px', height: '90px', margin: '5px' }}>
       <div className={styles.main__content_wrapper}>
         <Input
           className={!editIssueName ? styles.main__input_disabled : ''}
@@ -71,28 +74,30 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
             changeTitle();
           }}
         />
-        <div className={styles.main__button_wrapper}>
-          <Button
-            type="default"
-            style={{ border: 'none', padding: '0px 5px 2px 0px' }}
-            onClick={() => {
-              setEditIssueName(!editIssueName);
-              changeTitle();
-            }}
-          >
-            <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
-          </Button>
-          <Popconfirm
-            title="Delete issue?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={removeIssue}
-          >
-            <DeleteOutlined
-              style={{ fontSize: '150%', margin: '6%', color: 'red' }}
-            />
-          </Popconfirm>
-        </div>
+        {location.pathname === '/setting' && (
+          <div className={styles.main__button_wrapper}>
+            <Button
+              type="default"
+              style={{ border: 'none', padding: '0px 5px 2px 0px' }}
+              onClick={() => {
+                setEditIssueName(!editIssueName);
+                changeTitle();
+              }}
+            >
+              <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
+            </Button>
+            <Popconfirm
+              title="Delete issue?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={removeIssue}
+            >
+              <DeleteOutlined
+                style={{ fontSize: '150%', margin: '6%', color: 'red' }}
+              />
+            </Popconfirm>
+          </div>
+        )}
       </div>
       <p className={styles.main__priority}>{priority}</p>
     </Card>

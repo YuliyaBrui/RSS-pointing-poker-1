@@ -47,10 +47,8 @@ const UserCard = ({
   const sendKickData = (): void => {
     if (currentUser.id === users.users.master.id) {
       socket.emit('KICK_USER_BY_MASTER', '1111', id);
-    }
-    else{
+    } else {
       socket.emit('KICK_DATA', '1111', kickData);
-     
     }
     socket.on('KICKED_MEMBER', getUsers);
     socket.on('STAY_MEMBER', getUsers);
@@ -62,7 +60,7 @@ const UserCard = ({
         {avatar === '' ? (
           <UserOutlined style={{ fontSize: '300%', height: '50px' }} />
         ) : (
-          <Avatar style={{ width: '50px', height: '80px' }} src={avatar} />
+          <Avatar style={{ width: '50px', height: '50px' }} src={avatar} />
         )}
         <div className={styles.main__user_description}>
           <h3>{`${name} ${lastName}`}</h3>
