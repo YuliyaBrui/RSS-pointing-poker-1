@@ -1,9 +1,7 @@
 import http from 'http';
-import WebSocket from 'ws';
 import cors from 'cors';
 import mongoose, { ConnectOptions } from 'mongoose';
 import express from 'express';
-import { isAwaitExpression } from 'typescript';
 import { Server, Socket } from 'socket.io';
 import { ISetting } from './types';
 import { kickVoiting, users } from './functions';
@@ -64,7 +62,7 @@ app.post('/', (req, res) => {
       ['issues', new Map()],
       ['setting', []],
       ['gameCards', []],
-      ['kickForm', [1, 2]],
+      ['kickForm', new Map()],
       ['gameScore', new Map()],
     ]),
   );
@@ -230,13 +228,7 @@ io.on('connection', (socket: Socket) => {
     console.log('no');
     kickVoiting(gameID);
   });
-  socket.on('disconnect', () => {
-    games.forEach((value, gameID) => {
-      if (
-        value.get('members').delete(socket.id) ||
-        value.get('observers').delete(socket.id)
-      ) {
-        socket.to(gameID).emit('MEMBER_LEAVED', users(gameID));
+
   socket.on('SET_USER_POINT', (gameID, scoreData) => {
     games.get(gameID).get('gameScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     const allUserPoints = [...games.get(gameID).get('gameScore').values()];

@@ -7,9 +7,7 @@ import shortid from 'shortid';
 import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
 import { socket } from '../../socket';
-import { userParams } from '../../redux/actions/chat';
 import { addCurrentUser } from '../../redux/actions/currentUser';
-import { userParams } from '../../redux/actions/chat';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,18 +43,11 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       user: value,
       gameID: '1111',
     };
-        
+
     if (isToggle) {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
-              dispatch(userParams(value));
-      
-      history.push('/lobby');
     } else {
       socket.emit('GAME_JOIN_MEMBER', joinState);
-             dispatch(userParams(value));
-      
-     // socket.on('MEMBER_INFO', value);
-      history.push('/lobby');
     }
     dispatch(addCurrentUser(value));
     reset();

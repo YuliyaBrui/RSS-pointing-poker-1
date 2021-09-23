@@ -115,6 +115,7 @@ const GamePageMember = (): JSX.Element => {
                     avatar={joinMember.users.master.avatarURL}
                     position={joinMember.users.master.jobPosition}
                     visibil="visible"
+                    id={joinMember.users.master.id}
                     key={joinMember.users.master.name}
                   />
                 </div>
@@ -133,6 +134,7 @@ const GamePageMember = (): JSX.Element => {
                       avatar={user.avatarURL}
                       position={user.jobPosition}
                       visibil="visible"
+                      id={user.id}
                       key={user.name}
                     />
                   </div>

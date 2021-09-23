@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Button, Row } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Col from 'antd/lib/grid/col';
@@ -18,20 +18,13 @@ import GameCard from '../../components/GameCard/GameCard';
 import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
 import { IGameCard } from '../../redux/types/gameCard';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
+import Chat from '../../components/Chat/Chat';
 
 const GamePage = (): JSX.Element => {
-
- /* const issues = [
-    {
-      title: 'string',
-      link: 'string',
-      priority: 'string',
-      id: 'string',
-    },
-  ];*/
   const [formVisible, setFormVisible] = useState(false);
   const issues = useSelector((state: RootState) => state.chatReducer);
-  const users = useSelector((state: RootState) => state.chatReducer);
+  const gameCards = useSelector((state: RootState) => state.gameCards);
+  const joinMember = useSelector((state: RootState) => state.chatReducer);
   const masters = useSelector(
     (state: RootState) => state.gameSetting.masterPlayer,
   );
@@ -136,6 +129,7 @@ const GamePage = (): JSX.Element => {
                     position={joinMember.users.master.jobPosition}
                     visibil="visible"
                     key={joinMember.users.master.name}
+                    id={joinMember.users.master.id}
                   />
                 </div>
               </div>
@@ -153,6 +147,7 @@ const GamePage = (): JSX.Element => {
                       avatar={user.avatarURL}
                       position={user.jobPosition}
                       visibil="visible"
+                      id={user.id}
                       key={user.name}
                     />
                   </div>

@@ -39,13 +39,7 @@ const SettingPage = (): JSX.Element => {
       dispatch(newMessageParams(message));
     });
   }, []);
-  /* const socket = new WebSocket('ws://localhost:3002/');
-  socket.onopen = () => {
-    console.log('подключение установлено');
-  };
-  socket.onmessage = (event) => {
-    console.log(event.data);
-  */
+
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
