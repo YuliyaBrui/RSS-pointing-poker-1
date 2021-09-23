@@ -57,12 +57,12 @@ const UserCard = ({
   };
 
   return (
-    <Card style={{ width: '280px', height: '100%', margin: '5px' }}>
+    <Card style={{ width: '260px', height: '80px', margin: '5px' }}>
       <div className={styles.main__user_info}>
         {avatar === '' ? (
-          <UserOutlined style={{ fontSize: '500%' }} />
+          <UserOutlined style={{ fontSize: '300%', height: '50px' }} />
         ) : (
-          <Avatar style={{ width: '50px', height: '50px' }} src={avatar} />
+          <Avatar style={{ width: '50px', height: '80px' }} src={avatar} />
         )}
         <div className={styles.main__user_description}>
           <h3>{`${name} ${lastName}`}</h3>

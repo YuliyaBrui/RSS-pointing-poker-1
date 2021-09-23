@@ -4,11 +4,14 @@ import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import styles from './GameCard.module.scss';
 
 const CoffeeGameCard = (): JSX.Element => {
   const [cardName, setCardName] = useState('Coffee break');
   const [editCardName, setEditCardName] = useState(false);
+
+  const location = useLocation();
 
   return (
     <Card style={{ width: 150, height: 200, margin: '5px' }}>
@@ -22,13 +25,15 @@ const CoffeeGameCard = (): JSX.Element => {
             onChange={(e) => setCardName(e.target.value)}
             onPressEnter={() => setEditCardName(false)}
           />
-          <Button
-            type="default"
-            style={{ border: 'none', padding: 0 }}
-            onClick={() => setEditCardName(!editCardName)}
-          >
-            <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
-          </Button>
+          {location.pathname === '/setting' && (
+            <Button
+              type="default"
+              style={{ border: 'none', padding: 0 }}
+              onClick={() => setEditCardName(!editCardName)}
+            >
+              <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
+            </Button>
+          )}
         </div>
         <CoffeeOutlined style={{ fontSize: '500%', width: '100%' }} />
         <Input
