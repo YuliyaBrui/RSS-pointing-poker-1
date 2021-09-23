@@ -47,7 +47,6 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
       }),
     );
     socket.emit('GAME_NEW_ISSUE', newIssue);
-   
     resetForm();
   };
 

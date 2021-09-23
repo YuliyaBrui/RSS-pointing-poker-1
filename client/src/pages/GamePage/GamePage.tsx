@@ -16,16 +16,17 @@ import { IIssue } from '../../redux/types/issues';
 import Chat from '../../components/Chat/Chat';
 
 const GamePage = (): JSX.Element => {
-  // const issues = useSelector((state: RootState) => state.issues);
-  const issues = [
+
+ /* const issues = [
     {
       title: 'string',
       link: 'string',
       priority: 'string',
       id: 'string',
     },
-  ];
+  ];*/
   const [formVisible, setFormVisible] = useState(false);
+  const issues = useSelector((state: RootState) => state.chatReducer);
   const users = useSelector((state: RootState) => state.chatReducer);
   const history = useHistory();
   const result = (): void => {
@@ -55,7 +56,7 @@ const GamePage = (): JSX.Element => {
           <div className={styles.issue}>
             <Col>
               {issues &&
-                issues.map((issue: IIssue) => (
+                issues.issues.map((issue: IIssue) => (
                   <Issue
                     title={issue.title}
                     priority={issue.priority}
@@ -84,7 +85,7 @@ const GamePage = (): JSX.Element => {
             <Col style={{ width: '100%' }}>
               {users.users.members.map((user) => (
                 <UserCard
-                id={user.id}
+                  id={user.id}
                   name={user.name}
                   avatar={user.avatarURL}
                   position={user.jobPosition}

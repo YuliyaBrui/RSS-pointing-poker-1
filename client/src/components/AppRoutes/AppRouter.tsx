@@ -6,10 +6,11 @@ import { privateRoutes } from '../../route/route';
 import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
 import { socket } from '../../socket';
-import { chatParams, userParams } from '../../redux/actions/chat';
+import { chatParams, gameIssues, userParams } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { IFormGameValue } from '../../redux/types/forms';
 import { kickForm } from '../../redux/actions/kickForm';
+import { IIssue } from '../../redux/types/issues';
 
 const { Header, Footer, Content } = Layout;
 
@@ -19,8 +20,14 @@ const AppRouter = (): JSX.Element => {
     console.log({ members, observers, master });
     dispatch(chatParams({ members, observers, master }));
   };
+  const getIssues = (issues: IIssue[]): void => {
+    dispatch(gameIssues(issues));
+  };
   const formData = (kickData: any): void => {
     dispatch(kickForm(kickData));
+  };
+  const addIssue = (issue: IIssue): void => {
+    dispatch(addIssue(issue));
   };
   const history = useHistory();
   useEffect(() => {
@@ -29,7 +36,9 @@ const AppRouter = (): JSX.Element => {
     });
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
-    socket.on('GAME_DELETE_ISSUE', getUsers);
+    socket.on('GAME_ADD_ISSUE', addIssue);
+    socket.on('GAME_DELETE_ISSUE', getIssues);
+    socket.on('GAME_CHANGE_ISSUE', getIssues);
     socket.on('KICKED_MEMBER', getUsers);
     socket.on('FINISH_VOITING', formData);
     socket.on('STOP_JOIN', (id): void => {

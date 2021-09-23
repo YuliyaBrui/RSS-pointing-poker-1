@@ -19,6 +19,10 @@ export const addIssue = (issue: IIssue): chatInfoAction => ({
   type: GetUsersInfoActionTypes.FETCH_ADD_ISSUE,
   payload: { issue },
 });
+export const gameIssues = (issues: IIssue[]): chatInfoAction => ({
+  type: GetUsersInfoActionTypes.FETCH_SET_ISSUES,
+  payload: { issues },
+});
 export const userParams = (user: IFormGameValue): chatInfoAction => ({
   type: GetUsersInfoActionTypes.FETCH_SET_USER,
   payload: { user },

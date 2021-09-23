@@ -7,13 +7,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { getUsersParams } from '../../redux/actions/createSession';
-
+import { gameIssues } from '../../redux/actions/chat';
 import { IIssue } from '../../redux/types/issues';
 import { socket } from '../../socket';
 import styles from './Issue.module.scss';
 
 const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getUsersParams('1111'));
   }, []);
@@ -21,29 +22,37 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   const [issueName, setIssueName] = useState(title);
   const [editIssueName, setEditIssueName] = useState(false);
   const changeTitle = (): void => {
-    /* issues.issues.map((issue: IIssue) => {
+    issues.issues.map((issue: IIssue) => {
       const newIssue = issue;
       if (newIssue.id === id) {
-       newIssue.title = issueName;
+        newIssue.title = issueName;
       }
       return newIssue;
     });
-     dispatch(changeIssue(issues));*/
+    const changeIssue = {
+      gameID: '1111',
+      id,
+      title: issueName,
+    };
+    socket.emit('GAME_CHANGE_ISSUE', changeIssue);
+    dispatch(gameIssues(issues.issues));
   };
 
   const removeIssue = (): void => {
     issues.issues.map((issue: IIssue, index: number) => {
       const newIssue = issue;
-      if (newIssue.id === issue.id) {
+      if (newIssue.id === id) {
         issues.issues.splice(index, 1);
+
         const issueDelete = {
           gameID: '1111',
-          id: issue.id,
+          id,
         };
         socket.emit('GAME_DELETE_ISSUE', issueDelete);
       }
       return newIssue;
     });
+    dispatch(gameIssues(issues.issues));
   };
 
   return (
@@ -56,17 +65,20 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
           value={issueName}
           onChange={(e) => {
             setIssueName(e.target.value);
-            // changeTitle();
           }}
           onPressEnter={() => {
             setEditIssueName(!editIssueName);
+            changeTitle();
           }}
         />
         <div className={styles.main__button_wrapper}>
           <Button
             type="default"
             style={{ border: 'none', padding: '0px 5px 2px 0px' }}
-            onClick={() => setEditIssueName(!editIssueName)}
+            onClick={() => {
+              setEditIssueName(!editIssueName);
+              changeTitle();
+            }}
           >
             <EditOutlined style={{ fontSize: '150%', margin: '1%' }} />
           </Button>

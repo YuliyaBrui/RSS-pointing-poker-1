@@ -62,7 +62,7 @@ app.post('/', (req, res) => {
       ['members', new Map()],
       ['observers', new Map()],
       ['messages', []],
-      ['issues', []],
+      ['issues', new Map()],
       ['setting', []],
       ['gameCards', []],
       ['kickForm', new Map()],
@@ -77,7 +77,7 @@ app.get('/:id', async (req, res) => {
     const observers = [...games.get(gameID).get('observers').values()];
     const master = games.get(gameID).get('master');
     const messages = games.get(gameID).get('messages');
-    const issues = games.get(gameID).get('issues');
+    const issues = [...games.get(gameID).get('issues').values()];
     const setting = games.get(gameID).get('setting');
     const gameCards = games.get(gameID).get('gameCards');
     const kickForm = games.get(gameID).get('kickForm');
@@ -146,16 +146,24 @@ io.on('connection', (socket: Socket) => {
       link,
       priority,
     };
-    games.get(gameID).get('issues').push(issue);
+    games.get(gameID).get('issues').set(`${id}`, issue);
     console.log(games.get(gameID).get('issues'));
     socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
   });
 
-  socket.on('GAME_DELETE_ISSUE', (gameID, id) => {
-    console.log(gameID, id);
-    games.get(gameID).get('issues').splice(id, 1);
+  socket.on('GAME_DELETE_ISSUE', ({ gameID, id }) => {
+    console.log({ gameID, id });
+    games.get(gameID).get('issues').delete(id);
     console.log(games.get(gameID).get('issues'));
-    socket.to(gameID).emit('GAME_DELETE_ISSUE', users(gameID));
+    socket.to(gameID).emit('GAME_DELETE_ISSUE', games.get(gameID).get('issues'));
+  });
+
+  socket.on('GAME_CHANGE_ISSUE', ({ gameID, id, title }) => {
+    games.get(gameID).get('issues').get(id).title = title;
+    console.log(games.get(gameID).get('issues'));
+    socket
+      .to(gameID)
+      .emit('GAME_CHANGE_ISSUE', games.get(gameID).get('issues'));
   });
 
   socket.on('START_GAME', (gameID, address) => {
@@ -194,7 +202,6 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('KICK_DATA', (gameID, kickData) => {
-    // games.get(gameID).get('kickForm').push(kickData);
     games.get(gameID).get('kickForm').set('inform', kickData);
     console.log(games.get(gameID).get('kickForm').get('inform'));
     io.sockets.in(gameID).emit('KICK_DATA', kickData);
@@ -211,14 +218,14 @@ io.on('connection', (socket: Socket) => {
   });
   socket.on('AGREE_KICK_MEMBER', (gameID, id) => {
     games.get(gameID).get('kickForm').get('inform').yes.push(id);
-    console.log('yes')
+    console.log('yes');
     kickVoiting(gameID);
     console.log('delete');
   });
 
   socket.on('DISAGREE_KICK_MEMBER', (gameID, id) => {
     games.get(gameID).get('kickForm').get('inform').no.push(id);
-    console.log('no')
+    console.log('no');
     kickVoiting(gameID);
   });
   socket.on('disconnect', () => {

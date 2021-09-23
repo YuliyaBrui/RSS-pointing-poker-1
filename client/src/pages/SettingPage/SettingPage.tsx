@@ -22,7 +22,7 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
-import { chatParams, newMessageParams } from '../../redux/actions/chat';
+import { chatParams, gameIssues, newMessageParams } from '../../redux/actions/chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
 const SettingPage = (): JSX.Element => {
@@ -30,6 +30,7 @@ const SettingPage = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
+ 
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
@@ -46,7 +47,7 @@ const SettingPage = (): JSX.Element => {
     console.log(event.data);
   */
   const joinMember = useSelector((state: RootState) => state.chatReducer);
-  const issues = useSelector((state: RootState) => state.addIssueReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
 
@@ -70,7 +71,7 @@ const SettingPage = (): JSX.Element => {
             {joinMember.users.members &&
               joinMember.users.members.map((user) => (
                 <UserCard
-                id={user.id}
+                  id={user.id}
                   name={user.name}
                   lastName={user.lastName}
                   avatar={user.avatarURL}
