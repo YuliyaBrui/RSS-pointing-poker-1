@@ -43,8 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // random id
 const guid = (): string => {
-  const s4 = (): string =>
-    Math.floor((1 + Math.random()) * 0x10000)
+  const s4 = (): string => Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
@@ -138,8 +137,15 @@ io.on('connection', (socket: Socket) => {
   });
 
   // issue
-  socket.on('GAME_NEW_ISSUE', ({ gameID, title, link, priority, id }) => {
-    console.log({ gameID, title, link, priority });
+  socket.on('GAME_NEW_ISSUE', ({
+ gameID, title, link, priority, id 
+}) => {
+    console.log({
+      gameID,
+      title,
+      link,
+      priority,
+    });
     const issue = {
       id,
       title,
