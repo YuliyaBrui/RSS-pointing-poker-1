@@ -49,7 +49,7 @@
     "max-len": ["warn", { "code": 120 }],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    "prettier/prettier": ["error", { "singleQuote": true, "parser": "typescript", "trailingComma": "all" }],
+    "prettier/prettier": ["error", { "singleQuote": true, "parser": "typescript", "trailingComma": "all", "printWidth": 100 }],
     "import/prefer-default-export": "off",
     "react/prop-types": "off",
     "jsx-a11y/label-has-associated-control": [
