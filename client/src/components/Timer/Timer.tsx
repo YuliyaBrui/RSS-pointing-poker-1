@@ -35,20 +35,15 @@ const Timer = (): JSX.Element => {
               Run Round
             </Button>
           ) : (
-            <div className={styles.buttons}>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setIsRunning(false);
-                  setSeconds(60);
-                }}
-              >
-                Restart Round
-              </Button>
-              <Button type="primary" className={styles.button}>
-                Next Issue
-              </Button>
-            </div>
+            <Button
+              type="primary"
+              onClick={() => {
+                setIsRunning(false);
+                setSeconds(60);
+              }}
+            >
+              Restart Round
+            </Button>
           )}
         </div>
       )}

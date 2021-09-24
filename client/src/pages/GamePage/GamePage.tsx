@@ -53,13 +53,21 @@ const GamePage = (): JSX.Element => {
                 <ScramMasterInfo />
               </div>
               <div>
-                <Button
-                  type="primary"
-                  className={styles.button}
-                  onClick={result}
-                >
-                  Stop game
-                </Button>
+                <div>
+                  <Button
+                    type="primary"
+                    className={styles.button}
+                    style={{ width: '100%' }}
+                    onClick={result}
+                  >
+                    Stop game
+                  </Button>
+                </div>
+                <div>
+                  <Button type="primary" style={{ width: '100%' }}>
+                    Next Issue
+                  </Button>
+                </div>
               </div>
               {timer && (
                 <div style={{ width: '40%' }}>
