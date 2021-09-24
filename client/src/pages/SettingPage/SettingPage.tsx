@@ -22,7 +22,11 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
-import { chatParams, gameIssues, newMessageParams } from '../../redux/actions/chat';
+import {
+  chatParams,
+  gameIssues,
+  newMessageParams,
+} from '../../redux/actions/chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
 const SettingPage = (): JSX.Element => {
@@ -64,6 +68,23 @@ const SettingPage = (): JSX.Element => {
           <Row style={{ width: '100%' }} justify="center">
             {joinMember.users.members &&
               joinMember.users.members.map((user) => (
+                <UserCard
+                  id={user.id}
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
+                  key={user.name}
+                />
+              ))}
+          </Row>
+        </div>
+        <div className={styles.main__panel}>
+          <h3>Observers:</h3>
+          <Row style={{ width: '100%' }} justify="start">
+            {joinMember.users.observers &&
+              joinMember.users.observers.map((user) => (
                 <UserCard
                   id={user.id}
                   name={user.name}

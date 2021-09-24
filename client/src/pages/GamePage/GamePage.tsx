@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Row } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -19,9 +19,12 @@ import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
 import { IGameCard } from '../../redux/types/gameCard';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import Chat from '../../components/Chat/Chat';
+import { socket } from '../../socket';
 
 const GamePage = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
+  const [sessionName, setSessionName] = useState('New session');
+
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
@@ -35,13 +38,15 @@ const GamePage = (): JSX.Element => {
     history.push('/result');
   };
 
+  useEffect(() => {
+    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
+  }, []);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.game}>
         <div className={styles.game__part_game}>
-          <h1 className={styles.game_title}>
-            Sprint 23 planning (issues 13, 533, 5623, 3252, 6623, ...)
-          </h1>
+          <h1 className={styles.game_title}>{sessionName}</h1>
           <div className={styles.game_info}>
             <div className={styles.game_side}>
               <div>

@@ -64,6 +64,7 @@ app.post('/', (req, res) => {
       ['gameCards', []],
       ['kickForm', new Map()],
       ['gameScore', new Map()],
+      ['sessionName', 'New session'],
     ]),
   );
   res.json(gameID);
@@ -80,7 +81,8 @@ app.get('/:id', async (req, res) => {
     const setting = games.get(gameID).get('setting');
     const gameCards = games.get(gameID).get('gameCards');
     const kickForm = games.get(gameID).get('kickForm');
-    const gameScore = [games.get(gameID).get('gameScore').values()];
+    const gameScore = [...games.get(gameID).get('gameScore').values()];
+    const sessionName = games.get(gameID).get('sessionName');
 
     res.send({
       users: { members, observers, master },
@@ -90,6 +92,7 @@ app.get('/:id', async (req, res) => {
       gameCards,
       kickForm,
       gameScore,
+      sessionName,
     });
   } else {
     res.send({
@@ -102,6 +105,7 @@ app.get('/:id', async (req, res) => {
       gameCards: [],
       kickForm: [],
       gameScore: [],
+      sessionName: '',
     });
   }
 });
@@ -128,7 +132,12 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('GAME_NEW_MESSAGE', ({ gameID, name, lastName, text, avatar }) => {
-    console.log({ gameID, name, text, avatar });
+    console.log({
+      gameID,
+      name,
+      text,
+      avatar,
+    });
     const message = {
       name,
       lastName,
@@ -168,9 +177,7 @@ io.on('connection', (socket: Socket) => {
   socket.on('GAME_CHANGE_ISSUE', ({ gameID, id, title }) => {
     games.get(gameID).get('issues').get(id).title = title;
     console.log(games.get(gameID).get('issues'));
-    socket
-      .to(gameID)
-      .emit('GAME_CHANGE_ISSUE', games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_CHANGE_ISSUE', games.get(gameID).get('issues'));
   });
 
   socket.on('START_GAME', (gameID, address) => {
@@ -191,8 +198,13 @@ io.on('connection', (socket: Socket) => {
         shortScoreType,
         roundTime,
       });
-    }
+    },
   );
+
+  socket.on('SET_SESSION_NAME', (gameID, sessionName) => {
+    games.get(gameID).set('sessionName', sessionName);
+    io.sockets.in(gameID).emit('GET_SESSION_NAME', sessionName);
+  });
 
   socket.on('ADD_GAME_CARDS', (gameID, [...gameCards]) => {
     games
@@ -232,7 +244,7 @@ io.on('connection', (socket: Socket) => {
   socket.on('SET_USER_POINT', (gameID, scoreData) => {
     games.get(gameID).get('gameScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     const allUserPoints = [...games.get(gameID).get('gameScore').values()];
-    io.sockets.in(gameID).emit('SET_USER_POINT', allUserPoints);
+    io.sockets.in(gameID).emit('GET_USER_POINT', allUserPoints);
   });
 
   socket.on('DELETE_USER_POINTS', (gameID) => {
@@ -241,18 +253,34 @@ io.on('connection', (socket: Socket) => {
     io.sockets.in(gameID).emit('DELETE_USER_POINT', allUserPoints);
   });
 
-  // socket.on('asd', (gameID) => {
-  //   const asd = games.get(gameID).get('gameScore');
-  //   console.log(asd);
-  //   console.log(gameID);
-  //   io.sockets.in(gameID).emit(
-  //     'asd',
-  //     games
-  //       .get(gameID)
-  //       .get('gameScore')
-  //       .forEach((el: any) => el),
-  //   );
-  // });
+  socket.on('GET_VOTING_RESULT', (gameID) => {
+    const arrUserPoints = [...games.get(gameID).get('gameScore').values()];
+    interface TPercent extends Object {
+      [point: number]: number;
+    }
+    const percent: TPercent = {};
+
+    interface TStatistics extends Object {
+      [point: number]: number[];
+    }
+    const statistics: TStatistics = {};
+
+    arrUserPoints.map((el): void => {
+      const { point } = el;
+      if (point in statistics) {
+        statistics[point].push(point);
+      } else {
+        statistics[point] = [];
+        statistics[point].push(point);
+      }
+    });
+
+    for (const value in statistics) {
+      percent[value] = +((statistics[value].length / arrUserPoints.length) * 100).toFixed(1);
+    }
+
+    io.sockets.in(gameID).emit('GET_VOTING_RESULT', percent);
+  });
 
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
