@@ -25,7 +25,7 @@ const GamePageMember = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
 
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const issues = useSelector((state: RootState) => state.addIssueReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const masters = useSelector(
@@ -72,7 +72,7 @@ const GamePageMember = (): JSX.Element => {
                 <h2 className={styles.game_title}>Issues: </h2>
                 <Row style={{ width: '100%' }} justify="center">
                   {issues &&
-                    issues.issues.map((issue: IIssue) => (
+                    issues.map((issue: IIssue) => (
                       <Issue
                         title={issue.title}
                         priority={issue.priority}
