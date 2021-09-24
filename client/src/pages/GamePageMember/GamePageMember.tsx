@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -18,13 +18,16 @@ import { IIssue } from '../../redux/types/issues';
 import { IGameCard } from '../../redux/types/gameCard';
 import Statistics from '../../components/Statistics/Statistics';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
+import { socket } from '../../socket';
 
 const GamePageMember = (): JSX.Element => {
+  const [sessionName, setSessionName] = useState('New session');
+  const [formVisible, setFormVisible] = useState(false);
+
+  const currentUser = useSelector((state: RootState) => state.currentUser);
   const issues = useSelector((state: RootState) => state.addIssueReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
-  const [formVisible, setFormVisible] = useState(false);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
-
   const masters = useSelector(
     (state: RootState) => state.gameSetting.masterPlayer,
   );
@@ -35,13 +38,19 @@ const GamePageMember = (): JSX.Element => {
     history.push('/');
   };
 
+  const setUserPoint = (point: number): void => {
+    socket.emit('SET_USER_POINT', '1111', { ...currentUser, point });
+  };
+
+  useEffect(() => {
+    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
+  }, []);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.game}>
         <div className={styles.game__part_game}>
-          <h1 className={styles.game_title}>
-            Sprint 23 planning (issues 13, 533, 5623, 3252, 6623, ...)
-          </h1>
+          <h1 className={styles.game_title}>{sessionName}</h1>
           <div className={styles.game_info}>
             <div className={styles.game_side}>
               <div>
@@ -80,13 +89,25 @@ const GamePageMember = (): JSX.Element => {
               </div>
               <div>
                 <Row style={{ width: '100%' }} justify="center">
-                  <CoffeeGameCard />
+                  <Button
+                    type="default"
+                    style={{ border: 'none', padding: '0' }}
+                    onClick={() => setUserPoint(0)}
+                  >
+                    <CoffeeGameCard />
+                  </Button>
                   {gameCards.map((gameCard: IGameCard) => (
-                    <GameCard
-                      cardValue={gameCard.cardValue}
-                      id={gameCard.id}
-                      key={gameCard.id}
-                    />
+                    <Button
+                      type="default"
+                      style={{ border: 'none', padding: '0' }}
+                      onClick={() => setUserPoint(gameCard.cardValue)}
+                    >
+                      <GameCard
+                        cardValue={gameCard.cardValue}
+                        id={gameCard.id}
+                        key={gameCard.id}
+                      />
+                    </Button>
                   ))}
                 </Row>
               </div>

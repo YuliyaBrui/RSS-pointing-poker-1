@@ -1,8 +1,10 @@
+import Button from 'antd/lib/button';
 import Card from 'antd/lib/card';
 import { Content } from 'antd/lib/layout/layout';
 import Row from 'antd/lib/row';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Chat from '../../components/Chat/Chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 import ScramMasterCard from '../../components/ScramMasterCard/ScramMasterCard';
@@ -17,14 +19,17 @@ import styles from './MembersLobby.module.scss';
 
 const MembersLobby = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
+  const [sessionName, setSessionName] = useState('New session');
   const dispatch = useDispatch();
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-  
+
+  const history = useHistory();
+
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
-   
+    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
     dispatch(getUsersParams('1111'));
   }, []);
 
@@ -38,14 +43,20 @@ const MembersLobby = (): JSX.Element => {
         <div className={styles.lobby__panel}>
           <div className={styles.lobby__content_wrapper}>
             <ScramMasterCard />
-            <h2 className={styles.lobby__waiting}>
-              Waiting for the session to start...
-            </h2>
+            <div className={styles.lobby__text_wrapper}>
+              <h2 className={styles.lobby__waiting}>
+                Wait for the session to start...
+              </h2>
+              <h2>or</h2>
+              <Button type="primary" onClick={() => history.push('/')}>
+                Exit
+              </Button>
+            </div>
             <Card
               title="Session name:"
               style={{ width: '30%', height: '100%' }}
             >
-              Session name
+              {sessionName}
             </Card>
           </div>
         </div>
@@ -60,6 +71,22 @@ const MembersLobby = (): JSX.Element => {
                 avatar={user.avatarURL}
                 position={user.jobPosition}
                 visibil={currentUser.id === user.id ? 'hidden' : 'visible'}
+                key={user.name}
+              />
+            ))}
+          </Row>
+        </div>
+        <div className={styles.lobby__panel}>
+          <h3>Observers:</h3>
+          <Row style={{ width: '100%' }} justify="start">
+            {joinMember.users.observers.map((user) => (
+              <UserCard
+                id={user.id}
+                name={user.name}
+                lastName={user.lastName}
+                avatar={user.avatarURL}
+                position={user.jobPosition}
+                visibil="hidden"
                 key={user.name}
               />
             ))}
