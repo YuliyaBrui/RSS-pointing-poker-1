@@ -91,7 +91,7 @@ const GamePageMember = (): JSX.Element => {
                 <Row style={{ width: '100%' }} justify="center">
                   <Button
                     type="default"
-                    style={{ border: 'none', padding: '0' }}
+                    style={{ border: 'none', padding: '0', height: '100%' }}
                     onClick={() => setUserPoint(0)}
                   >
                     <CoffeeGameCard />
@@ -99,7 +99,7 @@ const GamePageMember = (): JSX.Element => {
                   {gameCards.map((gameCard: IGameCard) => (
                     <Button
                       type="default"
-                      style={{ border: 'none', padding: '0' }}
+                      style={{ border: 'none', padding: '0', height: '100%' }}
                       onClick={() => setUserPoint(gameCard.cardValue)}
                     >
                       <GameCard
