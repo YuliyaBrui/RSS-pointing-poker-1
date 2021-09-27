@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Content } from 'antd/lib/layout/layout';
 import Row from 'antd/lib/grid/row';
+import Space from 'antd/lib/space';
+import Spin from 'antd/lib/spin';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './SettingPage.module.scss';
 import SessionInfo from '../../components/SettingPagePart/SessionInfo/SessionInfo';
@@ -46,6 +48,9 @@ const SettingPage = (): JSX.Element => {
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
+  const masterName = useSelector(
+    (state: RootState) => state.chatReducer.users.master.name,
+  );
 
   const nextCardValue = (): IGameCard => {
     const cardValue =
@@ -54,7 +59,7 @@ const SettingPage = (): JSX.Element => {
     return { cardValue, id: cardValue };
   };
 
-  return (
+  return masterName.length > 1 ? (
     <Content className={styles.wrapper}>
       <div className={styles.main}>
         <div className={styles.main__panel}>
@@ -151,6 +156,12 @@ const SettingPage = (): JSX.Element => {
         setFormVisible={() => console.log('asd')}
       />
     </Content>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import { EditOutlined } from '@ant-design/icons';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import Button from 'antd/lib/button/button';
+import { useSelector } from 'react-redux';
 import ScramMasterInfo from '../../ScramMasterCard/ScramMasterCard';
 import './SessionInfo.scss';
 import { RootState, store } from '../../../redux';
@@ -11,16 +12,21 @@ import { socket } from '../../../socket';
 const SessionInfo = (): JSX.Element => {
   const [editSession, setEditSession] = useState(false);
   const [sessionName, setSessionName] = useState('New session');
-  const state: RootState = store.getState();
   const [copySuccess, setCopySuccess] = useState('');
-  const [URL, setURL] = useState(
-    `http://localhost:3000/lobby/${state.formCreateReducer.IDGame}`,
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
   );
+  const [URL, setURL] = useState(`http://localhost:3000/lobby/${gameID}`);
+
   useEffect(() => {
     window.addEventListener('click', () => {
       setCopySuccess('');
     });
   }, [copySuccess]);
+
+  const sendSessionName = (): void => {
+    socket.emit('SET_SESSION_NAME', gameID, sessionName);
+  };
 
   return (
     <div className="main__card-link-wrapper">

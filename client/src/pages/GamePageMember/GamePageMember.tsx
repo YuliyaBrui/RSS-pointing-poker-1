@@ -3,6 +3,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
 import styles from './GamePageMember.module.scss';
@@ -32,6 +33,9 @@ const GamePageMember = (): JSX.Element => {
     (state: RootState) => state.gameSetting.masterPlayer,
   );
   const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
 
   const history = useHistory();
   const exit = (): void => {
@@ -39,11 +43,13 @@ const GamePageMember = (): JSX.Element => {
   };
 
   const setUserPoint = (point: number): void => {
-    socket.emit('SET_USER_POINT', '1111', { ...currentUser, point });
+    socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
   };
 
   useEffect(() => {
-    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
+    axios
+      .get(`http://localhost:3002/session-name/${gameID}`)
+      .then((res) => setSessionName(res.data));
   }, []);
 
   return (

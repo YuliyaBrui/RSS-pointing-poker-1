@@ -2,6 +2,7 @@ import Button from 'antd/lib/button';
 import Card from 'antd/lib/card';
 import { Content } from 'antd/lib/layout/layout';
 import Row from 'antd/lib/row';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -12,8 +13,7 @@ import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
 import { chatParams } from '../../redux/actions/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
-import { kickForm } from '../../redux/actions/kickForm';
-import { IChatState, IChatUsers } from '../../redux/types/chat';
+import { IChatUsers } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './MembersLobby.module.scss';
 
@@ -21,20 +21,29 @@ const MembersLobby = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
   const [sessionName, setSessionName] = useState('New session');
   const dispatch = useDispatch();
+  const history = useHistory();
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
+
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
+
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     dispatch(getUsersParams(gameID));
+    axios
+      .get(`http://localhost:3002/session-name/${gameID}`)
+      .then((res) => setSessionName(res.data));
   }, []);
 
   socket.on('MEMBER_LEAVED', getUsers);
   const members = useSelector(
     (state: RootState) => state.chatReducer.users.members,
+  );
+  const observers = useSelector(
+    (state: RootState) => state.chatReducer.users.observers,
   );
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
@@ -80,7 +89,7 @@ const MembersLobby = (): JSX.Element => {
         <div className={styles.lobby__panel}>
           <h3>Observers:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {joinMember.users.observers.map((user) => (
+            {observers.map((user) => (
               <UserCard
                 id={user.id}
                 name={user.name}
@@ -95,10 +104,7 @@ const MembersLobby = (): JSX.Element => {
         </div>
       </div>
       <Chat />
-      <KickMemberForm
-        formVisible={formVisible}
-        setFormVisible={() => console.log('asd')}
-      />
+      <KickMemberForm formVisible={formVisible} />
     </Content>
   );
 };

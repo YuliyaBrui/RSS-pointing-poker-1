@@ -66,11 +66,26 @@ app.post('/', (req, res) => {
       ['gameCards', []],
       ['kickForm', new Map()],
       ['gameScore', new Map()],
+      [
+        'finalScore',
+        {
+          0: { 1: 53, 3: 23, 0: 33 },
+          1: { 1: 53, 3: 23 },
+        },
+      ],
       ['sessionName', 'New session'],
     ]),
   );
   res.json(gameID);
   console.log(games.keys());
+});
+
+app.get('/session-name/:id', async (req, res) => {
+  res.send(games.get(req.params.id).get('sessionName'));
+});
+
+app.get('/result/:id', async (req, res) => {
+  res.send(games.get(req.params.id).get('finalScore'));
 });
 
 app.get('/:id', async (req, res) => {
@@ -203,8 +218,8 @@ io.on('connection', (socket: Socket) => {
     (
       gameID,
       {
-        masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime 
-      }: ISetting,
+ masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime 
+}: ISetting,
     ) => {
       games.get(gameID).get('setting').push({
         masterPlayer,

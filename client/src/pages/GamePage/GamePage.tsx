@@ -1,8 +1,9 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from 'react';
-import { Button, Row } from 'antd';
+import { Button, Row, Spin, Space } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 import Col from 'antd/lib/grid/col';
 import styles from './GamePage.module.scss';
 import ScramMasterInfo from '../../components/ScramMasterCard/ScramMasterCard';
@@ -23,7 +24,7 @@ import { socket } from '../../socket';
 
 const GamePage = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('New session');
+  const [sessionName, setSessionName] = useState('');
 
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
@@ -32,6 +33,9 @@ const GamePage = (): JSX.Element => {
     (state: RootState) => state.gameSetting.masterPlayer,
   );
   const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
 
   const history = useHistory();
   const result = (): void => {
@@ -39,10 +43,12 @@ const GamePage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
+    axios
+      .get(`http://localhost:3002/session-name/${gameID}`)
+      .then((res) => setSessionName(res.data));
   }, []);
 
-  return (
+  return sessionName.length > 1 ? (
     <div className={styles.wrapper}>
       <div className={styles.game}>
         <div className={styles.game__part_game}>
@@ -58,7 +64,10 @@ const GamePage = (): JSX.Element => {
                     type="primary"
                     className={styles.button}
                     style={{ width: '100%' }}
-                    onClick={result}
+                    onClick={() => {
+                      result();
+                      socket.emit('FINAL_VOITING_RESULT', gameID);
+                    }}
                   >
                     Stop game
                   </Button>
@@ -163,6 +172,12 @@ const GamePage = (): JSX.Element => {
         </div>
       </div>
       <Chat />
+    </div>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
     </div>
   );
 };
