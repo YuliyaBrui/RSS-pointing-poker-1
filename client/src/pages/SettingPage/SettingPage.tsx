@@ -65,7 +65,7 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className={styles.main__panel}>
           <h3>Members:</h3>
-          <Row style={{ width: '100%' }} justify="center">
+          <Row style={{ width: '100%' }} justify="start">
             {joinMember.users.members &&
               joinMember.users.members.map((user) => (
                 <UserCard
@@ -99,7 +99,7 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className={styles.main__panel}>
           <h3>Issues:</h3>
-          <Row style={{ width: '100%' }} justify="center">
+          <Row style={{ width: '100%' }} justify="start">
             {issues &&
               issues.issues.map((issue: IIssue) => (
                 <Issue
@@ -127,7 +127,7 @@ const SettingPage = (): JSX.Element => {
         </div>
         <div className={styles.main__panel}>
           <h3>Add card values:</h3>
-          <Row style={{ width: '100%' }} justify="center">
+          <Row style={{ width: '100%' }} justify="start">
             <CoffeeGameCard />
             {gameCards.map((gameCard: IGameCard) => (
               <GameCard

@@ -3,7 +3,8 @@ import Avatar from 'antd/lib/avatar/avatar';
 import Button from 'antd/lib/button/button';
 import Card from 'antd/lib/card';
 import Popconfirm from 'antd/lib/popconfirm';
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { chatParams } from '../../redux/actions/chat';
@@ -54,6 +55,8 @@ const UserCard = ({
     socket.on('STAY_MEMBER', getUsers);
   };
 
+  const location = useLocation();
+
   return (
     <Card style={{ width: '260px', height: '80px', margin: '5px' }}>
       <div className={styles.main__user_info}>
@@ -66,22 +69,23 @@ const UserCard = ({
           <h3>{`${name} ${lastName}`}</h3>
           <p>{position}</p>
         </div>
-
-        <Popconfirm
-          title="Kick player?"
-          okText="Yes"
-          cancelText="No"
-          onConfirm={sendKickData}
-        >
-          <StopOutlined
-            style={{
-              fontSize: '200%',
-              margin: '1%',
-              color: 'red',
-              visibility: visibil,
-            }}
-          />
-        </Popconfirm>
+        {(location.pathname === '/setting' || location.pathname === '/lobby') && (
+          <Popconfirm
+            title="Kick player?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={sendKickData}
+          >
+            <StopOutlined
+              style={{
+                fontSize: '200%',
+                margin: '1%',
+                color: 'red',
+                visibility: visibil,
+              }}
+            />
+          </Popconfirm>
+        )}
       </div>
     </Card>
   );
