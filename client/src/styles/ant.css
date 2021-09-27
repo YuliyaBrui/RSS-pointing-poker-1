@@ -31,3 +31,9 @@
   background-color: #66999B;
   border:#66999B;
 }
+
+.ant-switch-checked,
+.ant-slider-track {
+  background-color: #496A81;
+  border:#496A81;
+}

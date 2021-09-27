@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
 import styles from './Timer.module.scss';
 
 const Timer = (): JSX.Element => {
-  const [seconds, setSeconds] = useState(60);
+  const time = useSelector((state: RootState) => state.gameSetting.roundTime);
+  const [seconds, setSeconds] = useState(time);
   const [isRunning, setIsRunning] = useState(false);
 
   const location = useLocation();
-
   useEffect(() => {
     if (isRunning) {
       const id = window.setInterval(() => {
         if (seconds > 0) {
-          setSeconds((second) => second - 1);
+          setSeconds((second: number) => second - 1);
         }
       }, 1000);
       return () => window.clearInterval(id);
@@ -39,7 +41,7 @@ const Timer = (): JSX.Element => {
               type="primary"
               onClick={() => {
                 setIsRunning(false);
-                setSeconds(60);
+                setSeconds(time);
               }}
             >
               Restart Round
