@@ -22,10 +22,7 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
-import {
-  chatParams,
-  newMessageParams,
-} from '../../redux/actions/chat';
+import { chatParams, newMessageParams } from '../../redux/actions/chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
 const SettingPage = (): JSX.Element => {
@@ -36,17 +33,13 @@ const SettingPage = (): JSX.Element => {
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-const callback=()=>{
-
-  console.log('')
-}
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
     socket.on('GAME_NEW_MESSAGE', (message) => {
       dispatch(newMessageParams(message));
     });
-    dispatch(getUsersParams(gameID, callback));
+    dispatch(getUsersParams(gameID));
   }, []);
 
   const joinMember = useSelector((state: RootState) => state.chatReducer);

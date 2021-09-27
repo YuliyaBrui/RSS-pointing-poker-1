@@ -5,9 +5,7 @@ import styles from './StartPage.module.scss';
 import { FormCreateGame } from '../../components/FormCreateGame/FormCreateGame';
 import { FormConnect } from '../../components/FormConnect/FormConnect';
 import { Modal } from '../../components/modal/Modal';
-
 import { getUsersParams } from '../../redux/actions/createSession';
-import { RootState } from '../../redux';
 import { ErrorGameID } from '../../components/FormConnect/ErrorGameID';
 import { addGameID } from '../../redux/actions/chat';
 import { IFormGameValue } from '../../redux/types/forms';

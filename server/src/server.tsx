@@ -43,8 +43,8 @@ app.use(express.urlencoded({ extended: true }));
 const guid = (): string => {
   const s4 = (): string =>
     Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
+    .toString(16)
+    .substring(1);
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 };
 
@@ -66,7 +66,7 @@ app.post('/', (req, res) => {
       ['gameCards', []],
       ['kickForm', new Map()],
       ['gameScore', new Map()],
-    ])
+    ]),
   );
   res.json(gameID);
   console.log(games.keys());
@@ -180,17 +180,13 @@ io.on('connection', (socket: Socket) => {
     console.log({ gameID, id });
     games.get(gameID).get('issues').delete(id);
     console.log(games.get(gameID).get('issues'));
-    socket
-      .to(gameID)
-      .emit('GAME_DELETE_ISSUE', games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_DELETE_ISSUE', games.get(gameID).get('issues'));
   });
 
   socket.on('GAME_CHANGE_ISSUE', ({ gameID, id, title }) => {
     games.get(gameID).get('issues').get(id).title = title;
     console.log(games.get(gameID).get('issues'));
-    socket
-      .to(gameID)
-      .emit('GAME_CHANGE_ISSUE', games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_CHANGE_ISSUE', games.get(gameID).get('issues'));
   });
 
   socket.on('START_GAME', (gameID, address) => {
@@ -203,13 +199,8 @@ io.on('connection', (socket: Socket) => {
     (
       gameID,
       {
-        masterPlayer,
-        changingCard,
-        needTimer,
-        scoreType,
-        shortScoreType,
-        roundTime,
-      }: ISetting
+        masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime 
+      }: ISetting,
     ) => {
       games.get(gameID).get('setting').push({
         masterPlayer,
@@ -219,7 +210,7 @@ io.on('connection', (socket: Socket) => {
         shortScoreType,
         roundTime,
       });
-    }
+    },
   );
 
   socket.on('ADD_GAME_CARDS', (gameID, [...gameCards]) => {
@@ -258,10 +249,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('SET_USER_POINT', (gameID, scoreData) => {
-    games
-      .get(gameID)
-      .get('gameScore')
-      .set(`${scoreData.name}${scoreData.lastName}`, scoreData);
+    games.get(gameID).get('gameScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     const allUserPoints = [...games.get(gameID).get('gameScore').values()];
     io.sockets.in(gameID).emit('SET_USER_POINT', allUserPoints);
   });
@@ -287,10 +275,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
-      if (
-        value.get('members').delete(socket.id) ||
-        value.get('observers').delete(socket.id)
-      ) {
+      if (value.get('members').delete(socket.id) || value.get('observers').delete(socket.id)) {
         socket.to(gameID).emit('MEMBER_LEAVED', users(gameID));
         console.log('delete');
       }

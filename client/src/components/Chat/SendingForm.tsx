@@ -1,10 +1,9 @@
 import Button from 'antd/lib/button/button';
 import Input from 'antd/lib/input/Input';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { newMessageParams } from '../../redux/actions/chat';
-import { IFormGameValue } from '../../redux/types/forms';
 import { socket } from '../../socket';
 import styles from './Chat.module.scss';
 

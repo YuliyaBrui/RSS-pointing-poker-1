@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
@@ -15,7 +15,12 @@ const SessionInfo = (): JSX.Element => {
   const [URL, setURL] = useState(
     `http://localhost:3000/lobby/${state.formCreateReducer.IDGame}`,
   );
-  const inputValueRef = useRef(null);
+  useEffect(() => {
+    window.addEventListener('click', () => {
+      setCopySuccess('');
+    });
+  }, [copySuccess]);
+
   return (
     <div className="main__card-link-wrapper">
       <ScramMasterInfo />
@@ -45,18 +50,20 @@ const SessionInfo = (): JSX.Element => {
       </Card>
       <Card title="Link to lobby:" style={{ width: '30%', height: '100%' }}>
         <div className="main__link-wrapper">
-          <Input ref={inputValueRef} size="middle" value={URL} />
+          <Input size="middle" value={URL} />
 
           <Button
             size="middle"
             type="primary"
-            onClick={() => {
-              navigator.clipboard.writeText(URL);
+            onClick={async () => {
+              await navigator.clipboard.writeText(URL);
+              setCopySuccess('link copied');
             }}
           >
             Copy
           </Button>
         </div>
+        <div>{copySuccess}</div>
       </Card>
     </div>
   );

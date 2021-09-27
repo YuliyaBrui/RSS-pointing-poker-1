@@ -21,15 +21,12 @@ const MembersLobby = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-  const callback = (): void => {
-    console.log('');
-  };
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
-    dispatch(getUsersParams(gameID, callback));
+    dispatch(getUsersParams(gameID));
   }, []);
 
   socket.on('MEMBER_LEAVED', getUsers);
