@@ -29,7 +29,9 @@ const UserCard = ({
 
   visibil = 'hidden',
 }: IUsercard): JSX.Element => {
-  const users = useSelector((state: RootState) => state.chatReducer);
+  const gameMaster = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
+  );
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const kickUserData = useSelector((state: RootState) => state.kickUserData);
   const kickData = {
@@ -40,15 +42,18 @@ const UserCard = ({
     no: [],
   };
   const dispatch = useDispatch();
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     console.log({ members, observers, master });
     dispatch(chatParams({ members, observers, master }));
   };
   const sendKickData = (): void => {
-    if (currentUser.id === users.users.master.id) {
-      socket.emit('KICK_USER_BY_MASTER', '1111', id);
+    if (currentUser.id === gameMaster.id) {
+      socket.emit('KICK_USER_BY_MASTER', gameID, id);
     } else {
-      socket.emit('KICK_DATA', '1111', kickData);
+      socket.emit('KICK_DATA', gameID, kickData);
     }
     socket.on('KICKED_MEMBER', getUsers);
     socket.on('STAY_MEMBER', getUsers);

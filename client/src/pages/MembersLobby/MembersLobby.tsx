@@ -24,17 +24,18 @@ const MembersLobby = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-
-  const history = useHistory();
-
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
-    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
-    dispatch(getUsersParams('1111'));
+    dispatch(getUsersParams(gameID));
   }, []);
 
   socket.on('MEMBER_LEAVED', getUsers);
-  const joinMember = useSelector((state: RootState) => state.chatReducer);
+  const members = useSelector(
+    (state: RootState) => state.chatReducer.users.members,
+  );
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
   return (
@@ -63,7 +64,7 @@ const MembersLobby = (): JSX.Element => {
         <div className={styles.lobby__panel}>
           <h3>Members:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {joinMember.users.members.map((user) => (
+            {members.map((user) => (
               <UserCard
                 id={user.id}
                 name={user.name}

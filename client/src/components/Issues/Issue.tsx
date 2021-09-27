@@ -18,8 +18,12 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
 
   const location = useLocation();
 
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
+
   useEffect(() => {
-    dispatch(getUsersParams('1111'));
+    dispatch(getUsersParams(gameID));
   }, []);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const [issueName, setIssueName] = useState(title);
@@ -33,7 +37,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
       return newIssue;
     });
     const changeIssue = {
-      gameID: '1111',
+      gameID,
       id,
       title: issueName,
     };
@@ -48,7 +52,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
         issues.issues.splice(index, 1);
 
         const issueDelete = {
-          gameID: '1111',
+          gameID,
           id,
         };
         socket.emit('GAME_DELETE_ISSUE', issueDelete);

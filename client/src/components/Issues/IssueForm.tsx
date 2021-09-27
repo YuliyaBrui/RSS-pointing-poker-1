@@ -3,11 +3,12 @@ import shortid from 'shortid';
 import Button from 'antd/lib/button/button';
 import { Form, Input } from 'antd';
 import Select from 'antd/lib/select';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './Issue.module.scss';
 
 import { socket } from '../../socket';
 import { addIssue } from '../../redux/actions/chat';
+import { RootState } from '../../redux';
 
 type IIsueform = {
   formVisible: boolean;
@@ -20,7 +21,9 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [priority, setPriority] = useState('');
 
   const dispatch = useDispatch();
-
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const id = shortid();
 
   const [form] = Form.useForm();
@@ -36,7 +39,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
       link,
       priority,
       id,
-      gameID: '1111',
+      gameID,
     };
     dispatch(
       addIssue({

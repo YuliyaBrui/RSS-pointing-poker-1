@@ -13,14 +13,16 @@ const KickMemberForm = ({ formVisible, setFormVisible }: any): JSX.Element => {
   const formData = (kickData: any): void => {
     dispatch(kickForm(kickData));
   };
-
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const kickUserData = useSelector((state: RootState) => state.kickUserData);
   const agreeKickMember = (): void => {
-    socket.emit('AGREE_KICK_MEMBER', '1111', socket.id);
+    socket.emit('AGREE_KICK_MEMBER', gameID, socket.id);
     dispatch(kickForm({ ...kickUserData, visibil: false }));
   };
   const disagreeKickMember = (): void => {
-    socket.emit('DISAGREE_KICK_MEMBER', '1111', socket.id);
+    socket.emit('DISAGREE_KICK_MEMBER', gameID, socket.id);
     dispatch(kickForm({ ...kickUserData, visibil: false }));
   };
   useEffect(() => {

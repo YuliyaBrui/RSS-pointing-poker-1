@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Avatar, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IFormGameValue } from '../../redux/types/forms';
 import styles from './FormCreateGame.module.scss';
 import { socket } from '../../socket';
 import { saveMasterParams } from '../../redux/actions/createSession';
-import { userParams } from '../../redux/actions/chat';
 import { addCurrentUser } from '../../redux/actions/currentUser';
 
 interface formProps {
@@ -19,6 +18,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
+ 
   const [form] = Form.useForm();
   const reset = (): void => {
     setFirstName('');
@@ -28,7 +28,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   };
   const history = useHistory();
   const dispatch = useDispatch();
-  const handleSubmit = async (): Promise<any> => {
+  const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
       lastName,
@@ -36,19 +36,21 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       avatarURL,
       id: socket.id,
     };
-    dispatch(saveMasterParams(value));
-    const joinState = {
-      value,
-      gameID: '1111',
+    const callback = (gameID: string): void => {
+      const joinState = {
+        master: value,
+        gameID,
+      };
+      socket.emit('GAME_JOIN_MASTER', joinState);
+      reset();
+      form.resetFields();
+      setActive(false);
+      history.push(`/setting/${gameID}`);
     };
-    socket.emit('GAME_JOIN_MASTER', joinState);
     dispatch(addCurrentUser(value));
-    reset();
-    form.resetFields();
-    setActive(false);
-    history.push('/setting');
+    dispatch(saveMasterParams(value, callback));
   };
-
+  
   return (
     <div>
       <Row>
@@ -71,10 +73,11 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
         >
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const newValue = e.target.value;
-              setFirstName(newValue);
+              const { value } = e.target;
+              setFirstName(value);
             }}
           />
+         
         </Form.Item>
         <Form.Item
           label="Your last name(optional):"

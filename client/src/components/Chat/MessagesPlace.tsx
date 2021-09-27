@@ -11,19 +11,21 @@ import Message from './Message';
 // export const ws = new WebSocket('asd');
 
 export const MessagesPlace = (): JSX.Element => {
-  const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.chatReducer);
-  useEffect(() => {
-    dispatch(getUsersParams('1111'));
-    
-  }, []);
+  const messages = useSelector(
+    (state: RootState) => state.chatReducer.messages,
+  );
 
   return (
     <>
       <div className={styles.chat__messages}>
         <ScrollableFeed>
-          {users.messages.map((m) => (
-            <Message avatar={m.avatar} name={m.name} text={m.text} lastName={m.lastName} />
+          {messages.map((m) => (
+            <Message
+              avatar={m.avatar}
+              name={m.name}
+              text={m.text}
+              lastName={m.lastName}
+            />
           ))}
         </ScrollableFeed>
       </div>
