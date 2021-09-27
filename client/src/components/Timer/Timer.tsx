@@ -55,5 +55,4 @@ const Timer = (): JSX.Element => {
   );
 };
 
-
 export default Timer;

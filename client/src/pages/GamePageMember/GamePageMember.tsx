@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
+import axios from 'axios';
 import styles from './GamePageMember.module.scss';
 import ScramMasterInfo from '../../components/ScramMasterCard/ScramMasterCard';
 import Issue from '../../components/Issues/Issue';
@@ -43,7 +44,9 @@ const GamePageMember = (): JSX.Element => {
   };
 
   useEffect(() => {
-    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
+    axios
+      .get('http://localhost:3002/session-name/1111')
+      .then((res) => setSessionName(res.data));
   }, []);
 
   return (

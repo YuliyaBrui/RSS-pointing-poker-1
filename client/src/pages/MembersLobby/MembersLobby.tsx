@@ -12,8 +12,7 @@ import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
 import { chatParams } from '../../redux/actions/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
-import { kickForm } from '../../redux/actions/kickForm';
-import { IChatState, IChatUsers } from '../../redux/types/chat';
+import { IChatUsers } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './MembersLobby.module.scss';
 
@@ -29,7 +28,10 @@ const MembersLobby = (): JSX.Element => {
 
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
-    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
+    socket.emit('GET_SESSION_NAME', '1111');
+    socket.on('GET_SESSION_NAME', (sesName) => {
+      setSessionName(sesName);
+    });
     dispatch(getUsersParams('1111'));
   }, []);
 

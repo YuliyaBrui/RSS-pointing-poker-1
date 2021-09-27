@@ -99,7 +99,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
           </div>
         )}
       </div>
-      <p className={styles.main__priority}>{priority}</p>
+      <p className={styles.main__priority}>priority: {priority}</p>
     </Card>
   );
 };

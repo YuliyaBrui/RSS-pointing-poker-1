@@ -1,9 +1,10 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from 'react';
-import { Button, Row } from 'antd';
+import { Button, Row, Spin, Space } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Col from 'antd/lib/grid/col';
+import axios from 'axios';
 import styles from './GamePage.module.scss';
 import ScramMasterInfo from '../../components/ScramMasterCard/ScramMasterCard';
 import Issue from '../../components/Issues/Issue';
@@ -23,7 +24,7 @@ import { socket } from '../../socket';
 
 const GamePage = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('New session');
+  const [sessionName, setSessionName] = useState();
 
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
@@ -38,11 +39,13 @@ const GamePage = (): JSX.Element => {
     history.push('/result');
   };
 
-  useEffect(() => {
-    socket.on('GET_SESSION_NAME', (sesName) => setSessionName(sesName));
-  }, []);
+  // useEffect(() => {
+  axios
+    .get('http://localhost:3002/session-name/1111')
+    .then((res) => setSessionName(res.data));
+  // }, []);
 
-  return (
+  return sessionName ? (
     <div className={styles.wrapper}>
       <div className={styles.game}>
         <div className={styles.game__part_game}>
@@ -58,7 +61,10 @@ const GamePage = (): JSX.Element => {
                     type="primary"
                     className={styles.button}
                     style={{ width: '100%' }}
-                    onClick={result}
+                    onClick={() => {
+                      result();
+                      socket.emit('FINAL_VOITING_RESULT', '1111');
+                    }}
                   >
                     Stop game
                   </Button>
@@ -163,6 +169,12 @@ const GamePage = (): JSX.Element => {
         </div>
       </div>
       <Chat />
+    </div>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
     </div>
   );
 };
