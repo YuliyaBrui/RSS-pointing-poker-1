@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Avatar, Switch, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +8,7 @@ import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
 import { socket } from '../../socket';
 import { addCurrentUser } from '../../redux/actions/currentUser';
+import { RootState } from '../../redux';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,7 +31,9 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
   };
 
   const history = useHistory();
-
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
@@ -41,7 +44,7 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
     };
     const joinState = {
       user: value,
-      gameID: '1111',
+      gameID,
     };
 
     if (isToggle) {
@@ -53,9 +56,9 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
     reset();
     form.resetFields();
     setActive(false);
-    history.push('/lobby');
+    history.push(`/lobby/${gameID}`);
   };
-
+  
   return (
     <div>
       <Row justify="space-between">
@@ -84,10 +87,11 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
         >
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const newValue = e.target.value;
-              setFirstName(newValue);
+              const { value } = e.target;
+              setFirstName(value);
             }}
           />
+           
         </Form.Item>
 
         <Form.Item

@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
 import { Layout } from 'antd';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { privateRoutes } from '../../route/route';
 import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
 import { socket } from '../../socket';
-import { chatParams, gameIssues, userParams } from '../../redux/actions/chat';
+import { chatParams, gameIssues } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { IFormGameValue } from '../../redux/types/forms';
 import { kickForm } from '../../redux/actions/kickForm';
 import { IIssue } from '../../redux/types/issues';
+import { RootState } from '../../redux';
 
 const { Header, Footer, Content } = Layout;
 
@@ -30,7 +31,7 @@ const AppRouter = (): JSX.Element => {
     dispatch(addIssue(issue));
   };
   const history = useHistory();
-  useEffect(() => {
+   useEffect(() => {
     socket.on('MASTER_JOINED', ({ master }) => {
       console.log({ master });
     });
@@ -46,8 +47,8 @@ const AppRouter = (): JSX.Element => {
         history.push('/');
       }
     });
-    socket.on('START_GAME', (): void => {
-      history.push('/game-member');
+    socket.on('START_GAME', (address: string): void => {
+      history.push(address);
     });
   }, []);
   return (

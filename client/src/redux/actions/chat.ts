@@ -4,8 +4,8 @@ import {
   IChatUsers,
   IMessage,
 } from '../types/chat';
-import { IFormGameValue } from '../types/forms';
 import { IIssue } from '../types/issues';
+import { createGameAction, CreateGameActionTypes } from '../types/forms';
 
 export const chatParams = (users: IChatUsers): chatInfoAction => ({
   type: GetUsersInfoActionTypes.FETCH_SET_USERS,
@@ -23,7 +23,8 @@ export const gameIssues = (issues: IIssue[]): chatInfoAction => ({
   type: GetUsersInfoActionTypes.FETCH_SET_ISSUES,
   payload: { issues },
 });
-export const userParams = (user: IFormGameValue): chatInfoAction => ({
-  type: GetUsersInfoActionTypes.FETCH_SET_USER,
-  payload: { user },
+
+export const addGameID = (gameID: string): createGameAction => ({
+  type: CreateGameActionTypes.FETCH_CREATE_GAME_SUCCESS,
+  payload: { IDGame: gameID },
 });

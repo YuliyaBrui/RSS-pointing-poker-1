@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
@@ -11,6 +11,11 @@ const SessionInfo = (): JSX.Element => {
   const [editSession, setEditSession] = useState(false);
   const [sessionName, setSessionName] = useState('New session');
   const state: RootState = store.getState();
+  const [copySuccess, setCopySuccess] = useState('');
+  const [URL, setURL] = useState(
+    `http://localhost:3000/lobby/${state.formCreateReducer.IDGame}`,
+  );
+  const inputValueRef = useRef(null);
   return (
     <div className="main__card-link-wrapper">
       <ScramMasterInfo />
@@ -40,8 +45,15 @@ const SessionInfo = (): JSX.Element => {
       </Card>
       <Card title="Link to lobby:" style={{ width: '30%', height: '100%' }}>
         <div className="main__link-wrapper">
-          <Input size="middle" value={state.formCreateReducer.IDGame} />
-          <Button size="middle" type="primary">
+          <Input ref={inputValueRef} size="middle" value={URL} />
+
+          <Button
+            size="middle"
+            type="primary"
+            onClick={() => {
+              navigator.clipboard.writeText(URL);
+            }}
+          >
             Copy
           </Button>
         </div>

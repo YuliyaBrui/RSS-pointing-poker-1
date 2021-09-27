@@ -9,30 +9,27 @@ import { getUsersParams } from '../../redux/actions/createSession';
 import styles from './ScramMasterCard.module.scss';
 
 const ScramMasterInfo = (): JSX.Element => {
-  const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.chatReducer);
-  useEffect(() => {
-    dispatch(getUsersParams('1111'));
-  }, []);
+  const master = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
+  );
 
   return (
     <Card title="Scram master:" className={styles.main__card}>
       <div className={styles.main__scram_master_info}>
-        {typeof users.users.master.avatarURL !== 'string' ||
-        users.users.master.avatarURL === '' ? (
+        {typeof master.avatarURL !== 'string' || master.avatarURL === '' ? (
           <UserOutlined style={{ fontSize: '500%' }} />
         ) : (
           <div className={styles.main__scram_master__container_img}>
             <img
               className={styles.main__scram_master__img}
-              src={users.users.master.avatarURL}
+              src={master.avatarURL}
               alt="avatar"
             />
           </div>
         )}
         <div className={styles.main__scram_master_description}>
-          <h3>{`${users.users.master.name} ${users.users.master.lastName}`}</h3>
-          <p>{users.users.master.jobPosition}</p>
+          <h3>{`${master.name} ${master.lastName}`}</h3>
+          <p>{master.jobPosition}</p>
         </div>
       </div>
     </Card>

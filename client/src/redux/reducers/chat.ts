@@ -10,7 +10,6 @@ const initialUsersState: IChatState = {
     observers: [],
     master: { name: '', lastName: '', jobPosition: '', avatarURL: '', id: '' },
   },
-  user: { name: '', lastName: '', jobPosition: '', avatarURL: '', id: '' },
   messages: [],
   issues: [],
 };
@@ -24,11 +23,7 @@ export const chatReducer = (
         ...state,
         users: action.payload.users,
       };
-    case GetUsersInfoActionTypes.FETCH_SET_USER:
-      return {
-        ...state,
-        user: action.payload.user,
-      };
+    
     case GetUsersInfoActionTypes.FETCH_SET_MESSAGES:
       return {
         ...state,

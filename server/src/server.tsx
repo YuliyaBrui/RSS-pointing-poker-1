@@ -41,7 +41,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // random id
 const guid = (): string => {
-  const s4 = (): string => Math.floor((1 + Math.random()) * 0x10000)
+  const s4 = (): string =>
+    Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
@@ -51,7 +52,8 @@ export const games = new Map();
 
 app.post('/', (req, res) => {
   const { master } = req.body;
-  const gameID = '1111';
+  const gameID = guid();
+  console.log(gameID);
   games.set(
     gameID,
     new Map([
@@ -64,13 +66,15 @@ app.post('/', (req, res) => {
       ['gameCards', []],
       ['kickForm', new Map()],
       ['gameScore', new Map()],
-    ]),
+    ])
   );
   res.json(gameID);
+  console.log(games.keys());
 });
 
 app.get('/:id', async (req, res) => {
   const gameID = req.params.id;
+  console.log(gameID);
   if (games.has(gameID)) {
     const members = [...games.get(gameID).get('members').values()];
     const observers = [...games.get(gameID).get('observers').values()];
@@ -93,9 +97,17 @@ app.get('/:id', async (req, res) => {
     });
   } else {
     res.send({
-      master: {},
-      members: [],
-      observers: [],
+      users: {
+        master: {
+          name: '',
+          lastName: '',
+          jobPosition: '',
+          avatarURL: '',
+          id: '',
+        },
+        members: [],
+        observers: [],
+      },
       messages: [],
       issues: [],
       setting: [],
@@ -109,6 +121,7 @@ app.get('/:id', async (req, res) => {
 io.on('connection', (socket: Socket) => {
   console.log(`${socket.id} connected`);
   socket.send('connection', socket.id);
+
   socket.on('GAME_JOIN_MASTER', ({ gameID, master }) => {
     socket.join(gameID);
     console.log(master);
@@ -128,7 +141,12 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('GAME_NEW_MESSAGE', ({ gameID, name, lastName, text, avatar }) => {
-    console.log({ gameID, name, text, avatar });
+    console.log({
+      gameID,
+      name,
+      text,
+      avatar,
+    });
     const message = {
       name,
       lastName,
@@ -162,7 +180,9 @@ io.on('connection', (socket: Socket) => {
     console.log({ gameID, id });
     games.get(gameID).get('issues').delete(id);
     console.log(games.get(gameID).get('issues'));
-    socket.to(gameID).emit('GAME_DELETE_ISSUE', games.get(gameID).get('issues'));
+    socket
+      .to(gameID)
+      .emit('GAME_DELETE_ISSUE', games.get(gameID).get('issues'));
   });
 
   socket.on('GAME_CHANGE_ISSUE', ({ gameID, id, title }) => {
@@ -174,6 +194,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('START_GAME', (gameID, address) => {
+    console.log(address);
     socket.to(gameID).emit('START_GAME', address);
   });
 
@@ -181,7 +202,14 @@ io.on('connection', (socket: Socket) => {
     'ADD_GAME_SETTING',
     (
       gameID,
-      { masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime }: ISetting,
+      {
+        masterPlayer,
+        changingCard,
+        needTimer,
+        scoreType,
+        shortScoreType,
+        roundTime,
+      }: ISetting
     ) => {
       games.get(gameID).get('setting').push({
         masterPlayer,
@@ -230,7 +258,10 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('SET_USER_POINT', (gameID, scoreData) => {
-    games.get(gameID).get('gameScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
+    games
+      .get(gameID)
+      .get('gameScore')
+      .set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     const allUserPoints = [...games.get(gameID).get('gameScore').values()];
     io.sockets.in(gameID).emit('SET_USER_POINT', allUserPoints);
   });
@@ -256,11 +287,11 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
-      if (value.get('members').delete(socket.id) || value.get('observers').delete(socket.id)) {
-        const members = [...games.get(gameID).get('members').values()];
-        const observers = [...games.get(gameID).get('observers').values()];
-        const master = games.get(gameID).get('master');
-        socket.to(gameID).emit('MEMBER_LEAVED', { members, observers, master });
+      if (
+        value.get('members').delete(socket.id) ||
+        value.get('observers').delete(socket.id)
+      ) {
+        socket.to(gameID).emit('MEMBER_LEAVED', users(gameID));
         console.log('delete');
       }
     });

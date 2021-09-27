@@ -14,49 +14,56 @@ import {
 } from '../types/forms';
 
 export const saveMasterParams =
-  (value: IFormGameValue) =>
+  (value: IFormGameValue, callback: (gameID: string) => void) =>
   async (dispatch: Dispatch<createGameAction>): Promise<void> => {
-    console.log(value);
+  console.log(value);
+
     try {
-      dispatch({
+    dispatch({
         type: CreateGameActionTypes.FETCH_CREATE_GAME,
-      });
-      const response: AxiosResponse<string> = await instance.post('/', {
+    });
+    const response: AxiosResponse<string> = await instance.post('/', {
         master: value,
       });
+    const gameID = response.data;
       dispatch({
         type: CreateGameActionTypes.FETCH_CREATE_GAME_SUCCESS,
         payload: { IDGame: response.data },
-      });
-    } catch (e) {
+    });
+    callback(gameID);
+  } catch (e) {
       dispatch({
         type: CreateGameActionTypes.FETCH_CREATE_GAME_ERROR,
         payload: { error: 'Error' },
-      });
-    }
+    });
+  }
   };
 
-export const getUsersParams = (IDGame: string) =>
+export const getUsersParams =
+  (IDGame: string, callback: (master: IFormGameValue) => void) =>
   async (dispatch: Dispatch<chatInfoAction>): Promise<void> => {
     const response: AxiosResponse<IChatState> = await instance.get(
-      `/${IDGame}`
-    );
+      `/${IDGame}`,
+  );
+
     dispatch({
-      type: GetUsersInfoActionTypes.FETCH_SET_USERS,
+    type: GetUsersInfoActionTypes.FETCH_SET_USERS,
       payload: {
         users: response.data.users,
       },
+  });
+    dispatch({
+    type: GetUsersInfoActionTypes.FETCH_SET_MESSAGES,
+    payload: {
+      messages: response.data.messages,
+    },
     });
     dispatch({
-      type: GetUsersInfoActionTypes.FETCH_SET_MESSAGES,
-      payload: {
-        messages: response.data.messages,
-      },
+    type: GetUsersInfoActionTypes.FETCH_SET_ISSUES,
+    payload: {
+      issues: response.data.issues,
+    },
     });
-    dispatch({
-      type: GetUsersInfoActionTypes.FETCH_SET_ISSUES,
-      payload: {
-        issues: response.data.issues,
-      },
-    });
-  };
+
+    callback(response.data.users.master);
+};

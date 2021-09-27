@@ -8,14 +8,16 @@ import { socket } from '../../../socket';
 
 const StartCancelButtons = (): JSX.Element => {
   const store = useSelector((state: RootState) => state);
-
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const history = useHistory();
   const StartGame = (): void => {
-    socket.emit('START_GAME', '1111');
-    socket.emit('ADD_GAME_SETTING', '1111', store.gameSetting);
-    socket.emit('ADD_GAME_CARDS', '1111', store.gameCards);
-    socket.emit('START_GAME', '1111', '/game-member');
-    history.push('/game');
+    socket.emit('START_GAME', gameID);
+    socket.emit('ADD_GAME_SETTING', gameID, store.gameSetting);
+    socket.emit('ADD_GAME_CARDS', gameID, store.gameCards);
+    socket.emit('START_GAME', gameID, `/game-member/${gameID}`);
+    history.push(`/game/${gameID}`);
   };
 
   return (
