@@ -2,14 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Row, Spin, Space } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import Col from 'antd/lib/grid/col';
 import styles from './GamePage.module.scss';
 import ScramMasterInfo from '../../components/ScramMasterCard/ScramMasterCard';
 import Issue from '../../components/Issues/Issue';
 import Timer from '../../components/Timer/Timer';
-import CreateIssue from '../../components/Issues/CreateIssueButton';
 import IssueForm from '../../components/Issues/IssueForm';
 import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
@@ -21,12 +20,12 @@ import { IGameCard } from '../../redux/types/gameCard';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
+import { getUsersParams } from '../../redux/actions/createSession';
 
 const GamePage = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
   const [sessionName, setSessionName] = useState('');
-
-  const issues = useSelector((state: RootState) => state.chatReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const masters = useSelector(
@@ -36,7 +35,17 @@ const GamePage = (): JSX.Element => {
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+  const dispatch = useDispatch();
+  const handleSortASCClick = (): void => {
+    socket.emit('SORT_ISSUES_ASC', gameID);
+    dispatch(getUsersParams(gameID));
+    console.log(issues);
+  };
+  const handleSortDESCClick = (): void => {
+    socket.emit('SORT_ISSUES_DESC', gameID);
+    dispatch(getUsersParams(gameID));
+    console.log(issues);
+  };
   const history = useHistory();
   const result = (): void => {
     history.push('/result');
@@ -86,10 +95,26 @@ const GamePage = (): JSX.Element => {
             </div>
             <div className={styles.process}>
               <div className={styles.issue}>
+                <Button
+                  type="primary"
+                  className={styles.button}
+                  style={{ width: '100%' }}
+                  onClick={handleSortASCClick}
+                >
+                  ASC
+                </Button>
+                <Button
+                  type="primary"
+                  className={styles.button}
+                  style={{ width: '100%' }}
+                  onClick={handleSortDESCClick}
+                >
+                  DESC
+                </Button>
                 <h2 className={styles.game_title}>Issues: </h2>
                 <Row style={{ width: '100%' }} justify="center">
                   {issues &&
-                    issues.issues.map((issue: IIssue) => (
+                    issues.map((issue: IIssue) => (
                       <Issue
                         title={issue.title}
                         priority={issue.priority}

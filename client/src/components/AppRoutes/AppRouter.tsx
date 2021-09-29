@@ -40,6 +40,7 @@ const AppRouter = (): JSX.Element => {
     socket.on('GAME_ADD_ISSUE', addIssue);
     socket.on('GAME_DELETE_ISSUE', getIssues);
     socket.on('GAME_CHANGE_ISSUE', getIssues);
+    socket.on('GAME_SORT_ISSUES', getIssues);
     socket.on('KICKED_MEMBER', getUsers);
     socket.on('FINISH_VOITING', formData);
     socket.on('STOP_JOIN', (id): void => {

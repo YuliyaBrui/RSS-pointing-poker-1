@@ -4,7 +4,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import express from 'express';
 import { Server, Socket } from 'socket.io';
 import { ISetting } from './types';
-import { kickVoiting, users } from './functions';
+import { kickVoiting, sortASC, sortDESC, users } from './functions';
 
 const app = express();
 app.use(cors());
@@ -194,7 +194,28 @@ io.on('connection', (socket: Socket) => {
     console.log(games.get(gameID).get('issues'));
     socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
   });
-
+  socket.on('SORT_ISSUES_ASC', (gameID) => {
+    console.log(gameID);
+    console.log([...games.keys()]);
+    const issues = [...games.get(gameID).get('issues').values()].sort(sortASC('priority'));
+    games.get(gameID).get('issues').clear();
+    console.log(games.get(gameID).get('issues'));
+     console.log(issues);
+    issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
+    console.log(games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
+  });
+  socket.on('SORT_ISSUES_DESC', (gameID) => {
+    console.log(gameID);
+    console.log([...games.keys()]);
+    const issues = [...games.get(gameID).get('issues').values()].sort(sortDESC('priority'));
+    games.get(gameID).get('issues').clear();
+    console.log(games.get(gameID).get('issues'));
+     console.log(issues);
+    issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
+    console.log(games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
+  });
   socket.on('GAME_DELETE_ISSUE', ({ gameID, id }) => {
     console.log({ gameID, id });
     games.get(gameID).get('issues').delete(id);

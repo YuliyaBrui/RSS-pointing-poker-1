@@ -6,10 +6,32 @@ export const users = (gameID: string): any => {
   const master = games.get(gameID).get('master');
   return { members, observers, master };
 };
+interface IIssue {
+  id: string;
+  title: string;
+  link: string;
+  priority: string;
+}
+const arrPriority = ['low', 'middle', 'height'];
+export function sortASC(field: keyof IIssue): any {
+  return (a: IIssue, b: IIssue): any => {
+    if (arrPriority.indexOf(a[field]) > arrPriority.indexOf(b[field])) {
+      return 1;
+    }
+    return -1;
+  };
+}
+export function sortDESC(field: keyof IIssue): any {
+  return (a: IIssue, b: IIssue): any => {
+    if (arrPriority.indexOf(a[field]) < arrPriority.indexOf(b[field])) {
+      return 1;
+    }
+    return -1;
+  };
+}
 export const kickVoiting = (gameID: string): void => {
   const countMembers = [...games.get(gameID).get('members').values()].length;
-  const countObservers = [...games.get(gameID).get('observers').values()]
-    .length;
+  const countObservers = [...games.get(gameID).get('observers').values()].length;
   const countMaster = 1;
   const countUsers = countMembers + countObservers + countMaster;
   const countYes = games.get(gameID).get('kickForm').get('inform').yes.length;
@@ -18,8 +40,7 @@ export const kickVoiting = (gameID: string): void => {
   if (countUsers === answers) {
     if (countYes >= Math.floor(0.5 * answers) + 1) {
       console.log(games.get(gameID).get('kickForm').get('inform'));
-      const kickedUser = games.get(gameID).get('kickForm').get('inform')
-        .exclusion.id;
+      const kickedUser = games.get(gameID).get('kickForm').get('inform').exclusion.id;
       console.log(kickedUser);
       if (
         games.get(gameID).get('members').delete(kickedUser) ||
