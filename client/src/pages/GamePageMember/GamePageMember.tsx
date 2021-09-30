@@ -52,6 +52,7 @@ const GamePageMember = (): JSX.Element => {
       .get(`http://localhost:3002/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
     dispatch(getUsersParams(gameID));
+    dispatch(setRoundTime()
   }, []);
 
   return (

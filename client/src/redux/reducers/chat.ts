@@ -8,10 +8,25 @@ const initialUsersState: IChatState = {
   users: {
     members: [],
     observers: [],
-    master: { name: '', lastName: '', jobPosition: '', avatarURL: '', id: '' },
+    master: {
+      name: '',
+      lastName: '',
+      jobPosition: '',
+      avatarURL: '',
+      id: '',
+    },
   },
   messages: [],
   issues: [],
+  setting: {
+    masterPlayer: false,
+    changingCard: false,
+    needTimer: false,
+    scoreType: '',
+    shortScoreType: 'ST',
+    roundTime: 0,
+  },
+  gameCards: [],
 };
 export const chatReducer = (
   state: IChatState = initialUsersState,
@@ -23,7 +38,7 @@ export const chatReducer = (
         ...state,
         users: action.payload.users,
       };
-    
+
     case GetUsersInfoActionTypes.FETCH_SET_MESSAGES:
       return {
         ...state,
@@ -43,6 +58,16 @@ export const chatReducer = (
       return {
         ...state,
         issues: [...state.issues, action.payload.issue],
+      };
+    case GetUsersInfoActionTypes.FETCH_SET_SETTING:
+      return {
+        ...state,
+        setting: action.payload.setting,
+      };
+    case GetUsersInfoActionTypes.FETCH_SET_GAME_CARDS:
+      return {
+        ...state,
+        gameCards: action.payload.gameCards,
       };
     default:
       return state;
