@@ -63,7 +63,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   };
 
   return (
-    <Card style={{ width: '250px', height: '90px', margin: '5px' }}>
+    <Card style={{ width: '260px', height: '90px', margin: '5px' }}>
       <div className={styles.main__content_wrapper}>
         <Input
           className={!editIssueName ? styles.main__input_disabled : ''}
@@ -78,7 +78,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
             changeTitle();
           }}
         />
-        {location.pathname === '/setting' && (
+        {location.pathname === `/setting/${gameID}` && (
           <div className={styles.main__button_wrapper}>
             <Button
               type="default"

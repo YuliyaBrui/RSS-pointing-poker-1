@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useReducer, useState } from 'react';
-import { Button } from 'antd';
+import { Button, Carousel } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -27,7 +27,7 @@ const GamePageMember = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const issues = useSelector((state: RootState) => state.chatReducer.issues);
+  const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const masters = useSelector(
@@ -43,6 +43,9 @@ const GamePageMember = (): JSX.Element => {
     history.push('/');
   };
 
+  console.log(masters);
+  console.log(timer);
+
   const setUserPoint = (point: number): void => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
   };
@@ -55,6 +58,43 @@ const GamePageMember = (): JSX.Element => {
     dispatch(setRoundTime()
   }, []);
 
+  const SampleNextArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          color: 'black',
+          fontSize: '25px',
+          lineHeight: '1.5715',
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+
+  const SamplePrevArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          color: 'black',
+          fontSize: '25px',
+          lineHeight: '1.5715',
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+
+  const settings = {
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.game}>
@@ -65,32 +105,45 @@ const GamePageMember = (): JSX.Element => {
               <div>
                 <ScramMasterInfo />
               </div>
+              {timer && (
+                <div>
+                  <Timer />
+                </div>
+              )}
               <div>
                 <Button type="primary" className={styles.button} onClick={exit}>
                   EXIT
                 </Button>
               </div>
-              {timer && (
-                <div style={{ width: '40%' }}>
-                  <Timer />
-                </div>
-              )}
             </div>
             <div className={styles.process}>
               <div className={styles.issue}>
                 <h2 className={styles.game_title}>Issues: </h2>
-                <Row style={{ width: '100%' }} justify="center">
+                <Carousel arrows {...settings}>
                   {issues &&
-                    issues.map((issue: IIssue) => (
-                      <Issue
-                        title={issue.title}
-                        priority={issue.priority}
-                        link={issue.link}
-                        id={issue.id}
-                        key={issue.id}
-                      />
+                    issues.issues.map((issue: IIssue) => (
+                      <div>
+                        <h3
+                          style={{
+                            height: '130px',
+                            color: '#fff',
+                            lineHeight: '130px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Issue
+                            title={issue.title}
+                            priority={issue.priority}
+                            link={issue.link}
+                            id={issue.id}
+                            key={issue.id}
+                          />
+                        </h3>
+                      </div>
                     ))}
-                </Row>
+                </Carousel>
               </div>
               <div>
                 <h2 className={styles.game_title}>Statistics:</h2>
