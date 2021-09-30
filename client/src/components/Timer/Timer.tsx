@@ -11,6 +11,10 @@ const Timer = (): JSX.Element => {
   const [isRunning, setIsRunning] = useState(false);
 
   const location = useLocation();
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
+
   useEffect(() => {
     if (isRunning) {
       const id = window.setInterval(() => {
@@ -25,7 +29,7 @@ const Timer = (): JSX.Element => {
 
   return (
     <div className={styles.timer_wrapper}>
-      {location.pathname === '/game' && (
+      {location.pathname === `/game/${gameID}` && (
         <div className={styles.timer_button}>
           {!isRunning ? (
             <Button

@@ -5,6 +5,8 @@ import Card from 'antd/lib/card';
 import Input from 'antd/lib/input/Input';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
 import styles from './GameCard.module.scss';
 
 const CoffeeGameCard = (): JSX.Element => {
@@ -12,6 +14,9 @@ const CoffeeGameCard = (): JSX.Element => {
   const [editCardName, setEditCardName] = useState(false);
 
   const location = useLocation();
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
 
   return (
     <Card style={{ width: 150, height: 200, margin: '5px' }}>
@@ -25,7 +30,7 @@ const CoffeeGameCard = (): JSX.Element => {
             onChange={(e) => setCardName(e.target.value)}
             onPressEnter={() => setEditCardName(false)}
           />
-          {location.pathname === '/setting' && (
+          {location.pathname === `/setting/${gameID}` && (
             <Button
               type="default"
               style={{ border: 'none', padding: 0 }}

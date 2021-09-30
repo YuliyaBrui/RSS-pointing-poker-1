@@ -74,7 +74,7 @@ const UserCard = ({
           <h3>{`${name} ${lastName}`}</h3>
           <p>{position}</p>
         </div>
-        {(location.pathname === '/setting' || location.pathname === '/lobby') && (
+        {(location.pathname === `/setting/${gameID}` || location.pathname === `/lobby/${gameID}`) && (
           <Popconfirm
             title="Kick player?"
             okText="Yes"

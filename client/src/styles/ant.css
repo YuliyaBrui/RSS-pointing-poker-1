@@ -37,3 +37,36 @@
   background-color: #496A81;
   border:#496A81;
 }
+
+.ant-carousel .slick-dots li.slick-active button {
+  background: red;
+}
+
+.ant-carousel .slick-dots-bottom {
+  bottom: 0px;
+}
+
+.ant-carousel .slick-dots li button {
+  background: #496A81;
+  height: 5px;
+}
+
+.ant-carousel .slick-dots li {
+  width: 40px;
+  height: 5px;
+}
+
+.slick-slide {
+  width: 260px;
+}
+
+.slick-slide .slick-active,
+.slick-slide .slick-current {
+  width: 260px;
+  left: -260px;
+}
+
+.ant-carousel {
+  width: 350px;
+  margin: 0 auto;
+}

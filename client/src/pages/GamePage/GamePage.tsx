@@ -1,8 +1,8 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from 'react';
-import { Button, Row, Spin, Space } from 'antd';
+import { Button, Row, Spin, Space, Carousel } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import Col from 'antd/lib/grid/col';
 import styles from './GamePage.module.scss';
@@ -13,6 +13,7 @@ import CreateIssue from '../../components/Issues/CreateIssueButton';
 import IssueForm from '../../components/Issues/IssueForm';
 import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
+import { gameIssues } from '../../redux/actions/chat';
 import { IIssue } from '../../redux/types/issues';
 import Statistics from '../../components/Statistics/Statistics';
 import GameCard from '../../components/GameCard/GameCard';
@@ -23,6 +24,7 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 
 const GamePage = (): JSX.Element => {
+  const currentUser = useSelector((state: RootState) => state.currentUser);
   const [formVisible, setFormVisible] = useState(false);
   const [sessionName, setSessionName] = useState('');
 
@@ -37,9 +39,17 @@ const GamePage = (): JSX.Element => {
     (state: RootState) => state.formCreateReducer.IDGame,
   );
 
+  console.log(masters);
+  console.log(timer);
+
+
   const history = useHistory();
   const result = (): void => {
     history.push('/result');
+  };
+
+  const setUserPoint = (point: number): void => {
+    socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
   };
 
   useEffect(() => {
@@ -47,6 +57,43 @@ const GamePage = (): JSX.Element => {
       .get(`http://localhost:3002/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
   }, []);
+
+  const SampleNextArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          color: 'black',
+          fontSize: '25px',
+          lineHeight: '1.5715',
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+
+  const SamplePrevArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          color: 'black',
+          fontSize: '25px',
+          lineHeight: '1.5715',
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+
+  const settings = {
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
 
   return sessionName.length > 1 ? (
     <div className={styles.wrapper}>
@@ -58,6 +105,11 @@ const GamePage = (): JSX.Element => {
               <div>
                 <ScramMasterInfo />
               </div>
+              {timer && (
+                <div>
+                  <Timer />
+                </div>
+              )}
               <div>
                 <div>
                   <Button
@@ -73,32 +125,57 @@ const GamePage = (): JSX.Element => {
                   </Button>
                 </div>
                 <div>
+                  <Button
+                    type="primary"
+                    className={styles.button}
+                    style={{ width: '100%' }}
+                  >
+                    Next Issues
+                  </Button>
+                </div>
+                <div>
                   <Button type="primary" style={{ width: '100%' }}>
-                    Next Issue
+                    Sort Issue
                   </Button>
                 </div>
               </div>
-              {timer && (
-                <div style={{ width: '40%' }}>
-                  <Timer />
-                </div>
-              )}
             </div>
             <div className={styles.process}>
               <div className={styles.issue}>
                 <h2 className={styles.game_title}>Issues: </h2>
-                <Row style={{ width: '100%' }} justify="center">
+                <Carousel arrows {...settings}>
                   {issues &&
                     issues.issues.map((issue: IIssue) => (
-                      <Issue
-                        title={issue.title}
-                        priority={issue.priority}
-                        link={issue.link}
-                        id={issue.id}
-                        key={issue.id}
-                      />
+                      <div>
+                        <h3
+                          style={{
+                            height: '130px',
+                            color: '#fff',
+                            lineHeight: '130px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Issue
+                            title={issue.title}
+                            priority={issue.priority}
+                            link={issue.link}
+                            id={issue.id}
+                            key={issue.id}
+                          />
+                        </h3>
+                      </div>
                     ))}
-                </Row>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormVisible(true);
+                    }}
+                  >
+                    <CreateIssue />
+                  </button>
+                </Carousel>
               </div>
               <div>
                 <h2 className={styles.game_title}>Statistics:</h2>
@@ -107,13 +184,25 @@ const GamePage = (): JSX.Element => {
               {masters && (
                 <div>
                   <Row style={{ width: '100%' }} justify="center">
-                    <CoffeeGameCard />
+                    <Button
+                      type="default"
+                      style={{ border: 'none', padding: '0', height: '100%' }}
+                      onClick={() => setUserPoint(0)}
+                    >
+                      <CoffeeGameCard />
+                    </Button>
                     {gameCards.map((gameCard: IGameCard) => (
-                      <GameCard
-                        cardValue={gameCard.cardValue}
-                        id={gameCard.id}
-                        key={gameCard.id}
-                      />
+                      <Button
+                        type="default"
+                        style={{ border: 'none', padding: '0', height: '100%' }}
+                        onClick={() => setUserPoint(gameCard.cardValue)}
+                      >
+                        <GameCard
+                          cardValue={gameCard.cardValue}
+                          id={gameCard.id}
+                          key={gameCard.id}
+                        />
+                      </Button>
                     ))}
                   </Row>
                 </div>

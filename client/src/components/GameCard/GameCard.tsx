@@ -23,6 +23,9 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
   const [editCardValue, setEditCardValue] = useState(false);
 
   const location = useLocation();
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
 
   const changeCardValue = (inputCardValue: string): void => {
     gameCards.map((value: IGameCard) => {
@@ -51,7 +54,7 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
       <div className={styles.main__coffee_card}>
         <div className={styles.main__title}>
           <h3>{`${shortType}`}</h3>
-          {location.pathname === '/setting' && (
+          {location.pathname === `/setting/${gameID}` && (
             <div className={styles.main__button_wrapper}>
               <div className={editCardValue ? '' : styles.main__close_icon}>
                 <Button

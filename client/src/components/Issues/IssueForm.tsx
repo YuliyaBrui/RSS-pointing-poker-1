@@ -103,7 +103,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
               options={[
                 { label: 'low', value: 'low' },
                 { label: 'middle', value: 'middle' },
-                { label: 'height', value: 'height' },
+                { label: 'high', value: 'high' },
               ]}
               onSelect={(value) => setPriority(`${value}`)}
             />
