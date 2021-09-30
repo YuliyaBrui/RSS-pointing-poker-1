@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Input, Space } from 'antd';
+import { Alert, Button, Input, Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './StartPage.module.scss';
 import { FormCreateGame } from '../../components/FormCreateGame/FormCreateGame';
@@ -49,7 +49,6 @@ const StartPage = (): JSX.Element => {
         }
       };
       dispatch(getUsersParams(gameID, callback));
-     
     }
   };
   return (
@@ -104,6 +103,17 @@ const StartPage = (): JSX.Element => {
       <Modal active={activeFormError}>
         <ErrorGameID setActive={setActiveFormError} />
       </Modal>
+      {true && (
+        <div className={styles.info_wrapper}>
+          <Alert
+          className={styles.game_info}
+          closable
+          message="Success Text"
+          description="Success Description Success Description Success Description"
+          type="info"
+        />
+        </div>
+      )}
     </div>
   );
 };

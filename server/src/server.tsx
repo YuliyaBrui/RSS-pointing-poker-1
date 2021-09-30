@@ -41,10 +41,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // random id
 const guid = (): string => {
-  const s4 = (): string =>
-    Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
+  const s4 = (): string => Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 };
 
@@ -66,13 +65,15 @@ app.post('/', (req, res) => {
       ['gameCards', []],
       ['kickForm', new Map()],
       ['gameScore', new Map()],
-      [
-        'finalScore',
-        {
-          0: { 1: 53, 3: 23, 0: 33 },
-          1: { 1: 53, 3: 23 },
-        },
-      ],
+      ['percentScore', new Map()],
+      // [
+      //   'finalScore',
+      //   {
+      //     0: { 1: 53, 3: 23, 0: 33 },
+      //     1: { 1: 53, 3: 23 },
+      //   },
+      // ],
+      ['finalScore', []],
       ['sessionName', 'New session'],
     ]),
   );
@@ -101,7 +102,9 @@ app.get('/:id', async (req, res) => {
     const gameCards = games.get(gameID).get('gameCards');
     const kickForm = games.get(gameID).get('kickForm');
     const gameScore = [...games.get(gameID).get('gameScore').values()];
+    const percentScore = [...games.get(gameID).get('percentScore').values()];
     const sessionName = games.get(gameID).get('sessionName');
+    const finalScore = games.get(gameID).get('finalScore');
 
     res.send({
       users: { members, observers, master },
@@ -111,7 +114,9 @@ app.get('/:id', async (req, res) => {
       gameCards,
       kickForm,
       gameScore,
+      percentScore,
       sessionName,
+      finalScore,
     });
   } else {
     res.send({
@@ -159,7 +164,9 @@ io.on('connection', (socket: Socket) => {
     socket.to(gameID).emit('MEMBER_JOINED', users(gameID));
   });
 
-  socket.on('GAME_NEW_MESSAGE', ({ gameID, name, lastName, text, avatar }) => {
+  socket.on('GAME_NEW_MESSAGE', ({
+ gameID, name, lastName, text, avatar 
+}) => {
     console.log({
       gameID,
       name,
@@ -177,7 +184,9 @@ io.on('connection', (socket: Socket) => {
   });
 
   // issue
-  socket.on('GAME_NEW_ISSUE', ({ gameID, title, link, priority, id }) => {
+  socket.on('GAME_NEW_ISSUE', ({
+ gameID, title, link, priority, id 
+}) => {
     console.log({
       gameID,
       title,
@@ -217,9 +226,7 @@ io.on('connection', (socket: Socket) => {
     'ADD_GAME_SETTING',
     (
       gameID,
-      {
- masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime 
-}: ISetting,
+      { masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime }: ISetting,
     ) => {
       games.get(gameID).get('setting').push({
         masterPlayer,
@@ -249,16 +256,18 @@ io.on('connection', (socket: Socket) => {
     console.log(games.get(gameID).get('kickForm').get('inform'));
     io.sockets.in(gameID).emit('KICK_DATA', kickData);
   });
+
   socket.on('KICK_USER_BY_MASTER', (gameID, id) => {
     if (
-      games.get(gameID).get('members').delete(id) ||
-      games.get(gameID).get('observers').delete(id)
+      games.get(gameID).get('members').delete(id)
+      || games.get(gameID).get('observers').delete(id)
     ) {
       console.log(games.get(gameID));
       io.sockets.in(gameID).emit('KICKED_MEMBER', users(gameID));
       io.sockets.in(gameID).emit('STOP_JOIN', id);
     }
   });
+
   socket.on('AGREE_KICK_MEMBER', (gameID, id) => {
     games.get(gameID).get('kickForm').get('inform').yes.push(id);
     console.log('yes');
@@ -272,19 +281,41 @@ io.on('connection', (socket: Socket) => {
     kickVoiting(gameID);
   });
 
+  socket.on('GET_GAME_CARDS', (gameID) => {
+    io.sockets.in(gameID).emit('GET_GAME_CARDS', games.get(gameID).get('gameCards'));
+  });
+
   socket.on('SET_USER_POINT', (gameID, scoreData) => {
     games.get(gameID).get('gameScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
+    games.get(gameID).get('percentScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     const allUserPoints = [...games.get(gameID).get('gameScore').values()];
     io.sockets.in(gameID).emit('GET_USER_POINT', allUserPoints);
   });
 
-  socket.on('DELETE_USER_POINTS', (gameID) => {
-    games.get(gameID).get('gameScore').clear();
-    const allUserPoints = [...games.get(gameID).get('gameScore').values()];
-    io.sockets.in(gameID).emit('DELETE_USER_POINT', allUserPoints);
+  socket.on('GET_AVERAGE_RESULT', (gameID) => {
+    const arrUserPoints = [...games.get(gameID).get('gameScore').values()];
+
+    const oneIssueStats = {
+      quantity: arrUserPoints.length,
+      average: 0,
+      coffee: 0,
+    };
+
+    arrUserPoints.forEach((el): void => {
+      const { point } = el;
+      if (point !== 0) {
+        oneIssueStats.average += 1;
+      } else {
+        oneIssueStats.coffee += 1;
+      }
+    });
+
+    oneIssueStats.average /= arrUserPoints.length - oneIssueStats.coffee;
+
+    io.sockets.in(gameID).emit('GET_AVERAGE_RESULT', oneIssueStats);
   });
 
-  socket.on('GET_VOTING_RESULT', (gameID) => {
+  const getVotingResult = (gameID: string): void => {
     const arrUserPoints = [...games.get(gameID).get('gameScore').values()];
     interface TPercent extends Object {
       [point: number]: number;
@@ -296,7 +327,7 @@ io.on('connection', (socket: Socket) => {
     }
     const statistics: TStatistics = {};
 
-    arrUserPoints.map((el): void => {
+    arrUserPoints.forEach((el): void => {
       const { point } = el;
       if (point in statistics) {
         statistics[point].push(point);
@@ -310,7 +341,18 @@ io.on('connection', (socket: Socket) => {
       percent[value] = +((statistics[value].length / arrUserPoints.length) * 100).toFixed(1);
     }
 
-    io.sockets.in(gameID).emit('GET_VOTING_RESULT', percent);
+    games.get(gameID).get('finalScore').push(percent);
+  };
+
+  socket.on('NEXT_ISSUE', (gameID) => {
+    getVotingResult(gameID);
+    games.get(gameID).get('gameScore').clear();
+    io.sockets.in(gameID).emit('GET_USER_POINT', []);
+  });
+
+  socket.on('REPEAT_VOTING', (gameID) => {
+    games.get(gameID).get('gameScore').clear();
+    io.sockets.in(gameID).emit('GET_USER_POINT', []);
   });
 
   socket.on('disconnect', () => {

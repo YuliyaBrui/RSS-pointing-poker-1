@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import shortid from 'shortid';
 import Button from 'antd/lib/button/button';
-import { Form, Input } from 'antd';
+import { Form, Input, Upload } from 'antd';
 import Select from 'antd/lib/select';
 import { useDispatch, useSelector } from 'react-redux';
+import { DownloadOutlined } from '@ant-design/icons/lib/icons';
 import styles from './Issue.module.scss';
 
 import { socket } from '../../socket';
@@ -19,6 +20,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
   const [priority, setPriority] = useState('');
+  const [uploadIssue, setUploadIssue] = useState('');
 
   const dispatch = useDispatch();
   const gameID = useSelector(
@@ -32,6 +34,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
     form.resetFields();
     setFormVisible(false);
   };
+  // console.log()
 
   const handleSubmit = (): void => {
     const newIssue = {
@@ -52,6 +55,14 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
     socket.emit('GAME_NEW_ISSUE', newIssue);
     resetForm();
   };
+
+  // const upload = (file: any): void => {
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     console.log(e.target.result);
+  //   };
+  //   reader.readAsText(file);
+  // };
 
   return (
     <div
@@ -77,16 +88,19 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
             name="Title"
             label="Title"
             labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
+            wrapperCol={{ span: 20 }}
           >
-            <Input onChange={(e) => setTitle(e.target.value)} />
+            <Input
+              style={{ maxWidth: '100%' }}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </Form.Item>
           <Form.Item
             rules={[{ required: true }]}
             name="Link"
             label="Link"
             labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
+            wrapperCol={{ span: 20 }}
           >
             <Input onChange={(e) => setLink(e.target.value)} />
           </Form.Item>
@@ -95,7 +109,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
             label="Priority"
             rules={[{ required: true }]}
             labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
+            wrapperCol={{ span: 20 }}
           >
             <Select
               placeholder="Select priority"
@@ -122,6 +136,37 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
               >
                 Cancel
               </Button>
+              <Upload
+                beforeUpload={(file) => {
+                  const reader = new FileReader();
+                  reader.readAsText(file);
+                  reader.onload = (e) => {
+                    if (!e.target || !e.target.result) return;
+
+                    setUploadIssue(`${e.target.result}`);
+                    console.log(uploadIssue);
+                    console.log(
+                      typeof JSON.stringify(uploadIssue),
+                      'uploadIssue',
+                    );
+                    console.log(typeof JSON.parse(uploadIssue), 'uploadIssue');
+                  };
+
+                  return false;
+                }}
+                maxCount={1}
+                accept=".txt"
+                showUploadList={false}
+              >
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  style={{ marginLeft: '10px' }}
+                  size="large"
+                >
+                  Download
+                </Button>
+              </Upload>
             </div>
           </Form.Item>
         </Form>

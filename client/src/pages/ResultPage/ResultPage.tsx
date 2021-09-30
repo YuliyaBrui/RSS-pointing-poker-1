@@ -45,7 +45,7 @@ const ResultPage = (): JSX.Element => {
       .get(`http://localhost:3002/result/${gameID}`)
       .then((res) => setGameResults(res.data));
   }, []);
-
+  console.log(gameResults, 'GAMERESULT');
   const blob = new Blob(
     [sessionName, JSON.stringify(gameResults), JSON.stringify(issues)],
     {
