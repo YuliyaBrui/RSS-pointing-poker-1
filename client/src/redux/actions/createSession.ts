@@ -60,6 +60,18 @@ export const getUsersParams =  (IDGame: string, callback?: (master: IFormGameVal
           issues: response.data.issues,
         },
       });
+      dispatch({
+        type: GetUsersInfoActionTypes.FETCH_SET_SETTING,
+        payload: {
+          setting: response.data.setting,
+        },
+      });
+      dispatch({
+        type: GetUsersInfoActionTypes.FETCH_SET_GAME_CARDS,
+        payload: {
+          gameCards: response.data.gameCards,
+        },
+      });
       if (callback) {
         callback(response.data.users.master);
       }

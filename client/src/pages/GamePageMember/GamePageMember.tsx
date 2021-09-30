@@ -2,7 +2,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
@@ -20,11 +20,12 @@ import { IGameCard } from '../../redux/types/gameCard';
 import Statistics from '../../components/Statistics/Statistics';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import { socket } from '../../socket';
+import { getUsersParams } from '../../redux/actions/createSession';
 
 const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
   const [formVisible, setFormVisible] = useState(false);
-
+  const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const gameCards = useSelector((state: RootState) => state.gameCards);
@@ -50,6 +51,8 @@ const GamePageMember = (): JSX.Element => {
     axios
       .get(`http://localhost:3002/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
+    dispatch(getUsersParams(gameID));
+    dispatch(setRoundTime()
   }, []);
 
   return (

@@ -7,7 +7,7 @@ import Spin from 'antd/lib/spin';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './SettingPage.module.scss';
 import SessionInfo from '../../components/SettingPagePart/SessionInfo/SessionInfo';
-import StartCancelButtons from '../../components/SettingPagePart/StartCancelButton/StartCancelButton';
+import { StartCancelButtons } from '../../components/SettingPagePart/StartCancelButton/StartCancelButton';
 import UserCard from '../../components/UserCard/UserCard';
 import Issue from '../../components/Issues/Issue';
 import CreateIssue from '../../components/Issues/CreateIssueButton';
@@ -26,6 +26,7 @@ import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
 import { chatParams, newMessageParams } from '../../redux/actions/chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
+
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -151,6 +152,7 @@ const SettingPage = (): JSX.Element => {
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
       <Chat />
+     
       <KickMemberForm
         formVisible={formVisible}
         setFormVisible={() => console.log('asd')}
