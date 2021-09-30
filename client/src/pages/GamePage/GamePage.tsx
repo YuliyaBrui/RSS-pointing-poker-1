@@ -22,6 +22,7 @@ import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
+import CreateIssue from '../../components/Issues/CreateIssueButton';
 
 type IGameScore = {
   name: string;
@@ -42,7 +43,7 @@ const GamePage = (): JSX.Element => {
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
-  const issues = useSelector((state: RootState) => state.chatReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer.issues);
   // const masters = useSelector(
   //   (state: RootState) => state.gameSetting.masterPlayer,
   // );

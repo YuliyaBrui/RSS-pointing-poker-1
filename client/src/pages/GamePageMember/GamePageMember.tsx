@@ -22,6 +22,7 @@ import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import Chat from '../../components/Chat/Chat';
+import { setRoundTime } from '../../redux/actions/gameSetting';
 
 type IGameScore = {
   name: string;
@@ -35,23 +36,25 @@ type IGameScore = {
 const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
   const [formVisible, setFormVisible] = useState(false);
+  const [timer, setTimer] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
-  const joinMember = useSelector((state: RootState) => state.chatReducer);
   const masters = useSelector(
     (state: RootState) => state.gameSetting.masterPlayer,
   );
   const [gameScore, setGameScore] = useState([]);
-
+  // setTimer(
+  //   useSelector((state: RootState) => state.chatReducer.setting.needTimer),
+  // );
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
   // const joinMember = useSelector((state: RootState) => state.chatReducer);
   // const masters = useSelector(
   //   (state: RootState) => state.gameSetting.masterPlayer,
   // );
-  const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
+
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
@@ -73,10 +76,10 @@ const GamePageMember = (): JSX.Element => {
       .get(`http://localhost:3002/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
     dispatch(getUsersParams(gameID));
-    dispatch(setRoundTime();
+    // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.emit('GET_GAME_CARDS', gameID);
-  }, [gameScore, gameCards])
+  }, [gameScore, gameCards]);
 
   const SampleNextArrow = (props: any) => {
     const { className, style, onClick } = props;
