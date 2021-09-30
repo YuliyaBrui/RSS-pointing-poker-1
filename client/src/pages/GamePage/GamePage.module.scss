@@ -36,7 +36,7 @@
 
 .game_info {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 .game_side {
@@ -55,17 +55,22 @@
   margin: 1%;
 }
 
-
-.issue {
+.card_button_wrapper {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  background-color: rgb(18%, 76%, 40%, 0.7);
+  margin: 5px;
+  cursor: pointer;
 }
 
 .score_title {
-display: flex;
-text-align: center;
-justify-content: space-evenly;
+  display: flex;
+  text-align: center;
+  justify-content: space-evenly;
 }
 
-.score_title h1  {
+.score_title h1 {
   font-weight: bold;
 }
 
@@ -74,9 +79,25 @@ justify-content: space-evenly;
   align-items: flex-start;
   text-align: center;
   justify-content: space-between;
-  }
+}
 
-  .button {
-    margin-bottom: 10px;
-  }
+.button {
+  margin-bottom: 10px;
+}
 
+// .game_info {
+//   width: 300px;
+//   height: 150px;
+// }
+
+// .info_wrapper {
+//   width: 100vw;
+//   height: 100vh;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   background-color: rgba(0, 0, 0, 0.4);
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+// }

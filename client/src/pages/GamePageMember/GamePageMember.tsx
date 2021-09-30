@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useReducer, useState } from 'react';
-import { Button, Carousel } from 'antd';
+import { Button, Carousel, Space, Spin } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -21,6 +21,16 @@ import Statistics from '../../components/Statistics/Statistics';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
+import Chat from '../../components/Chat/Chat';
+
+type IGameScore = {
+  name: string;
+  lastName: string;
+  jobPosition: string;
+  avatarURL: string;
+  id: string;
+  point: number;
+};
 
 const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
@@ -33,6 +43,14 @@ const GamePageMember = (): JSX.Element => {
   const masters = useSelector(
     (state: RootState) => state.gameSetting.masterPlayer,
   );
+  const [gameScore, setGameScore] = useState([]);
+
+  const [visibilCard, setVisibilCard] = useState<number[]>([]);
+
+  // const joinMember = useSelector((state: RootState) => state.chatReducer);
+  // const masters = useSelector(
+  //   (state: RootState) => state.gameSetting.masterPlayer,
+  // );
   const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
@@ -55,8 +73,10 @@ const GamePageMember = (): JSX.Element => {
       .get(`http://localhost:3002/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
     dispatch(getUsersParams(gameID));
-    dispatch(setRoundTime()
-  }, []);
+    dispatch(setRoundTime();
+    socket.on('GET_USER_POINT', (data) => setGameScore(data));
+    socket.emit('GET_GAME_CARDS', gameID);
+  }, [gameScore, gameCards])
 
   const SampleNextArrow = (props: any) => {
     const { className, style, onClick } = props;
@@ -95,7 +115,17 @@ const GamePageMember = (): JSX.Element => {
     prevArrow: <SamplePrevArrow />,
   };
 
-  return (
+  const changeVisibilCard = (index: number): void => {
+    const visivArr = [];
+    for (let k = 0; k < gameCards.length + 1; k += 1) {
+      visivArr.push(0);
+    }
+
+    visivArr.splice(index, 1, -1);
+    setVisibilCard(visivArr);
+  };
+
+  return sessionName.length > 1 ? (
     <div className={styles.wrapper}>
       <div className={styles.game}>
         <div className={styles.game__part_game}>
@@ -151,25 +181,50 @@ const GamePageMember = (): JSX.Element => {
               </div>
               <div>
                 <Row style={{ width: '100%' }} justify="center">
-                  <Button
-                    type="default"
-                    style={{ border: 'none', padding: '0', height: '100%' }}
-                    onClick={() => setUserPoint(0)}
-                  >
-                    <CoffeeGameCard />
-                  </Button>
-                  {gameCards.map((gameCard: IGameCard) => (
+                  <div className={styles.card_button_wrapper}>
                     <Button
-                      type="default"
-                      style={{ border: 'none', padding: '0', height: '100%' }}
-                      onClick={() => setUserPoint(gameCard.cardValue)}
+                      type="ghost"
+                      style={{
+                        border: 'none',
+                        padding: '0',
+                        height: '100%',
+                        zIndex: visibilCard[0],
+                        margin: '-5px',
+                      }}
+                      onClick={() => {
+                        setUserPoint(0);
+                        changeVisibilCard(0);
+                      }}
                     >
-                      <GameCard
-                        cardValue={gameCard.cardValue}
-                        id={gameCard.id}
-                        key={gameCard.id}
-                      />
+                      <CoffeeGameCard />
                     </Button>
+                  </div>
+                  {gameCards.map((gameCard: IGameCard, i: number) => (
+                    <div
+                      className={styles.card_button_wrapper}
+                      key={gameCard.id}
+                    >
+                      <Button
+                        type="default"
+                        style={{
+                          border: 'none',
+                          padding: '0',
+                          height: '100%',
+                          zIndex: visibilCard[i + 1],
+                          margin: '-5px',
+                        }}
+                        onClick={() => {
+                          setUserPoint(gameCard.cardValue);
+                          changeVisibilCard(i + 1);
+                        }}
+                      >
+                        <GameCard
+                          cardValue={gameCard.cardValue}
+                          id={gameCard.id}
+                          key={gameCard.id}
+                        />
+                      </Button>
+                    </div>
                   ))}
                 </Row>
               </div>
@@ -186,29 +241,11 @@ const GamePageMember = (): JSX.Element => {
             <h1>Players:</h1>
           </div>
           <Col style={{ width: '100%' }}>
-            {masters && (
-              <div className={styles.score}>
-                <div>
-                  <ScoreCard />
-                </div>
-                <div>
-                  <UserCard
-                    name={joinMember.users.master.name}
-                    lastName={joinMember.users.master.lastName}
-                    avatar={joinMember.users.master.avatarURL}
-                    position={joinMember.users.master.jobPosition}
-                    visibil="visible"
-                    id={joinMember.users.master.id}
-                    key={joinMember.users.master.name}
-                  />
-                </div>
-              </div>
-            )}
-            {joinMember.users.members &&
-              joinMember.users.members.map((user) => (
+            {gameScore.length > 0 &&
+              gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
                   <div>
-                    <ScoreCard />
+                    <ScoreCard visibil point={user.point} />
                   </div>
                   <div>
                     <UserCard
@@ -218,7 +255,7 @@ const GamePageMember = (): JSX.Element => {
                       position={user.jobPosition}
                       visibil="visible"
                       id={user.id}
-                      key={user.name}
+                      key={user.id}
                     />
                   </div>
                 </div>
@@ -226,6 +263,13 @@ const GamePageMember = (): JSX.Element => {
           </Col>
         </div>
       </div>
+      <Chat />
+    </div>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
     </div>
   );
 };

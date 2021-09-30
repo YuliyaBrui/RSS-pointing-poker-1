@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
   top: 0;
   left: 0;
@@ -54,7 +54,8 @@
 
   &__content {
     width: 450px;
-    padding: 30px 10px 10px 70px;  
+    padding: 40px;  
     background-color: white;
+    overflow: hidden;
   }
 }

@@ -1,5 +1,5 @@
 import Button from 'antd/lib/button/button';
-import Input from 'antd/lib/input/Input';
+import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
@@ -31,11 +31,11 @@ export const SendingForm = (): JSX.Element => {
   return (
     <>
       <div className={styles.chat__add_messages}>
-        <Input
+        <TextArea
           onChange={(e) => setMessage(e.target.value)}
-          required
+          onPressEnter={sendMessage}
+          autoSize={{ maxRows: 1 }}
           value={message}
-          style={{ height: '47px' }}
         />
         <Button type="primary" htmlType="submit" onClick={sendMessage}>
           Send

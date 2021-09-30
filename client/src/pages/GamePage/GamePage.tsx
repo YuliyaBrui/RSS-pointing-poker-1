@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from 'react';
-import { Button, Row, Spin, Space, Carousel } from 'antd';
+import { Button, Row, Spin, Space, Carousel, Alert } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -23,16 +23,31 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 
+type IGameScore = {
+  name: string;
+  lastName: string;
+  jobPosition: string;
+  avatarURL: string;
+  id: string;
+  point: number;
+};
+
 const GamePage = (): JSX.Element => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('');
-  const issues = useSelector((state: RootState) => state.chatReducer.issues);
+  const [sessionName, setSessionName] = useState('dd');
+  const [gameScore, setGameScore] = useState([]);
+  const [alertResultGame, setAlertResultGame] = useState(true);
+
   const gameCards = useSelector((state: RootState) => state.gameCards);
-  const joinMember = useSelector((state: RootState) => state.chatReducer);
-  const masters = useSelector(
-    (state: RootState) => state.gameSetting.masterPlayer,
-  );
+  const [visibilCard, setVisibilCard] = useState<number[]>([]);
+
+  const issues = useSelector((state: RootState) => state.chatReducer);
+  // const masters = useSelector(
+  //   (state: RootState) => state.gameSetting.masterPlayer,
+  // );
+
+  const masters = true;
   const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
@@ -62,11 +77,26 @@ const GamePage = (): JSX.Element => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
   };
 
+  const nextIssue = (): void => {
+    socket.emit('NEXT_ISSUE', gameID);
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:3002/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
-  }, []);
+    socket.on('GET_USER_POINT', (data) => setGameScore(data));
+  }, [gameScore]);
+
+  const changeVisibilCard = (index: number): void => {
+    const visivArr = [];
+    for (let k = 0; k < gameCards.length + 1; k += 1) {
+      visivArr.push(1);
+    }
+
+    if (index !== -1) visivArr.splice(index, 1, 0.3);
+    setVisibilCard(visivArr);
+  };
 
   const SampleNextArrow = (props: any) => {
     const { className, style, onClick } = props;
@@ -128,7 +158,8 @@ const GamePage = (): JSX.Element => {
                     style={{ width: '100%' }}
                     onClick={() => {
                       result();
-                      socket.emit('FINAL_VOITING_RESULT', gameID);
+                      nextIssue();
+                      socket.emit('GET_VOTING_RESULT', gameID);
                     }}
                   >
                     Stop game
@@ -139,6 +170,10 @@ const GamePage = (): JSX.Element => {
                     type="primary"
                     className={styles.button}
                     style={{ width: '100%' }}
+                    onClick={() => {
+                      changeVisibilCard(-1);
+                      nextIssue();
+                    }}
                   >
                     Next Issues
                   </Button>
@@ -210,25 +245,52 @@ const GamePage = (): JSX.Element => {
               {masters && (
                 <div>
                   <Row style={{ width: '100%' }} justify="center">
-                    <Button
-                      type="default"
-                      style={{ border: 'none', padding: '0', height: '100%' }}
-                      onClick={() => setUserPoint(0)}
-                    >
-                      <CoffeeGameCard />
-                    </Button>
-                    {gameCards.map((gameCard: IGameCard) => (
-                      <Button
-                        type="default"
-                        style={{ border: 'none', padding: '0', height: '100%' }}
-                        onClick={() => setUserPoint(gameCard.cardValue)}
+                    <div className={styles.card_button_wrapper}>
+                      <button
+                        type="button"
+                        style={{
+                          border: 'none',
+                          opacity: visibilCard[0],
+                          padding: 0,
+                          background: 'none',
+                          height: '100%',
+                          margin: '-5px',
+                        }}
+                        onClick={() => {
+                          setUserPoint(0);
+                          changeVisibilCard(0);
+                        }}
                       >
-                        <GameCard
-                          cardValue={gameCard.cardValue}
-                          id={gameCard.id}
-                          key={gameCard.id}
-                        />
-                      </Button>
+                        <CoffeeGameCard />
+                      </button>
+                    </div>
+                    {gameCards.map((gameCard: IGameCard, i: number) => (
+                      <div
+                        className={styles.card_button_wrapper}
+                        key={gameCard.id}
+                      >
+                        <button
+                          type="button"
+                          style={{
+                            border: 'none',
+                            opacity: visibilCard[i + 1],
+                            background: 'none',
+                            padding: 0,
+                            height: '100%',
+                            margin: '-5px',
+                          }}
+                          onClick={() => {
+                            setUserPoint(gameCard.cardValue);
+                            changeVisibilCard(i + 1);
+                          }}
+                        >
+                          <GameCard
+                            cardValue={gameCard.cardValue}
+                            id={gameCard.id}
+                            key={gameCard.id}
+                          />
+                        </button>
+                      </div>
                     ))}
                   </Row>
                 </div>
@@ -242,33 +304,15 @@ const GamePage = (): JSX.Element => {
         </div>
         <div className={styles.game__part_score}>
           <div className={styles.score_title}>
-            <h1>Score:</h1>
-            <h1>Players:</h1>
+            <h2>Score:</h2>
+            <h2>Players:</h2>
           </div>
           <Col style={{ width: '100%' }}>
-            {masters && (
-              <div className={styles.score}>
-                <div>
-                  <ScoreCard />
-                </div>
-                <div>
-                  <UserCard
-                    name={joinMember.users.master.name}
-                    lastName={joinMember.users.master.lastName}
-                    avatar={joinMember.users.master.avatarURL}
-                    position={joinMember.users.master.jobPosition}
-                    visibil="visible"
-                    key={joinMember.users.master.name}
-                    id={joinMember.users.master.id}
-                  />
-                </div>
-              </div>
-            )}
-            {joinMember.users.members &&
-              joinMember.users.members.map((user) => (
+            {gameScore.length > 0 &&
+              gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
                   <div>
-                    <ScoreCard />
+                    <ScoreCard visibil point={user.point} />
                   </div>
                   <div>
                     <UserCard
@@ -278,7 +322,7 @@ const GamePage = (): JSX.Element => {
                       position={user.jobPosition}
                       visibil="visible"
                       id={user.id}
-                      key={user.name}
+                      key={user.id}
                     />
                   </div>
                 </div>
@@ -298,3 +342,16 @@ const GamePage = (): JSX.Element => {
 };
 
 export default GamePage;
+
+// {true && (
+//   <div className={styles.info_wrapper}>
+//     <Alert
+//       className={styles.game_info}
+//       closable
+//       onClose={() => setAlertResultGame(false)}
+//       message="Success Text"
+//       description="Success Description Success Description Success Description"
+//       type="info"
+//     />
+//   </div>
+// )}

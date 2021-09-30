@@ -55,7 +55,13 @@
 }
 
 
-.issue {
+.card_button_wrapper {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  background-color: rgb(18%, 76%, 40%, 0.7);
+  margin: 5px;
+  cursor: pointer;
 }
 
 .score_title {

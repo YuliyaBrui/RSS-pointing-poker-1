@@ -14,11 +14,11 @@
   flex-direction: row;
 }
 
-.ant-btn {
+/* .ant-btn {
   font-size: 24px;
   line-height: 30px;
   height: 47px;
-}
+} */
 
 .ant-btn-primary {
   background-color: #496A81;
