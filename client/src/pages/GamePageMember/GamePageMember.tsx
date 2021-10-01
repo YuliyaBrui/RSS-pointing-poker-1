@@ -38,20 +38,17 @@ type IGameScore = {
 const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
   const [formVisible, setFormVisible] = useState(false);
-  const [timer, setTimer] = useState(false);
+  // const [timer, setTimer] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
-  const masters = useSelector(
-    (state: RootState) => state.gameSetting.masterPlayer,
-  );
   const [gameScore, setGameScore] = useState([]);
-  // setTimer(
-  //   useSelector((state: RootState) => state.chatReducer.setting.needTimer),
-  // );
+  const timer = useSelector(
+    (state: RootState) => state.chatReducer.setting.needTimer,
+  );
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
-
+  console.log(timer, 'gamepagemember');
   // const joinMember = useSelector((state: RootState) => state.chatReducer);
   // const masters = useSelector(
   //   (state: RootState) => state.gameSetting.masterPlayer,
@@ -206,13 +203,14 @@ const GamePageMember = (): JSX.Element => {
                       className={styles.card_button_wrapper}
                       key={gameCard.id}
                     >
-                      <Button
-                        type="default"
+                      <button
+                        type="button"
                         style={{
                           border: 'none',
-                          padding: '0',
+                          opacity: visibilCard[i + 1],
+                          background: 'none',
+                          padding: 0,
                           height: '100%',
-                          zIndex: visibilCard[i + 1],
                           margin: '-5px',
                         }}
                         onClick={() => {
@@ -225,7 +223,7 @@ const GamePageMember = (): JSX.Element => {
                           id={gameCard.id}
                           key={gameCard.id}
                         />
-                      </Button>
+                      </button>
                     </div>
                   ))}
                 </Row>

@@ -23,21 +23,7 @@ const ResultPage = (): JSX.Element => {
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-  // const issues = useSelector((state: RootState) => state.chatReducer.issues);
-  const issues = [
-    {
-      id: 'B4KiL-ix6m',
-      title: 'rew',
-      link: 'wer',
-      priority: 'low',
-    },
-    {
-      id: 'B4K-ix6m',
-      title: 'rew',
-      link: '123',
-      priority: 'high',
-    },
-  ];
+  const issues = useSelector((state: RootState) => state.chatReducer.issues);
 
   useEffect(() => {
     axios
