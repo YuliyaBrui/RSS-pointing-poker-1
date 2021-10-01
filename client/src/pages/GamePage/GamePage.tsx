@@ -12,7 +12,6 @@ import Timer from '../../components/Timer/Timer';
 import IssueForm from '../../components/Issues/IssueForm';
 import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
-import { gameIssues } from '../../redux/actions/chat';
 import { IIssue } from '../../redux/types/issues';
 import Statistics from '../../components/Statistics/Statistics';
 import GameCard from '../../components/GameCard/GameCard';
@@ -23,6 +22,7 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import CreateIssue from '../../components/Issues/CreateIssueButton';
+import AverageScoreForm from './AverageScoreForm';
 
 type IGameScore = {
   name: string;
@@ -36,9 +36,9 @@ type IGameScore = {
 const GamePage = (): JSX.Element => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('dd');
+  const [sessionName, setSessionName] = useState('');
   const [gameScore, setGameScore] = useState([]);
-  const [alertResultGame, setAlertResultGame] = useState(true);
+  const [alertResultGame, setAlertResultGame] = useState(false);
 
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
@@ -68,7 +68,6 @@ const GamePage = (): JSX.Element => {
   console.log(masters);
   console.log(timer);
 
-
   const history = useHistory();
   const result = (): void => {
     history.push('/result');
@@ -76,10 +75,6 @@ const GamePage = (): JSX.Element => {
 
   const setUserPoint = (point: number): void => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
-  };
-
-  const nextIssue = (): void => {
-    socket.emit('NEXT_ISSUE', gameID);
   };
 
   useEffect(() => {
@@ -141,162 +136,159 @@ const GamePage = (): JSX.Element => {
       <div className={styles.game}>
         <div className={styles.game__part_game}>
           <h1 className={styles.game_title}>{sessionName}</h1>
-          <div className={styles.game_info}>
-            <div className={styles.game_side}>
+          <div className={styles.game_side}>
+            <div>
+              <ScramMasterInfo />
+            </div>
+            {timer && (
               <div>
-                <ScramMasterInfo />
+                <Timer />
               </div>
-              {timer && (
-                <div>
-                  <Timer />
-                </div>
-              )}
+            )}
+            <div>
               <div>
-                <div>
-                  <Button
-                    type="primary"
-                    className={styles.button}
-                    style={{ width: '100%' }}
-                    onClick={() => {
-                      result();
-                      nextIssue();
-                      socket.emit('GET_VOTING_RESULT', gameID);
-                    }}
-                  >
-                    Stop game
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    type="primary"
-                    className={styles.button}
-                    style={{ width: '100%' }}
-                    onClick={() => {
-                      changeVisibilCard(-1);
-                      nextIssue();
-                    }}
-                  >
-                    Next Issues
-                  </Button>
-                </div>
-                <div>
-                  <Button type="primary" style={{ width: '100%' }}>
-                    Sort Issue
-                  </Button>
-                </div>
+                <Button
+                  type="primary"
+                  className={styles.button}
+                  style={{ width: '100%' }}
+                  onClick={() => {
+                    result();
+                  }}
+                >
+                  Stop game
+                </Button>
+              </div>
+              <div>
+                <Button
+                  type="primary"
+                  className={styles.button}
+                  style={{ width: '100%' }}
+                  onClick={() => {
+                    setAlertResultGame(true);
+                    changeVisibilCard(-1);
+                    socket.emit('CHANGE_VISIBIL_CARD', gameID);
+                  }}
+                >
+                  Next Issues
+                </Button>
+              </div>
+              <div>
+                <Button type="primary" style={{ width: '100%' }}>
+                  Sort Issue
+                </Button>
               </div>
             </div>
-            <div className={styles.process}>
-              <div className={styles.issue}>
-                <Button
-                  type="primary"
-                  className={styles.button}
-                  style={{ width: '100%' }}
-                  onClick={handleSortASCClick}
+          </div>
+          <div className={styles.process}>
+            <div className={styles.issue}>
+              <Button
+                type="primary"
+                className={styles.button}
+                style={{ width: '100%' }}
+                onClick={handleSortASCClick}
+              >
+                ASC
+              </Button>
+              <Button
+                type="primary"
+                className={styles.button}
+                style={{ width: '100%' }}
+                onClick={handleSortDESCClick}
+              >
+                DESC
+              </Button>
+              <h2 className={styles.game_title}>Issues: </h2>
+              <Carousel arrows {...settings}>
+                {issues &&
+                  issues.map((issue: IIssue) => (
+                    <div>
+                      <h3
+                        style={{
+                          height: '130px',
+                          color: '#fff',
+                          lineHeight: '130px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Issue
+                          title={issue.title}
+                          priority={issue.priority}
+                          link={issue.link}
+                          id={issue.id}
+                          key={issue.id}
+                        />
+                      </h3>
+                    </div>
+                  ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormVisible(true);
+                  }}
                 >
-                  ASC
-                </Button>
-                <Button
-                  type="primary"
-                  className={styles.button}
-                  style={{ width: '100%' }}
-                  onClick={handleSortDESCClick}
-                >
-                  DESC
-                </Button>
-                <h2 className={styles.game_title}>Issues: </h2>
-                <Carousel arrows {...settings}>
-                  {issues &&
-                    issues.map((issue: IIssue) => (
-                      <div>
-                        <h3
-                          style={{
-                            height: '130px',
-                            color: '#fff',
-                            lineHeight: '130px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Issue
-                            title={issue.title}
-                            priority={issue.priority}
-                            link={issue.link}
-                            id={issue.id}
-                            key={issue.id}
-                          />
-                        </h3>
-                      </div>
-                    ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormVisible(true);
-                    }}
-                  >
-                    <CreateIssue />
-                  </button>
-                </Carousel>
-              </div>
+                  <CreateIssue />
+                </button>
+              </Carousel>
+            </div>
+            <div>
+              <h2 className={styles.game_title}>Statistics:</h2>
+              <Statistics />
+            </div>
+            {masters && (
               <div>
-                <h2 className={styles.game_title}>Statistics:</h2>
-                <Statistics />
-              </div>
-              {masters && (
-                <div>
-                  <Row style={{ width: '100%' }} justify="center">
-                    <div className={styles.card_button_wrapper}>
+                <Row style={{ width: '100%' }} justify="center">
+                  <div className={styles.card_button_wrapper}>
+                    <button
+                      type="button"
+                      style={{
+                        border: 'none',
+                        opacity: visibilCard[0],
+                        padding: 0,
+                        background: 'none',
+                        height: '100%',
+                        margin: '-5px',
+                      }}
+                      onClick={() => {
+                        setUserPoint(0);
+                        changeVisibilCard(0);
+                      }}
+                    >
+                      <CoffeeGameCard />
+                    </button>
+                  </div>
+                  {gameCards.map((gameCard: IGameCard, i: number) => (
+                    <div
+                      className={styles.card_button_wrapper}
+                      key={gameCard.id}
+                    >
                       <button
                         type="button"
                         style={{
                           border: 'none',
-                          opacity: visibilCard[0],
-                          padding: 0,
+                          opacity: visibilCard[i + 1],
                           background: 'none',
+                          padding: 0,
                           height: '100%',
                           margin: '-5px',
                         }}
                         onClick={() => {
-                          setUserPoint(0);
-                          changeVisibilCard(0);
+                          setUserPoint(gameCard.cardValue);
+                          changeVisibilCard(i + 1);
                         }}
                       >
-                        <CoffeeGameCard />
+                        <GameCard
+                          cardValue={gameCard.cardValue}
+                          id={gameCard.id}
+                          key={gameCard.id}
+                        />
                       </button>
                     </div>
-                    {gameCards.map((gameCard: IGameCard, i: number) => (
-                      <div
-                        className={styles.card_button_wrapper}
-                        key={gameCard.id}
-                      >
-                        <button
-                          type="button"
-                          style={{
-                            border: 'none',
-                            opacity: visibilCard[i + 1],
-                            background: 'none',
-                            padding: 0,
-                            height: '100%',
-                            margin: '-5px',
-                          }}
-                          onClick={() => {
-                            setUserPoint(gameCard.cardValue);
-                            changeVisibilCard(i + 1);
-                          }}
-                        >
-                          <GameCard
-                            cardValue={gameCard.cardValue}
-                            id={gameCard.id}
-                            key={gameCard.id}
-                          />
-                        </button>
-                      </div>
-                    ))}
-                  </Row>
-                </div>
-              )}
-            </div>
+                  ))}
+                </Row>
+              </div>
+            )}
           </div>
           <IssueForm
             formVisible={formVisible}
@@ -309,7 +301,7 @@ const GamePage = (): JSX.Element => {
             <h2>Players:</h2>
           </div>
           <Col style={{ width: '100%' }}>
-            {gameScore.length > 0 &&
+            {gameScore.length > 0 ? (
               gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
                   <div>
@@ -327,11 +319,22 @@ const GamePage = (): JSX.Element => {
                     />
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div>Waiting for the votes of the players...</div>
+            )}
           </Col>
         </div>
       </div>
       <Chat />
+      {alertResultGame && (
+        <div style={{ position: 'fixed' }}>
+          <AverageScoreForm
+            alertResultGame
+            resultFormVisib={setAlertResultGame}
+          />
+        </div>
+      )}
     </div>
   ) : (
     <div className={styles.wrapper}>
@@ -343,16 +346,3 @@ const GamePage = (): JSX.Element => {
 };
 
 export default GamePage;
-
-// {true && (
-//   <div className={styles.info_wrapper}>
-//     <Alert
-//       className={styles.game_info}
-//       closable
-//       onClose={() => setAlertResultGame(false)}
-//       message="Success Text"
-//       description="Success Description Success Description Success Description"
-//       type="info"
-//     />
-//   </div>
-// )}

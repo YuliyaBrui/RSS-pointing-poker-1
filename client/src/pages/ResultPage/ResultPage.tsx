@@ -4,6 +4,8 @@ import Col from 'antd/lib/grid/col';
 import axios from 'axios';
 import Button from 'antd/lib/button';
 import { useSelector } from 'react-redux';
+import Space from 'antd/lib/space';
+import Spin from 'antd/lib/spin';
 import Issue from '../../components/Issues/Issue';
 import { IIssue } from '../../redux/types/issues';
 import styles from './ResultPage.module.scss';
@@ -16,7 +18,7 @@ interface TStatistics extends Object {
 }
 
 const ResultPage = (): JSX.Element => {
-  const [sessionName, setSessionName] = useState('New session');
+  const [sessionName, setSessionName] = useState('');
   const [gameResults, setGameResults] = useState<TStatistics>({});
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
@@ -53,7 +55,7 @@ const ResultPage = (): JSX.Element => {
     },
   );
 
-  return (
+  return sessionName.length > 0 ? (
     <div className={styles.wrapper}>
       <div className={styles.result_wrapper}>
         <div className={styles.header_wrapper}>
@@ -93,6 +95,12 @@ const ResultPage = (): JSX.Element => {
             ))}
         </Col>
       </div>
+    </div>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
     </div>
   );
 };
