@@ -6,7 +6,7 @@ interface issueProps {
 }
 export const IssueValidation = ({ setActive }: issueProps): JSX.Element => (
   <div>
-    <p>You does not have issue for game</p>
+    <p>You don&apos;t have issue for game</p>
     <Button
       type="default"
       htmlType="button"

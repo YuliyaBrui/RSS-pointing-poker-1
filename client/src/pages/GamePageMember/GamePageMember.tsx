@@ -38,7 +38,6 @@ type IGameScore = {
 const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
   const [formVisible, setFormVisible] = useState(false);
-  // const [timer, setTimer] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const issues = useSelector((state: RootState) => state.chatReducer);
@@ -48,7 +47,6 @@ const GamePageMember = (): JSX.Element => {
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
-  console.log(timer, 'gamepagemember');
   // const joinMember = useSelector((state: RootState) => state.chatReducer);
   // const masters = useSelector(
   //   (state: RootState) => state.gameSetting.masterPlayer,
