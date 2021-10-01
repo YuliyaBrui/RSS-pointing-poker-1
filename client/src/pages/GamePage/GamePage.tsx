@@ -79,6 +79,10 @@ const GamePage = (): JSX.Element => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
   };
 
+  const nextIssue = (): void => {
+    socket.emit('NEXT_ISSUE', gameID);
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:3002/session-name/${gameID}`)
@@ -133,7 +137,7 @@ const GamePage = (): JSX.Element => {
     prevArrow: <SamplePrevArrow />,
   };
 
-  return sessionName.length > 1 ? (
+  return sessionName.length > 0 ? (
     <div className={styles.wrapper}>
       <div className={styles.game}>
         <div className={styles.game__part_game}>
@@ -169,6 +173,8 @@ const GamePage = (): JSX.Element => {
                     className={styles.button}
                     style={{ width: '100%' }}
                     onClick={() => {
+                      setAlertResultGame(true);
+                      socket.emit('CHANGE_VISIBIL_CARD', gameID);
                       changeVisibilCard(-1);
                       nextIssue();
                     }}
@@ -184,25 +190,17 @@ const GamePage = (): JSX.Element => {
                   type="primary"
                   className={styles.button}
                   style={{ width: '100%' }}
-                  onClick={() => {
-                    result();
-                  }}
+                  onClick={handleSortASCClick}
                 >
-                  Stop game
+                  ASC
                 </Button>
-              </div>
-              <div>
                 <Button
                   type="primary"
                   className={styles.button}
                   style={{ width: '100%' }}
-                  onClick={() => {
-                    setAlertResultGame(true);
-                    changeVisibilCard(-1);
-                    socket.emit('CHANGE_VISIBIL_CARD', gameID);
-                  }}
+                  onClick={handleSortDESCClick}
                 >
-                  Next Issues
+                  DESC
                 </Button>
                 <h2 className={styles.game_title}>Issues: </h2>
                 <Carousel arrows {...settings}>
@@ -229,33 +227,48 @@ const GamePage = (): JSX.Element => {
                         </h3>
                       </div>
                     ))}
-                  <div>
-                    <h3
-                      style={{
-                        height: '120px',
-                        color: '#fff',
-                        lineHeight: '120px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setFormVisible(true);
-                        }}
-                      >
-                        <CreateIssue />
-                      </button>
-                    </h3>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormVisible(true);
+                    }}
+                  >
+                    <CreateIssue />
+                  </button>
                 </Carousel>
               </div>
-              {masters && (
-                <div>
-                  <Row style={{ width: '100%' }} justify="center">
-                    <div className={styles.card_button_wrapper}>
+            </div>
+            <div>
+              <h2 className={styles.game_title}>Statistics:</h2>
+              <Statistics />
+            </div>
+            {masters && (
+              <div>
+                <Row style={{ width: '100%' }} justify="center">
+                  <div className={styles.card_button_wrapper}>
+                    <button
+                      type="button"
+                      style={{
+                        border: 'none',
+                        opacity: visibilCard[0],
+                        padding: 0,
+                        background: 'none',
+                        height: '100%',
+                        margin: '-5px',
+                      }}
+                      onClick={() => {
+                        setUserPoint(0);
+                        changeVisibilCard(0);
+                      }}
+                    >
+                      <CoffeeGameCard />
+                    </button>
+                  </div>
+                  {gameCards.map((gameCard: IGameCard, i: number) => (
+                    <div
+                      className={styles.card_button_wrapper}
+                      key={gameCard.id}
+                    >
                       <button
                         type="button"
                         style={{
