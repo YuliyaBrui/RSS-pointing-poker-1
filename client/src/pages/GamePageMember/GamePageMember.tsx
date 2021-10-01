@@ -179,10 +179,6 @@ const GamePageMember = (): JSX.Element => {
                 </Carousel>
               </div>
               <div>
-                <h2 className={styles.game_title}>Statistics:</h2>
-                <Statistics />
-              </div>
-              <div>
                 <Row style={{ width: '100%' }} justify="center">
                   <div className={styles.card_button_wrapper}>
                     <Button

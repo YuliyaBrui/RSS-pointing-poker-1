@@ -45,11 +45,13 @@ const GamePage = (): JSX.Element => {
 
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
   // const masters = useSelector(
-  //   (state: RootState) => state.gameSetting.masterPlayer,
+  //   (state: RootState) => state.chatReducer.setting.masterPlayer,
   // );
 
   const masters = true;
-  const timer = useSelector((state: RootState) => state.gameSetting.needTimer);
+  const timer = useSelector(
+    (state: RootState) => state.chatReducer.setting.needTimer,
+  );
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
@@ -179,11 +181,6 @@ const GamePage = (): JSX.Element => {
                     Next Issues
                   </Button>
                 </div>
-                <div>
-                  <Button type="primary" style={{ width: '100%' }}>
-                    Sort Issue
-                  </Button>
-                </div>
               </div>
             </div>
             <div className={styles.process}>
@@ -229,19 +226,28 @@ const GamePage = (): JSX.Element => {
                         </h3>
                       </div>
                     ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormVisible(true);
-                    }}
-                  >
-                    <CreateIssue />
-                  </button>
+                  <div>
+                    <h3
+                      style={{
+                        height: '120px',
+                        color: '#fff',
+                        lineHeight: '120px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormVisible(true);
+                        }}
+                      >
+                        <CreateIssue />
+                      </button>
+                    </h3>
+                  </div>
                 </Carousel>
-              </div>
-              <div>
-                <h2 className={styles.game_title}>Statistics:</h2>
-                <Statistics />
               </div>
               {masters && (
                 <div>

@@ -9,7 +9,9 @@ type IScoreCard = {
 }
 
 const ScoreCard = ({ visibil, point }: IScoreCard): JSX.Element => (visibil ? (
-  <div className={styles.score_info}>{point}</div>
+  <Card style={{ width: '150px', height: '80px', margin: '5px' }}>
+    <div className={styles.score_info}>{point}</div>
+  </Card>
 ) : (
   <Card style={{ width: '150px', height: '80px', margin: '5px' }}>
     <div className={styles.score_info}>In Progress</div>
