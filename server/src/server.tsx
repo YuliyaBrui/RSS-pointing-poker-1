@@ -315,7 +315,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('GET_AVERAGE_RESULT', (gameID) => {
     const arrUserPoints = [...games.get(gameID).get('gameScore').values()];
-
+    console.log(arrUserPoints);
     const oneIssueStats = {
       quantity: arrUserPoints.length,
       average: 0,
@@ -325,13 +325,14 @@ io.on('connection', (socket: Socket) => {
     arrUserPoints.forEach((el): void => {
       const { point } = el;
       if (point !== 0) {
-        oneIssueStats.average += 1;
+        oneIssueStats.average += point;
       } else {
         oneIssueStats.coffee += 1;
       }
     });
 
     oneIssueStats.average /= arrUserPoints.length - oneIssueStats.coffee;
+    oneIssueStats.average = +oneIssueStats.average.toFixed(2);
 
     io.sockets.in(gameID).emit('GET_AVERAGE_RESULT', oneIssueStats);
   });
@@ -368,6 +369,11 @@ io.on('connection', (socket: Socket) => {
   socket.on('NEXT_ISSUE', (gameID) => {
     getVotingResult(gameID);
     games.get(gameID).get('gameScore').clear();
+    io.sockets.in(gameID).emit('GET_USER_POINT', []);
+  });
+
+  socket.on('END_VOTING', (gameID) => {
+    getVotingResult(gameID);
     io.sockets.in(gameID).emit('GET_USER_POINT', []);
   });
 

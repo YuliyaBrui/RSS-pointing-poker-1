@@ -1,6 +1,8 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useReducer, useState } from 'react';
-import { Button, Carousel, Space, Spin } from 'antd';
+import {
+ Button, Carousel, Space, Spin 
+} from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -36,20 +38,17 @@ type IGameScore = {
 const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
   const [formVisible, setFormVisible] = useState(false);
-  const [timer, setTimer] = useState(false);
+  // const [timer, setTimer] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
-  const masters = useSelector(
-    (state: RootState) => state.gameSetting.masterPlayer,
-  );
   const [gameScore, setGameScore] = useState([]);
-  // setTimer(
-  //   useSelector((state: RootState) => state.chatReducer.setting.needTimer),
-  // );
+  const timer = useSelector(
+    (state: RootState) => state.chatReducer.setting.needTimer,
+  );
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
-
+  console.log(timer, 'gamepagemember');
   // const joinMember = useSelector((state: RootState) => state.chatReducer);
   // const masters = useSelector(
   //   (state: RootState) => state.gameSetting.masterPlayer,
@@ -64,11 +63,18 @@ const GamePageMember = (): JSX.Element => {
     history.push('/');
   };
 
-  console.log(masters);
-  console.log(timer);
-
   const setUserPoint = (point: number): void => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
+  };
+
+  const changeVisibilCard = (index: number): void => {
+    const visivArr = [];
+    for (let k = 0; k < gameCards.length + 1; k += 1) {
+      visivArr.push(1);
+    }
+
+    if (index !== -1) visivArr.splice(index, 1, 0.3);
+    setVisibilCard(visivArr);
   };
 
   useEffect(() => {
@@ -116,16 +122,6 @@ const GamePageMember = (): JSX.Element => {
   const settings = {
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
-  };
-
-  const changeVisibilCard = (index: number): void => {
-    const visivArr = [];
-    for (let k = 0; k < gameCards.length + 1; k += 1) {
-      visivArr.push(0);
-    }
-
-    visivArr.splice(index, 1, -1);
-    setVisibilCard(visivArr);
   };
 
   return sessionName.length > 1 ? (
@@ -207,13 +203,14 @@ const GamePageMember = (): JSX.Element => {
                       className={styles.card_button_wrapper}
                       key={gameCard.id}
                     >
-                      <Button
-                        type="default"
+                      <button
+                        type="button"
                         style={{
                           border: 'none',
-                          padding: '0',
+                          opacity: visibilCard[i + 1],
+                          background: 'none',
+                          padding: 0,
                           height: '100%',
-                          zIndex: visibilCard[i + 1],
                           margin: '-5px',
                         }}
                         onClick={() => {
@@ -226,7 +223,7 @@ const GamePageMember = (): JSX.Element => {
                           id={gameCard.id}
                           key={gameCard.id}
                         />
-                      </Button>
+                      </button>
                     </div>
                   ))}
                 </Row>
@@ -244,7 +241,7 @@ const GamePageMember = (): JSX.Element => {
             <h1>Players:</h1>
           </div>
           <Col style={{ width: '100%' }}>
-            {gameScore.length > 0 &&
+            {gameScore.length > 0 ? (
               gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
                   <div>
@@ -262,7 +259,10 @@ const GamePageMember = (): JSX.Element => {
                     />
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div>Waiting for the votes of the players...</div>
+            )}
           </Col>
         </div>
       </div>
