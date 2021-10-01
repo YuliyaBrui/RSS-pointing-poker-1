@@ -153,7 +153,6 @@ const SettingPage = (): JSX.Element => {
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
       <Chat />
-     
       <KickMemberForm
         formVisible={formVisible}
         setFormVisible={() => console.log('asd')}

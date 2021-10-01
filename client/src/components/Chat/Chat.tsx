@@ -18,6 +18,7 @@ const Chat = (): JSX.Element => {
   const [dragState, setDragState] = useState({});
   const [offset, setOffset] = useState({ offsetX: 0, offsetY: 0 });
   const sizeHidingField = 270;
+
   const dragStart = (e: any): void => {
     setOffset({
       offsetX: e.nativeEvent.offsetX,
@@ -38,9 +39,11 @@ const Chat = (): JSX.Element => {
       });
     }
   };
+
   useEffect(() => {
     socket.on('GAME_ADD_MESSAGE', addMessage);
   }, []);
+
   return (
     <div
       className={styles.chat__wrapper}

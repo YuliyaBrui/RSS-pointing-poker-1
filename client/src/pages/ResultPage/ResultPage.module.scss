@@ -1,7 +1,7 @@
 .wrapper {
     width: 100%;
     display: flex;
-    align-items: center;
+    min-height: 75vh;
     justify-content: center;
     padding: 1%;
 }
@@ -61,4 +61,4 @@
     height: 1px;
     background-color: black;
     margin: 10px 0;
-} 
+}

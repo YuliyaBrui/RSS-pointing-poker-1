@@ -2,6 +2,8 @@ import Button from 'antd/lib/button';
 import Card from 'antd/lib/card';
 import { Content } from 'antd/lib/layout/layout';
 import Row from 'antd/lib/row';
+import Space from 'antd/lib/space';
+import Spin from 'antd/lib/spin';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +21,7 @@ import styles from './MembersLobby.module.scss';
 
 const MembersLobby = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('New session');
+  const [sessionName, setSessionName] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
@@ -47,7 +49,7 @@ const MembersLobby = (): JSX.Element => {
   );
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
-  return (
+  return sessionName.length > 0 ? (
     <Content className={styles.wrapper}>
       <div className={styles.lobby}>
         <div className={styles.lobby__panel}>
@@ -106,6 +108,12 @@ const MembersLobby = (): JSX.Element => {
       <Chat />
       <KickMemberForm formVisible={formVisible} />
     </Content>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
+    </div>
   );
 };
 

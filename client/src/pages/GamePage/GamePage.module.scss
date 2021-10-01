@@ -85,19 +85,19 @@
   margin-bottom: 10px;
 }
 
-// .game_info {
-//   width: 300px;
-//   height: 150px;
-// }
+.game_info {
+  background-color: white;
+  padding: 2%;
+}
 
-// .info_wrapper {
-//   width: 100vw;
-//   height: 100vh;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   background-color: rgba(0, 0, 0, 0.4);
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-// }
+.info_wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
