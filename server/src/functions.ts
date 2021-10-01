@@ -12,7 +12,7 @@ interface IIssue {
   link: string;
   priority: string;
 }
-const arrPriority = ['low', 'middle', 'height'];
+const arrPriority = ['low', 'middle', 'high'];
 export function sortASC(field: keyof IIssue): any {
   return (a: IIssue, b: IIssue): any => {
     if (arrPriority.indexOf(a[field]) > arrPriority.indexOf(b[field])) {
