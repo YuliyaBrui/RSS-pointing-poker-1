@@ -52,7 +52,6 @@ const SettingPage = (): JSX.Element => {
   const masterName = useSelector(
     (state: RootState) => state.chatReducer.users.master.name,
   );
-  // const masterName = 'asd';
 
   const nextCardValue = (): IGameCard => {
     const cardValue =
