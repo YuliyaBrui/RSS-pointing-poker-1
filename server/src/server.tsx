@@ -407,6 +407,10 @@ io.on('connection', (socket: Socket) => {
     io.sockets.in(gameID).emit('GET_USER_POINT', []);
   });
 
+  socket.on('RESET_VISIBIL_CARD', (gameID) => {
+    io.sockets.in(gameID).emit('RESET_VISIBIL_CARD', -1);
+  });
+
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
       if (value.get('members').delete(socket.id) || value.get('observers').delete(socket.id)) {

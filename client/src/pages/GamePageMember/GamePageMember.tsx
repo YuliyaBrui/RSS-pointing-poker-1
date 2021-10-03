@@ -82,6 +82,7 @@ const GamePageMember = (): JSX.Element => {
     dispatch(getUsersParams(gameID));
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
+    socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
     socket.emit('GET_GAME_CARDS', gameID);
   }, [gameScore, gameCards]);
 

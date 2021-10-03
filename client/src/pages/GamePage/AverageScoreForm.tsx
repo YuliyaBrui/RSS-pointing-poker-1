@@ -56,6 +56,7 @@ const AverageScoreForm = ({
         <Button
           type="primary"
           onClick={() => {
+            socket.emit('RESET_VISIBIL_CARD', gameID);
             resultFormVisib(false);
             nextIssue();
           }}
