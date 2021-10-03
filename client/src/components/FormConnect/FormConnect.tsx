@@ -46,11 +46,31 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       user: value,
       gameID,
     };
-
+   
     if (isToggle) {
+      const userStorage = {
+        role: 'observer',
+        name: firstName,
+        lastName,
+        jobPosition,
+        avatarURL,
+        id: socket.id,
+      };
       socket.emit('GAME_JOIN_OBSERVER', joinState);
+      sessionStorage.setItem('user', JSON.stringify(userStorage));
+      sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
     } else {
+      const userStorage = {
+        role: 'member',
+        name: firstName,
+        lastName,
+        jobPosition,
+        avatarURL,
+        id: socket.id,
+      };
       socket.emit('GAME_JOIN_MEMBER', joinState);
+      sessionStorage.setItem('user', JSON.stringify(userStorage));
+      sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
     }
     dispatch(addCurrentUser(value));
     reset();

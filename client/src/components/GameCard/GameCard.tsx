@@ -23,10 +23,11 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
   const [editCardValue, setEditCardValue] = useState(false);
 
   const location = useLocation();
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+*/
+  const { gameID } = sessionStorage;
   const changeCardValue = (inputCardValue: string): void => {
     gameCards.map((value: IGameCard) => {
       const newValue = value;

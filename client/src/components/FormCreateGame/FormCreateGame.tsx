@@ -18,7 +18,6 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
- 
   const [form] = Form.useForm();
   const reset = (): void => {
     setFirstName('');
@@ -42,12 +41,16 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
         gameID,
       };
       socket.emit('GAME_JOIN_MASTER', joinState);
+      sessionStorage.setItem('gameID', gameID);
+      sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
       reset();
       form.resetFields();
       setActive(false);
       history.push(`/setting/${gameID}`);
+     
     };
     dispatch(addCurrentUser(value));
+    sessionStorage.setItem('user', JSON.stringify(value));
     dispatch(saveMasterParams(value, callback));
   };
   

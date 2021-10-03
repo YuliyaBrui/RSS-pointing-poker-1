@@ -11,10 +11,11 @@ const Timer = (): JSX.Element => {
   const [isRunning, setIsRunning] = useState(false);
 
   const location = useLocation();
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+*/
+  const { gameID } = sessionStorage;
   useEffect(() => {
     if (isRunning) {
       const id = window.setInterval(() => {

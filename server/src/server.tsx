@@ -61,6 +61,7 @@ app.post('/', (req, res) => {
       ['observers', new Map()],
       ['messages', []],
       ['issues', new Map()],
+      ['issuesCopy', new Map()],
       ['setting', {}],
       ['gameCards', []],
       ['kickForm', new Map()],
@@ -152,16 +153,19 @@ app.get('/:id', async (req, res) => {
 io.on('connection', (socket: Socket) => {
   console.log(`${socket.id} connected`);
   socket.send('connection', socket.id);
-
   socket.on('GAME_JOIN_MASTER', ({ gameID, master }) => {
     socket.join(gameID);
-    console.log(master);
+    console.log(games.get(gameID));
+    games.get(gameID).delete('master');
+    games.get(gameID).set('master', master);
+    console.log(games.get(gameID).get('master'));
     socket.to(gameID).emit('MASTER_JOINED', master);
   });
 
   socket.on('GAME_JOIN_MEMBER', ({ gameID, user }) => {
     socket.join(gameID);
     games.get(gameID).get('members').set(socket.id, user);
+    console.log(games.get(gameID).get('members'));
     socket.to(gameID).emit('MEMBER_JOINED', users(gameID));
   });
 
@@ -207,47 +211,32 @@ io.on('connection', (socket: Socket) => {
       priority,
     };
     games.get(gameID).get('issues').set(`${id}`, issue);
-    console.log(games.get(gameID).get('issues'));
+    games.get(gameID).get('issuesCopy').set(`${id}`, issue);
+    console.log(`issues-${games.get(gameID).get('issues')}`);
+    console.log(`issues-copy-${games.get(gameID).get('issuesCopy')}`);
     socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
   });
   socket.on('SORT_ISSUES_ASC', (gameID) => {
-    console.log(gameID);
-    console.log([...games.keys()]);
-    if (!games.get(gameID).get('issuesSortASC')) {
-      const issuesASC = [...games.get(gameID).get('issues').values()]
-        .slice()
-        .sort(sortASC('priority'));
-      games.get(gameID).set('issuesSortASC', issuesASC);
-    }
-    // games.get(gameID).get('issues').clear();
-    // console.log(games.get(gameID).get('issues'));
-
-    // issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
-    console.log(games.get(gameID).get('issuesSortASC'));
-    // socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
-    socket
-      .to(gameID)
-      .emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issuesSortASC').values()]);
+    const issues = [...games.get(gameID).get('issues').values()].slice().sort(sortASC('priority'));
+    games.get(gameID).get('issues').clear();
+    issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
+    console.log(games.get(gameID).get('issues'));
+    socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
   });
   socket.on('SORT_ISSUES_DESC', (gameID) => {
-    console.log(gameID);
-    console.log([...games.keys()]);
-    if (!games.get(gameID).get('issuesSortDESC')) {
-      const issuesDESC = [...games.get(gameID).get('issues').values()]
-        .slice()
-        .sort(sortDESC('priority'));
-      games.get(gameID).set('issuesSortASC', issuesDESC);
-      socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issuesSortASC').values()]);
-    }
-    console.log([...games.get(gameID).get('issues').values()]);
-    // const issues = [...games.get(gameID).get('issues').values()].slice().sort(sortDESC('priority'));
-    // games.get(gameID).get('issues').clear();
+    const issues = [...games.get(gameID).get('issues').values()].slice().sort(sortDESC('priority'));
+    games.get(gameID).get('issues').clear();
+
+    issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
     console.log(games.get(gameID).get('issues'));
-    //console.log(issues);
-    // issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
+    socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
+  });
+  socket.on('FIRST_ORDER_ISSUES', (gameID) => {
+    const issues = [...games.get(gameID).get('issuesCopy').values()];
+    games.get(gameID).get('issues').clear();
+    issues.map((elem) => games.get(gameID).get('issues').set(elem.id, elem));
     console.log(games.get(gameID).get('issues'));
-    // socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
-    socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issuesSortDESC').values()]);
+    socket.to(gameID).emit('GAME_SORT_ISSUES', [...games.get(gameID).get('issues').values()]);
   });
   socket.on('GAME_DELETE_ISSUE', ({ gameID, id }) => {
     console.log({ gameID, id });
@@ -300,7 +289,15 @@ io.on('connection', (socket: Socket) => {
   socket.on('KICK_DATA', (gameID, kickData) => {
     games.get(gameID).get('kickForm').set('inform', kickData);
     console.log(games.get(gameID).get('kickForm').get('inform'));
-    io.sockets.in(gameID).emit('KICK_DATA', kickData);
+    const master = games.get(gameID).get('master');
+    io.to(master.id).emit('KICK_DATA', kickData);
+    const members = [...games.get(gameID).get('members').keys()];
+    members.forEach((el) => {
+      io.to(el).emit('KICK_DATA', kickData);
+    })
+   
+  //  io.sockets.in(gameID).emit('KICK_DATA', kickData);
+    
   });
 
   socket.on('KICK_USER_BY_MASTER', (gameID, id) => {
@@ -318,7 +315,7 @@ io.on('connection', (socket: Socket) => {
     games.get(gameID).get('kickForm').get('inform').yes.push(id);
     console.log('yes');
     kickVoiting(gameID);
-    console.log('delete');
+   
   });
 
   socket.on('DISAGREE_KICK_MEMBER', (gameID, id) => {
@@ -412,6 +409,9 @@ io.on('connection', (socket: Socket) => {
       if (value.get('members').delete(socket.id) || value.get('observers').delete(socket.id)) {
         socket.to(gameID).emit('MEMBER_LEAVED', users(gameID));
         console.log('delete');
+      }
+      if (value.get('master').id === socket.id) {
+        socket.to(gameID).emit('MASTER_LEAVED', users(gameID));
       }
     });
   });

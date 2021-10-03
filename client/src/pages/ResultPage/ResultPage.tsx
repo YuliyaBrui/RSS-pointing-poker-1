@@ -20,9 +20,11 @@ interface TStatistics extends Object {
 const ResultPage = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('');
   const [gameResults, setGameResults] = useState<TStatistics>({});
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
+  */
+  const { gameID } = sessionStorage;
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
 
   useEffect(() => {

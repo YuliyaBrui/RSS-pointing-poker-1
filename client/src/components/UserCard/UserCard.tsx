@@ -11,6 +11,7 @@ import { chatParams } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './UserCard.module.scss';
+import { getUsersParams } from '../../redux/actions/createSession';
 
 type IUsercard = {
   name: string;
@@ -30,10 +31,8 @@ const UserCard = ({
 
   visibil = 'hidden',
 }: IUsercard): JSX.Element => {
-  const gameMaster = useSelector(
-    (state: RootState) => state.chatReducer.users.master,
-  );
-  const currentUser = useSelector((state: RootState) => state.currentUser);
+  /* const currentUser = useSelector((state: RootState) => state.currentUser); */
+  const currentUser = JSON.parse(sessionStorage.user);
   const kickUserData = useSelector((state: RootState) => state.kickUserData);
   const kickData = {
     visibil: true,
@@ -43,18 +42,31 @@ const UserCard = ({
     no: [],
   };
   const dispatch = useDispatch();
-  const gameID = useSelector(
+  /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
+  ); */
+  const { gameID } = sessionStorage;
+  const gameMaster = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
   );
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     console.log({ members, observers, master });
     dispatch(chatParams({ members, observers, master }));
   };
   const sendKickData = (): void => {
-    if (currentUser.id === gameMaster.id) {
+    const socketID = sessionStorage.getItem('socket.id');
+    console.log(socketID, `"${gameMaster.id}"`);
+    const ID = sessionStorage.getItem('socket.id');
+    if (ID === 'undefined') {
+      window.location.reload();
+    }
+    if (socketID === `"${gameMaster.id}"`) {
       socket.emit('KICK_USER_BY_MASTER', gameID, id);
-    } else {
+      console.log('master', socketID, `"${gameMaster.id}"`, id);
+    }
+    else {
       socket.emit('KICK_DATA', gameID, kickData);
+      console.log('member', socketID, `"${gameMaster.id}"`, id);
     }
     socket.on('KICKED_MEMBER', getUsers);
     socket.on('STAY_MEMBER', getUsers);
@@ -74,7 +86,8 @@ const UserCard = ({
           <h3>{`${name} ${lastName}`}</h3>
           <p>{position}</p>
         </div>
-        {(location.pathname === `/setting/${gameID}` || location.pathname === `/lobby/${gameID}`) && (
+        {(location.pathname === `/setting/${gameID}`
+          || location.pathname === `/lobby/${gameID}`) && (
           <Popconfirm
             title="Kick player?"
             okText="Yes"
@@ -82,6 +95,9 @@ const UserCard = ({
             onConfirm={sendKickData}
           >
             <StopOutlined
+              onClick={() => {
+                dispatch(getUsersParams(gameID));
+              }}
               style={{
                 fontSize: '200%',
                 margin: '1%',

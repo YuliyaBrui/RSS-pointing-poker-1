@@ -10,10 +10,12 @@ import styles from './Chat.module.scss';
 export const SendingForm = (): JSX.Element => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
-  const user = useSelector((state: RootState) => state.currentUser);
-  const gameID = useSelector(
+  // const user = useSelector((state: RootState) => state.currentUser);
+  const user = JSON.parse(sessionStorage.user);
+  const { gameID } = sessionStorage;
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  );
+  );*/
   const sendMessage = (): void => {
     const newMessage = {
       text: message,

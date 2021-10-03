@@ -14,10 +14,11 @@ const CoffeeGameCard = (): JSX.Element => {
   const [editCardName, setEditCardName] = useState(false);
 
   const location = useLocation();
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+*/
+const { gameID } = sessionStorage;
   return (
     <Card style={{ width: 150, height: 200, margin: '5px' }}>
       <div className={styles.main__coffee_card}>
