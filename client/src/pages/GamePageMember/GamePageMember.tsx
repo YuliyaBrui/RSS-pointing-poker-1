@@ -19,12 +19,10 @@ import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
 import { RootState } from '../../redux';
 import { IIssue } from '../../redux/types/issues';
 import { IGameCard } from '../../redux/types/gameCard';
-import Statistics from '../../components/Statistics/Statistics';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import Chat from '../../components/Chat/Chat';
-import { setRoundTime } from '../../redux/actions/gameSetting';
 
 type IGameScore = {
   name: string;
@@ -53,7 +51,6 @@ const GamePageMember = (): JSX.Element => {
     (state: RootState) => state.chatReducer.setting.roundTime,
   );
 
-  console.log(time);
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
 /*  const gameID = useSelector(
@@ -90,6 +87,7 @@ const GamePageMember = (): JSX.Element => {
     socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
     socket.emit('GET_GAME_CARDS', gameID);
   }, [gameScore, gameCards]);
+
   window.onload = () => {
     sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
     
