@@ -20,10 +20,11 @@ const AverageScoreForm = ({
     coffee: '',
   });
 
-  const gameID = useSelector(
+/*  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+*/
+const { gameID } = sessionStorage;
   const nextIssue = (): void => {
     socket.emit('NEXT_ISSUE', gameID);
   };

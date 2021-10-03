@@ -39,11 +39,11 @@ const StartPage = (): JSX.Element => {
     if (!URLError.length && URLValue.length) {
       const url = new URL(`${URLValue}`);
       const gameID = String(url.pathname.slice(7, 43));
-      console.log(gameID);
       const callback = (master: IFormGameValue): void => {
         if (master.name.length) {
           setActiveFormConnect(true);
           dispatch(addGameID(gameID));
+          sessionStorage.setItem('gameID', gameID);
         } else {
           setActiveFormError(true);
         }

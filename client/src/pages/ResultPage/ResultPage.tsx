@@ -23,9 +23,7 @@ const ResultPage = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('fsd');
   const [gameResults, setGameResults] = useState<TStatistics>({});
 
-  const gameID = useSelector(
-    (state: RootState) => state.formCreateReducer.IDGame,
-  );
+  const { gameID } = sessionStorage;
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
 
   const savedResults: any = [];

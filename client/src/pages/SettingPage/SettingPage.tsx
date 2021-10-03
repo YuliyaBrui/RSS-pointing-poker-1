@@ -27,15 +27,15 @@ import { getUsersParams } from '../../redux/actions/createSession';
 import { chatParams, newMessageParams } from '../../redux/actions/chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
-
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-  const gameID = useSelector(
+  /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  );
+  ); */
+  const { gameID } = sessionStorage;
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
@@ -44,7 +44,7 @@ const SettingPage = (): JSX.Element => {
     });
     dispatch(getUsersParams(gameID));
   }, []);
-
+  
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
@@ -53,7 +53,28 @@ const SettingPage = (): JSX.Element => {
     (state: RootState) => state.chatReducer.users.master.name,
   );
   // const masterName = 'asd';
-
+ 
+  window.onload = () => {
+    const currentUser = JSON.parse(sessionStorage.user);
+    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+    const ID = sessionStorage.getItem('socket.id');
+    if (ID === 'undefined') {
+      window.location.reload();
+    }
+    console.log(currentUser);
+    const joinState = {
+      master: {
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        jobPosition: currentUser.jobPosition,
+        avatarURL: currentUser.avatarURL,
+        id: socket.id,
+      },
+      gameID,
+    };
+    socket.emit('GAME_JOIN_MASTER', joinState);
+    //dispatch(getUsersParams(gameID));
+  };
   const nextCardValue = (): IGameCard => {
     const cardValue =
       gameCards[gameCards.length - 1].cardValue +

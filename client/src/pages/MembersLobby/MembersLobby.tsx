@@ -27,11 +27,20 @@ const MembersLobby = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-
+  const members = useSelector(
+    (state: RootState) => state.chatReducer.users.members,
+  );
+  const observers = useSelector(
+    (state: RootState) => state.chatReducer.users.observers,
+  );
+  /*
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+*/
+  const { gameID } = sessionStorage;
+  const socketID = sessionStorage.getItem('socket.id');
+  const currentUser = JSON.parse(sessionStorage.user);
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     dispatch(getUsersParams(gameID));
@@ -40,14 +49,34 @@ const MembersLobby = (): JSX.Element => {
       .then((res) => setSessionName(res.data));
   }, []);
 
+  window.onload = () => {
+    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+    const ID = sessionStorage.getItem('socket.id');
+    if (ID === 'undefined') {
+      window.location.reload();
+    }
+    console.log(currentUser);
+    const joinState = {
+      user: {
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        jobPosition: currentUser.jobPosition,
+        avatarURL: currentUser.avatarURL,
+        id: socket.id,
+      },
+      gameID,
+    };
+    if (currentUser.role === 'member') {
+      socket.emit('GAME_JOIN_MEMBER', joinState);
+      dispatch(getUsersParams(gameID));
+    }
+    if (currentUser.role === 'observer') {
+      socket.emit('GAME_JOIN_OBSERVER', joinState);
+      dispatch(getUsersParams(gameID));
+    }
+  };
   socket.on('MEMBER_LEAVED', getUsers);
-  const members = useSelector(
-    (state: RootState) => state.chatReducer.users.members,
-  );
-  const observers = useSelector(
-    (state: RootState) => state.chatReducer.users.observers,
-  );
-  const currentUser = useSelector((state: RootState) => state.currentUser);
+  // const currentUser = useSelector((state: RootState) => state.currentUser);
 
   return sessionName.length > 0 ? (
     <Content className={styles.wrapper}>
@@ -75,33 +104,63 @@ const MembersLobby = (): JSX.Element => {
         <div className={styles.lobby__panel}>
           <h3>Members:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {members.map((user) => (
-              <UserCard
-                id={user.id}
-                name={user.name}
-                lastName={user.lastName}
-                avatar={user.avatarURL}
-                position={user.jobPosition}
-                visibil={currentUser.id === user.id ? 'hidden' : 'visible'}
-                key={user.name}
-              />
-            ))}
+            {currentUser.role === 'observer' || members.length < 3
+              ? members.map((user) => (
+                  <UserCard
+                  id={user.id}
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="hidden"
+                  key={user.name}
+                />
+                ))
+              : members.map((user) => (
+                  <UserCard
+                  id={user.id}
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil={
+                      socketID === `"${user.id}"` || currentUser.id === user.id
+                        ? 'hidden'
+                        : 'visible'
+                    }
+                  key={user.name}
+                />
+                ))}
           </Row>
         </div>
         <div className={styles.lobby__panel}>
           <h3>Observers:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {observers.map((user) => (
-              <UserCard
-                id={user.id}
-                name={user.name}
-                lastName={user.lastName}
-                avatar={user.avatarURL}
-                position={user.jobPosition}
-                visibil="hidden"
-                key={user.name}
-              />
-            ))}
+            {currentUser.role === 'observer' || members.length < 3
+              ? observers.map((user) => (
+                <UserCard
+                    id={user.id}
+                    name={user.name}
+                    lastName={user.lastName}
+                    avatar={user.avatarURL}
+                    position={user.jobPosition}
+                    visibil="hidden"
+                    key={user.name}
+                  />
+              ))
+              : observers.map((user) => (
+                <UserCard
+                    id={user.id}
+                    name={user.name}
+                    lastName={user.lastName}
+                    avatar={user.avatarURL}
+                    position={user.jobPosition}
+                    visibil={
+                     'visible'
+                    }
+                    key={user.name}
+                  />
+              ))}
           </Row>
         </div>
       </div>

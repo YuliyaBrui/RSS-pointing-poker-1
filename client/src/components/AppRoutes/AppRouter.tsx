@@ -51,6 +51,7 @@ const AppRouter = (): JSX.Element => {
     socket.on('START_GAME', (address: string): void => {
       history.push(address);
     });
+   
   }, []);
   return (
     <Layout style={{ minHeight: '100vh' }}>

@@ -34,15 +34,14 @@ type IGameScore = {
 };
 
 const GamePage = (): JSX.Element => {
-  const currentUser = useSelector((state: RootState) => state.currentUser);
+  // const currentUser = useSelector((state: RootState) => state.currentUser);
+  const currentUser = JSON.parse(sessionStorage.user);
   const [formVisible, setFormVisible] = useState(false);
   const [sessionName, setSessionName] = useState('');
   const [gameScore, setGameScore] = useState([]);
   const [alertResultGame, setAlertResultGame] = useState(false);
-
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
-
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
   // const masters = useSelector(
   //   (state: RootState) => state.chatReducer.setting.masterPlayer,
@@ -52,9 +51,11 @@ const GamePage = (): JSX.Element => {
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
-  const gameID = useSelector(
+/*  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
+  */
+  const { gameID } = sessionStorage;
   const dispatch = useDispatch();
   const handleSortASCClick = (): void => {
     socket.emit('SORT_ISSUES_ASC', gameID);
@@ -66,7 +67,11 @@ const GamePage = (): JSX.Element => {
     dispatch(getUsersParams(gameID));
     console.log(issues);
   };
-
+  const handleFirstOrderClick = (): void => {
+    socket.emit('FIRST_ORDER_ISSUES', gameID);
+    dispatch(getUsersParams(gameID));
+    console.log(issues);
+  };
   console.log(masters);
   console.log(timer);
 
@@ -136,7 +141,24 @@ const GamePage = (): JSX.Element => {
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
-
+  window.onload = () => {
+    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+    
+    console.log(currentUser);
+    const joinState = {
+      master: {
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        jobPosition: currentUser.jobPosition,
+        avatarURL: currentUser.avatarURL,
+        id: socket.id,
+      },
+      gameID,
+    };
+    socket.emit('GAME_JOIN_MASTER', joinState);
+    dispatch(getUsersParams(gameID));
+    
+  };
   return sessionName.length > 0 ? (
     <div className={styles.wrapper}>
       <div className={styles.game}>
@@ -199,6 +221,14 @@ const GamePage = (): JSX.Element => {
                   onClick={handleSortDESCClick}
                 >
                   DESC
+                </Button>
+                <Button
+                  type="primary"
+                  className={styles.button}
+                  style={{ width: '100%' }}
+                  onClick={handleFirstOrderClick}
+                >
+                  FIRST ORDER
                 </Button>
                 <h2 className={styles.game_title}>Issues: </h2>
                 <Carousel arrows {...settings}>

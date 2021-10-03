@@ -24,9 +24,10 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [newIssues, setNewIssues] = useState([]);
 
   const dispatch = useDispatch();
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  );
+  );*/
+  const { gameID } = sessionStorage;
   const id = shortid();
 
   const [form] = Form.useForm();

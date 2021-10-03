@@ -39,7 +39,8 @@ const GamePageMember = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('New session');
   const [formVisible, setFormVisible] = useState(false);
   const dispatch = useDispatch();
-  const currentUser = useSelector((state: RootState) => state.currentUser);
+  // const currentUser = useSelector((state: RootState) => state.currentUser);
+  const currentUser = JSON.parse(sessionStorage.user);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [gameScore, setGameScore] = useState([]);
@@ -52,10 +53,11 @@ const GamePageMember = (): JSX.Element => {
   //   (state: RootState) => state.gameSetting.masterPlayer,
   // );
 
-  const gameID = useSelector(
+/*  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
+*/
+  const { gameID } = sessionStorage;
   const history = useHistory();
   const exit = (): void => {
     history.push('/');
@@ -85,6 +87,24 @@ const GamePageMember = (): JSX.Element => {
     socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
     socket.emit('GET_GAME_CARDS', gameID);
   }, [gameScore, gameCards]);
+  window.onload = () => {
+    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+    
+    console.log(currentUser);
+    const joinState = {
+      master: {
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        jobPosition: currentUser.jobPosition,
+        avatarURL: currentUser.avatarURL,
+        id: socket.id,
+      },
+      gameID,
+    };
+    socket.emit('GAME_JOIN_MASTER', joinState);
+    dispatch(getUsersParams(gameID));
+    
+  };
 
   const SampleNextArrow = (props: any) => {
     const { className, style, onClick } = props;

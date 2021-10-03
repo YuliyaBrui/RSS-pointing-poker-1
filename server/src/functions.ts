@@ -31,24 +31,29 @@ export function sortDESC(field: keyof IIssue): any {
 }
 export const kickVoiting = (gameID: string): void => {
   const countMembers = [...games.get(gameID).get('members').values()].length;
-  const countObservers = [...games.get(gameID).get('observers').values()].length;
   const countMaster = 1;
-  const countUsers = countMembers + countObservers + countMaster;
+  const countUsers = countMembers + countMaster;
   const countYes = games.get(gameID).get('kickForm').get('inform').yes.length;
   const countNo = games.get(gameID).get('kickForm').get('inform').no.length;
   const answers = countYes + countNo;
   if (countUsers === answers) {
     if (countYes >= Math.floor(0.5 * answers) + 1) {
       console.log(games.get(gameID).get('kickForm').get('inform'));
-      const kickedUser = games.get(gameID).get('kickForm').get('inform').exclusion.id;
+      const kickedUser = games.get(gameID).get('kickForm').get('inform').exclusion;
       console.log(kickedUser);
       if (
-        games.get(gameID).get('members').delete(kickedUser) ||
-        games.get(gameID).get('observers').delete(kickedUser)
+        games.get(gameID).get('members').delete(kickedUser.id) ||
+        games.get(gameID).get('observers').delete(kickedUser.id)
       ) {
+        const message = {
+          text: `${kickedUser.name} ${kickedUser.name} is removed from the game`,
+        
+        };
+        games.get(gameID).get('messages').push(message);
         console.log(games.get(gameID));
         io.sockets.in(gameID).emit('KICKED_MEMBER', users(gameID));
-        io.sockets.in(gameID).emit('STOP_JOIN', kickedUser);
+        io.sockets.in(gameID).emit('STOP_JOIN', kickedUser.id);
+
       } else {
         io.sockets.in(gameID).emit('STAY_MEMBER', users(gameID));
       }
