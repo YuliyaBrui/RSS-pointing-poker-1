@@ -40,18 +40,26 @@ const GamePage = (): JSX.Element => {
   const [sessionName, setSessionName] = useState('');
   const [gameScore, setGameScore] = useState([]);
   const [alertResultGame, setAlertResultGame] = useState(false);
-  const gameCards = useSelector((state: RootState) => state.gameCards);
+
+  const gameCards = useSelector(
+    (state: RootState) => state.chatReducer.gameCards,
+  );
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
-  // const masters = useSelector(
-  //   (state: RootState) => state.chatReducer.setting.masterPlayer,
-  // );
-
-  const masters = true;
+  const masters = useSelector(
+    (state: RootState) => state.chatReducer.setting.masterPlayer,
+  );
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
 /*  const gameID = useSelector(
+
+  const time = useSelector(
+    (state: RootState) => state.chatReducer.setting.roundTime,
+  );
+  console.log(time);
+
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
   */
@@ -164,65 +172,68 @@ const GamePage = (): JSX.Element => {
       <div className={styles.game}>
         <div className={styles.game__part_game}>
           <h1 className={styles.game_title}>{sessionName}</h1>
-          <div className={styles.game_side}>
-            <div>
-              <ScramMasterInfo />
-            </div>
-            {timer && (
+          <div className={styles.game_info}>
+            <div className={styles.game_side}>
               <div>
-                <Timer />
+                <ScramMasterInfo />
               </div>
-            )}
-            <div>
+              {timer && (
+                <div>
+                  <Timer />
+                </div>
+              )}
               <div>
                 <div>
-                  <Button
-                    type="primary"
-                    className={styles.button}
-                    style={{ width: '100%' }}
-                    onClick={() => {
-                      result();
-                      socket.emit('END_VOTING', gameID);
-                    }}
-                  >
-                    Stop game
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    type="primary"
-                    className={styles.button}
-                    style={{ width: '100%' }}
-                    onClick={() => {
-                      setAlertResultGame(true);
-                      changeVisibilCard(-1);
-                      socket.emit('END_VOTING', gameID);
-                    }}
-                  >
-                    Next Issues
-                  </Button>
+                  <div>
+                    <Button
+                      type="primary"
+                      className={styles.button}
+                      style={{ width: '100%' }}
+                      onClick={() => {
+                        result();
+                        socket.emit('END_VOTING', gameID);
+                      }}
+                    >
+                      Stop game
+                    </Button>
+                  </div>
+                  <div>
+                    <Button
+                      type="primary"
+                      className={styles.button}
+                      style={{ width: '100%' }}
+                      onClick={() => {
+                        setAlertResultGame(true);
+                        changeVisibilCard(-1);
+                        socket.emit('END_VOTING', gameID);
+                      }}
+                    >
+                      Next Issues
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
             <div className={styles.process}>
               <div className={styles.issue}>
-                <Button
-                  type="primary"
-                  className={styles.button}
-                  style={{ width: '100%' }}
-                  onClick={handleSortASCClick}
-                >
-                  ASC
-                </Button>
-                <Button
-                  type="primary"
-                  className={styles.button}
-                  style={{ width: '100%' }}
-                  onClick={handleSortDESCClick}
-                >
-                  DESC
-                </Button>
-                <Button
+                <div className={styles.buttons_sort}>
+                  <Button
+                    type="primary"
+                    className={styles.button}
+                    style={{ width: '20%' }}
+                    onClick={handleSortASCClick}
+                  >
+                    ASC
+                  </Button>
+                  <Button
+                    type="primary"
+                    className={styles.button}
+                    style={{ width: '20%' }}
+                    onClick={handleSortDESCClick}
+                  >
+                    DESC
+                  </Button>
+                  <Button
                   type="primary"
                   className={styles.button}
                   style={{ width: '100%' }}
@@ -230,6 +241,7 @@ const GamePage = (): JSX.Element => {
                 >
                   FIRST ORDER
                 </Button>
+                </div>
                 <h2 className={styles.game_title}>Issues: </h2>
                 <Carousel arrows {...settings}>
                   {issues &&
@@ -255,20 +267,29 @@ const GamePage = (): JSX.Element => {
                         </h3>
                       </div>
                     ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormVisible(true);
-                    }}
-                  >
-                    <CreateIssue />
-                  </button>
+                  <div>
+                    <h3
+                      style={{
+                        height: '120px',
+                        color: '#fff',
+                        lineHeight: '120px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormVisible(true);
+                        }}
+                      >
+                        <CreateIssue />
+                      </button>
+                    </h3>
+                  </div>
                 </Carousel>
               </div>
-            </div>
-            <div>
-              <h2 className={styles.game_title}>Statistics:</h2>
-              <Statistics />
             </div>
             {masters && (
               <div>

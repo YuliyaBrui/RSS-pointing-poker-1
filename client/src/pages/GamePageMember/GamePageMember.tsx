@@ -42,16 +42,19 @@ const GamePageMember = (): JSX.Element => {
   // const currentUser = useSelector((state: RootState) => state.currentUser);
   const currentUser = JSON.parse(sessionStorage.user);
   const issues = useSelector((state: RootState) => state.chatReducer);
-  const gameCards = useSelector((state: RootState) => state.gameCards);
+  const gameCards = useSelector(
+    (state: RootState) => state.chatReducer.gameCards,
+  );
   const [gameScore, setGameScore] = useState([]);
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
+  const time = useSelector(
+    (state: RootState) => state.chatReducer.setting.roundTime,
+  );
+
+  console.log(time);
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
-  // const joinMember = useSelector((state: RootState) => state.chatReducer);
-  // const masters = useSelector(
-  //   (state: RootState) => state.gameSetting.masterPlayer,
-  // );
 
 /*  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
