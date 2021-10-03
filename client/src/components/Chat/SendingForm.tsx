@@ -36,6 +36,7 @@ export const SendingForm = (): JSX.Element => {
           onPressEnter={sendMessage}
           autoSize={{ maxRows: 1 }}
           value={message}
+          placeholder="Enter your message"
         />
         <Button type="primary" htmlType="submit" onClick={sendMessage}>
           Send

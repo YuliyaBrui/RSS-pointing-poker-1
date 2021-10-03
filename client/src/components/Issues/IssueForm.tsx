@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as XLSX from 'xlsx';
 import shortid from 'shortid';
 import Button from 'antd/lib/button/button';
 import { Form, Input, Upload } from 'antd';
@@ -20,7 +21,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
   const [priority, setPriority] = useState('');
-  const [uploadIssue, setUploadIssue] = useState('');
+  const [newIssues, setNewIssues] = useState([]);
 
   const dispatch = useDispatch();
   const gameID = useSelector(
@@ -34,7 +35,6 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
     form.resetFields();
     setFormVisible(false);
   };
-  // console.log()
 
   const handleSubmit = (): void => {
     const newIssue = {
@@ -56,14 +56,35 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
     resetForm();
   };
 
-  // const upload = (file: any): void => {
-  //   const reader = new FileReader();
-  //   reader.onload = (e) => {
-  //     console.log(e.target.result);
-  //   };
-  //   reader.readAsText(file);
-  // };
+  const readExcel = (file: any): void => {
+    const promise = new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(file);
 
+      fileReader.onload = (e) => {
+        if (!e.target) return;
+        const bufferArray = e.target.result;
+
+        const wb = XLSX.read(bufferArray, { type: 'buffer' });
+
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+
+        const data = XLSX.utils.sheet_to_json(ws);
+        resolve(data);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+
+    promise.then((d: any) => {
+      setNewIssues(d);
+    });
+  };
+
+  console.log(newIssues);
   return (
     <div
       className={
@@ -130,43 +151,36 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
               <Button
                 type="default"
                 size="large"
-                style={{ marginLeft: '10px' }}
+                style={{ marginLeft: '10px', zIndex: 5 }}
                 htmlType="button"
                 onClick={resetForm}
               >
                 Cancel
               </Button>
-              <Upload
-                beforeUpload={(file) => {
-                  const reader = new FileReader();
-                  reader.readAsText(file);
-                  reader.onload = (e) => {
-                    if (!e.target || !e.target.result) return;
-
-                    setUploadIssue(`${e.target.result}`);
-                    console.log(uploadIssue);
-                    console.log(
-                      typeof JSON.stringify(uploadIssue),
-                      'uploadIssue',
-                    );
-                    console.log(typeof JSON.parse(uploadIssue), 'uploadIssue');
-                  };
-
-                  return false;
-                }}
-                maxCount={1}
-                accept=".txt"
-                showUploadList={false}
+              <Button
+                type="primary"
+                icon={<DownloadOutlined />}
+                style={{ marginLeft: '10px' }}
+                size="large"
               >
-                <Button
-                  type="primary"
-                  icon={<DownloadOutlined />}
-                  style={{ marginLeft: '10px' }}
-                  size="large"
-                >
-                  Download
-                </Button>
-              </Upload>
+                Download
+                <input
+                  style={{
+                    opacity: 0,
+                    position: 'absolute',
+                    top: 0,
+                    left: '-100px',
+                    cursor: 'pointer',
+                    zIndex: 2,
+                  }}
+                  type="file"
+                  onChange={(e) => {
+                    if (!e.target.files) return;
+                    const file = e.target.files[0];
+                    readExcel(file);
+                  }}
+                />
+              </Button>
             </div>
           </Form.Item>
         </Form>

@@ -160,8 +160,7 @@ const GamePage = (): JSX.Element => {
                     style={{ width: '100%' }}
                     onClick={() => {
                       result();
-                      nextIssue();
-                      socket.emit('GET_VOTING_RESULT', gameID);
+                      socket.emit('END_VOTING', gameID);
                     }}
                   >
                     Stop game
@@ -174,9 +173,8 @@ const GamePage = (): JSX.Element => {
                     style={{ width: '100%' }}
                     onClick={() => {
                       setAlertResultGame(true);
-                      socket.emit('CHANGE_VISIBIL_CARD', gameID);
                       changeVisibilCard(-1);
-                      nextIssue();
+                      socket.emit('END_VOTING', gameID);
                     }}
                   >
                     Next Issues

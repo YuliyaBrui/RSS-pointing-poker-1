@@ -1,5 +1,7 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from 'react';
+import XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 import Col from 'antd/lib/grid/col';
 import axios from 'axios';
 import Button from 'antd/lib/button';
@@ -18,12 +20,19 @@ interface TStatistics extends Object {
 }
 
 const ResultPage = (): JSX.Element => {
-  const [sessionName, setSessionName] = useState('');
+  const [sessionName, setSessionName] = useState('fsd');
   const [gameResults, setGameResults] = useState<TStatistics>({});
+
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
+
+  const savedResults: any = [];
+  for (let i = 0; i < issues.length; i += 1) {
+    savedResults.push(issues[i]);
+    savedResults.push(gameResults[i]);
+  }
 
   useEffect(() => {
     axios
@@ -33,23 +42,30 @@ const ResultPage = (): JSX.Element => {
       .get(`http://localhost:3002/result/${gameID}`)
       .then((res) => setGameResults(res.data));
   }, []);
-  console.log(gameResults, 'GAMERESULT');
-  const blob = new Blob(
-    [sessionName, JSON.stringify(gameResults), JSON.stringify(issues)],
-    {
-      type: 'text/plain',
-    },
-  );
+
+  const fileType =
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+  const fileExtension = '.xlsx';
+
+  const exportToCSV = (): void => {
+    const ws = XLSX.utils.json_to_sheet(savedResults);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, `results${fileExtension}`);
+  };
 
   return sessionName.length > 0 ? (
     <div className={styles.wrapper}>
       <div className={styles.result_wrapper}>
         <div className={styles.header_wrapper}>
           <h2 className={styles.result_title}>{sessionName}</h2>
-          <Button type="primary" className={styles.save_button}>
-            <a href={URL.createObjectURL(blob)} download>
-              Save results
-            </a>
+          <Button
+            type="primary"
+            className={styles.save_button}
+            onClick={(e) => exportToCSV()}
+          >
+            Save results
           </Button>
         </div>
         <Col style={{ width: '100%' }}>
