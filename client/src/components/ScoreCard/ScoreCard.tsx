@@ -6,16 +6,17 @@ import { RootState } from '../../redux';
 import styles from './ScoreCard.module.scss';
 
 type IScoreCard = {
-  visibil: boolean;
   point: number;
+  visibil: boolean;
 }
 
 const ScoreCard = ({ visibil, point }: IScoreCard): JSX.Element => {
   const shortType = useSelector(
     (state: RootState) => state.chatReducer.setting.shortScoreType,
   );
+
   return (visibil ? (
-    <Card style={{ width: '150px', height: '80px', margin: '5px' }}>
+    <Card style={{ width: '150px', height: '80px', margin: '5px' }} bodyStyle={{width: '100%', height: '100%'}}>
       <div className={styles.score_info}>
         {point}
         {shortType}
@@ -23,7 +24,7 @@ const ScoreCard = ({ visibil, point }: IScoreCard): JSX.Element => {
     </Card>
   ) : (
     <Card style={{ width: '150px', height: '80px', margin: '5px' }}>
-      <div className={styles.score_info}>In Progress</div>
+      <div className={styles.score_info}>Response received!</div>
     </Card>
   ));
 };

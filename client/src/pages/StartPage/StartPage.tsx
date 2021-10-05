@@ -9,6 +9,7 @@ import { getUsersParams } from '../../redux/actions/createSession';
 import { ErrorGameID } from '../../components/FormConnect/ErrorGameID';
 import { addGameID } from '../../redux/actions/chat';
 import { IFormGameValue } from '../../redux/types/forms';
+import { SERVER_URL } from '../../socket';
 
 const StartPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const StartPage = (): JSX.Element => {
   const [activeFormCreate, setActiveFormCreate] = useState(false);
   const [activeFormConnect, setActiveFormConnect] = useState(false);
   const [activeFormError, setActiveFormError] = useState(false);
+
   const URLValueHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
@@ -28,7 +30,7 @@ const StartPage = (): JSX.Element => {
       console.log(event.target.value);
       setURLError('');
     } else {
-      setURLError('the link should look like http://localhost/lobby/:id');
+      setURLError(`the link should look like ${SERVER_URL}/lobby/:id`);
     }
   };
 
@@ -51,6 +53,7 @@ const StartPage = (): JSX.Element => {
       dispatch(getUsersParams(gameID, callback));
     }
   };
+
   return (
     <div>
       <div className={styles.wrapper}>
@@ -73,10 +76,10 @@ const StartPage = (): JSX.Element => {
         </div>
         <h2 className={styles.title}>OR:</h2>
         <p className={styles.subtitle}>Connect to lobby by URL:</p>
-        <Space direction="horizontal" className={styles.connect}>
+        <div className={styles.session}>
           <Input
             placeholder="Basic usage"
-            style={{ width: '260px', height: '47px' }}
+            style={{ width: '260px', height: '32px' }}
             value={URLValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               URLValueHandler(e);
@@ -89,10 +92,10 @@ const StartPage = (): JSX.Element => {
           >
             Connect
           </Button>
-          <p className={styles.error}>
-            {URLError && <span className={styles.error}>{URLError}</span>}
-          </p>
-        </Space>
+        </div>
+        <p className={styles.error}>
+          {URLError && <span className={styles.error}>{URLError}</span>}
+        </p>
       </div>
       <Modal active={activeFormCreate}>
         <FormCreateGame setActive={setActiveFormCreate} />
@@ -103,17 +106,6 @@ const StartPage = (): JSX.Element => {
       <Modal active={activeFormError}>
         <ErrorGameID setActive={setActiveFormError} />
       </Modal>
-      {true && (
-        <div className={styles.info_wrapper}>
-          <Alert
-          className={styles.game_info}
-          closable
-          message="Success Text"
-          description="Success Description Success Description Success Description"
-          type="info"
-        />
-        </div>
-      )}
     </div>
   );
 };

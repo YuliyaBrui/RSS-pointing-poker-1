@@ -18,11 +18,11 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
 
   const location = useLocation();
 
- /* const gameID = useSelector(
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-*/
-const { gameID } = sessionStorage;
+
+// const { gameID } = sessionStorage;
   useEffect(() => {
     dispatch(getUsersParams(gameID));
   }, []);

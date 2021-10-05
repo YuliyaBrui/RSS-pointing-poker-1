@@ -11,10 +11,10 @@ import { Modal } from '../../modal/Modal';
 export const StartCancelButtons = (): JSX.Element => {
   const [activeIssueValidation, setActiveIssueValidation] = useState(false);
   const store = useSelector((state: RootState) => state);
- /* const gameID = useSelector(
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  );*/
-  const { gameID } = sessionStorage;
+  );
+  // const { gameID } = sessionStorage;
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const history = useHistory();
   const StartGame = (): void => {

@@ -32,10 +32,10 @@ const SettingPage = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-  /* const gameID = useSelector(
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  ); */
-  const { gameID } = sessionStorage;
+  ); 
+  // const { gameID } = sessionStorage;
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
@@ -44,7 +44,7 @@ const SettingPage = (): JSX.Element => {
     });
     dispatch(getUsersParams(gameID));
   }, []);
-  
+
   const joinMember = useSelector((state: RootState) => state.chatReducer);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
@@ -52,8 +52,7 @@ const SettingPage = (): JSX.Element => {
   const masterName = useSelector(
     (state: RootState) => state.chatReducer.users.master.name,
   );
-  // const masterName = 'asd';
- 
+
   window.onload = () => {
     const currentUser = JSON.parse(sessionStorage.user);
     sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
@@ -61,7 +60,7 @@ const SettingPage = (): JSX.Element => {
     if (ID === 'undefined') {
       window.location.reload();
     }
-    console.log(currentUser);
+
     const joinState = {
       master: {
         name: currentUser.name,
@@ -73,7 +72,7 @@ const SettingPage = (): JSX.Element => {
       gameID,
     };
     socket.emit('GAME_JOIN_MASTER', joinState);
-    //dispatch(getUsersParams(gameID));
+    // dispatch(getUsersParams(gameID));
   };
   const nextCardValue = (): IGameCard => {
     const cardValue =

@@ -14,16 +14,20 @@ import styles from './ResultPage.module.scss';
 import GameCard from '../../components/GameCard/GameCard';
 import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
 import { RootState } from '../../redux';
+import { SERVER_URL } from '../../socket';
 
 interface TStatistics extends Object {
   [point: number]: number[];
 }
 
 const ResultPage = (): JSX.Element => {
-  const [sessionName, setSessionName] = useState('fsd');
+  const [sessionName, setSessionName] = useState('');
   const [gameResults, setGameResults] = useState<TStatistics>({});
 
-  const { gameID } = sessionStorage;
+  // const { gameID } = sessionStorage;
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
 
   const savedResults: any = [];
@@ -34,10 +38,10 @@ const ResultPage = (): JSX.Element => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3002/session-name/${gameID}`)
+      .get(`${SERVER_URL}/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
     axios
-      .get(`http://localhost:3002/result/${gameID}`)
+      .get(`${SERVER_URL}/result/${gameID}`)
       .then((res) => setGameResults(res.data));
   }, []);
 

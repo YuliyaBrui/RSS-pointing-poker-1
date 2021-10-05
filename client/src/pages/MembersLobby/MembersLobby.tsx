@@ -16,7 +16,7 @@ import { RootState } from '../../redux';
 import { chatParams } from '../../redux/actions/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
 import { IChatUsers } from '../../redux/types/chat';
-import { socket } from '../../socket';
+import { SERVER_URL, socket } from '../../socket';
 import styles from './MembersLobby.module.scss';
 
 const MembersLobby = (): JSX.Element => {
@@ -33,19 +33,19 @@ const MembersLobby = (): JSX.Element => {
   const observers = useSelector(
     (state: RootState) => state.chatReducer.users.observers,
   );
-  /*
+  
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-*/
-  const { gameID } = sessionStorage;
+
+  // const { gameID } = sessionStorage;
   const socketID = sessionStorage.getItem('socket.id');
   const currentUser = JSON.parse(sessionStorage.user);
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     dispatch(getUsersParams(gameID));
     axios
-      .get(`http://localhost:3002/session-name/${gameID}`)
+      .get(`${SERVER_URL}/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
   }, []);
 

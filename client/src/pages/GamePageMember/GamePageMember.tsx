@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import {
  Button, Carousel, Space, Spin 
 } from 'antd';
@@ -20,7 +20,7 @@ import { RootState } from '../../redux';
 import { IIssue } from '../../redux/types/issues';
 import { IGameCard } from '../../redux/types/gameCard';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
-import { socket } from '../../socket';
+import { SERVER_URL, socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import Chat from '../../components/Chat/Chat';
 
@@ -34,31 +34,31 @@ type IGameScore = {
 };
 
 const GamePageMember = (): JSX.Element => {
-  const [sessionName, setSessionName] = useState('New session');
-  const [formVisible, setFormVisible] = useState(false);
+  const [sessionName, setSessionName] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [currentIssue, setCurrentIssue] = useState(0);
+  const [vivsibGameScore, setVivsibGameScore] = useState(false);
   const dispatch = useDispatch();
-  // const currentUser = useSelector((state: RootState) => state.currentUser);
   const currentUser = JSON.parse(sessionStorage.user);
   const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
+
   const [gameScore, setGameScore] = useState([]);
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
-  const time = useSelector(
-    (state: RootState) => state.chatReducer.setting.roundTime,
-  );
 
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
-/*  const gameID = useSelector(
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-*/
-  const { gameID } = sessionStorage;
+
+  // const { gameID } = sessionStorage;
   const history = useHistory();
+  const carouselRef: RefObject<any> = React.createRef();
   const exit = (): void => {
     history.push('/');
   };
@@ -79,19 +79,27 @@ const GamePageMember = (): JSX.Element => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3002/session-name/${gameID}`)
+      .get(`${SERVER_URL}/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
-    dispatch(getUsersParams(gameID));
+    // dispatch(getUsersParams(gameID));
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
+    socket.on('ROUND_RUN', () => {
+      changeVisibilCard(-1);
+      setIsRunning(true);
+    });
+    socket.on('NEXT_CURRENT_ISSUE', (data) => {
+      setCurrentIssue(data);
+      carouselRef.current.goTo(currentIssue + 1);
+    });
+    socket.on('VIEW_GAME_SCORE', (data) => setVivsibGameScore(data));
     socket.emit('GET_GAME_CARDS', gameID);
-  }, [gameScore, gameCards]);
+  }, [gameScore, gameCards, carouselRef, currentIssue]);
 
   window.onload = () => {
     sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
-    
-    console.log(currentUser);
+
     const joinState = {
       master: {
         name: currentUser.name,
@@ -104,10 +112,9 @@ const GamePageMember = (): JSX.Element => {
     };
     socket.emit('GAME_JOIN_MASTER', joinState);
     dispatch(getUsersParams(gameID));
-    
   };
 
-  const SampleNextArrow = (props: any) => {
+  const SampleNextArrow = (props: any): JSX.Element => {
     const { className, style, onClick } = props;
     return (
       <div
@@ -115,15 +122,16 @@ const GamePageMember = (): JSX.Element => {
         style={{
           ...style,
           color: 'black',
-          fontSize: '25px',
-          lineHeight: '1.5715',
+          fontSize: '40px',
+          width: '40px',
+          height: '40px',
         }}
         onClick={onClick}
       />
     );
   };
 
-  const SamplePrevArrow = (props: any) => {
+  const SamplePrevArrow = (props: any): JSX.Element => {
     const { className, style, onClick } = props;
     return (
       <div
@@ -131,8 +139,9 @@ const GamePageMember = (): JSX.Element => {
         style={{
           ...style,
           color: 'black',
-          fontSize: '25px',
-          lineHeight: '1.5715',
+          fontSize: '40px',
+          width: '40px',
+          height: '40px',
         }}
         onClick={onClick}
       />
@@ -156,7 +165,10 @@ const GamePageMember = (): JSX.Element => {
               </div>
               {timer && (
                 <div>
-                  <Timer />
+                  <Timer
+                    running={setIsRunning}
+                    changeVisibil={changeVisibilCard}
+                  />
                 </div>
               )}
               <div>
@@ -168,14 +180,18 @@ const GamePageMember = (): JSX.Element => {
             <div className={styles.process}>
               <div className={styles.issue}>
                 <h2 className={styles.game_title}>Issues: </h2>
-                <Carousel arrows {...settings}>
+                <Carousel
+                  arrows
+                  ref={carouselRef}
+                  {...settings}
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                >
                   {issues &&
-                    issues.issues.map((issue: IIssue) => (
-                      <div>
-                        <h3
+                    issues.issues.map((issue: IIssue, i) => (
+                      <div className={styles.issues_wrapper}>
+                        <div
                           style={{
-                            height: '130px',
-                            color: '#fff',
+                            height: '150px',
                             lineHeight: '130px',
                             display: 'flex',
                             alignItems: 'center',
@@ -189,7 +205,16 @@ const GamePageMember = (): JSX.Element => {
                             id={issue.id}
                             key={issue.id}
                           />
-                        </h3>
+                          <div
+                            className={
+                              currentIssue === i
+                                ? styles.currnt_issues
+                                : styles.none
+                            }
+                          >
+                            The issue under discussion!
+                          </div>
+                        </div>
                       </div>
                     ))}
                 </Carousel>
@@ -197,12 +222,14 @@ const GamePageMember = (): JSX.Element => {
               <div>
                 <Row style={{ width: '100%' }} justify="center">
                   <div className={styles.card_button_wrapper}>
-                    <Button
-                      type="ghost"
+                    <button
+                      type="button"
+                      disabled={timer ? !isRunning : false}
                       style={{
                         border: 'none',
                         padding: '0',
                         height: '100%',
+                        background: 'none',
                         zIndex: visibilCard[0],
                         margin: '-5px',
                       }}
@@ -212,7 +239,7 @@ const GamePageMember = (): JSX.Element => {
                       }}
                     >
                       <CoffeeGameCard />
-                    </Button>
+                    </button>
                   </div>
                   {gameCards.map((gameCard: IGameCard, i: number) => (
                     <div
@@ -221,6 +248,7 @@ const GamePageMember = (): JSX.Element => {
                     >
                       <button
                         type="button"
+                        disabled={timer ? !isRunning : false}
                         style={{
                           border: 'none',
                           opacity: visibilCard[i + 1],
@@ -246,10 +274,6 @@ const GamePageMember = (): JSX.Element => {
               </div>
             </div>
           </div>
-          <IssueForm
-            formVisible={formVisible}
-            setFormVisible={setFormVisible}
-          />
         </div>
         <div className={styles.game__part_score}>
           <div className={styles.score_title}>
@@ -261,7 +285,7 @@ const GamePageMember = (): JSX.Element => {
               gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
                   <div>
-                    <ScoreCard visibil point={user.point} />
+                    <ScoreCard visibil={vivsibGameScore} point={user.point} />
                   </div>
                   <div>
                     <UserCard

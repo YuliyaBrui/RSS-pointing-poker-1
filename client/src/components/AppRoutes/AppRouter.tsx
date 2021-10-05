@@ -8,17 +8,14 @@ import { FooterPoker } from '../Footer/Footer';
 import { socket } from '../../socket';
 import { chatParams, gameIssues } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
-import { IFormGameValue } from '../../redux/types/forms';
 import { kickForm } from '../../redux/actions/kickForm';
 import { IIssue } from '../../redux/types/issues';
-import { RootState } from '../../redux';
 
 const { Header, Footer, Content } = Layout;
 
 const AppRouter = (): JSX.Element => {
   const dispatch = useDispatch();
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
-    console.log({ members, observers, master });
     dispatch(chatParams({ members, observers, master }));
   };
   const getIssues = (issues: IIssue[]): void => {
@@ -31,10 +28,8 @@ const AppRouter = (): JSX.Element => {
     dispatch(addIssue(issue));
   };
   const history = useHistory();
-   useEffect(() => {
-    socket.on('MASTER_JOINED', ({ master }) => {
-      console.log({ master });
-    });
+  useEffect(() => {
+    socket.on('MASTER_JOINED', ({ master }) => {});
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
     socket.on('GAME_ADD_ISSUE', addIssue);
@@ -51,7 +46,6 @@ const AppRouter = (): JSX.Element => {
     socket.on('START_GAME', (address: string): void => {
       history.push(address);
     });
-   
   }, []);
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -71,9 +65,7 @@ const AppRouter = (): JSX.Element => {
           <Redirect to="/not-found-page" />
         </Switch>
       </Content>
-      <Footer style={{ background: '#66999B' }}>
-        <FooterPoker />
-      </Footer>
+      <FooterPoker />
     </Layout>
   );
 };

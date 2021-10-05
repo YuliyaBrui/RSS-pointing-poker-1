@@ -20,11 +20,11 @@ const AverageScoreForm = ({
     coffee: '',
   });
 
-/*  const gameID = useSelector(
+ const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-*/
-const { gameID } = sessionStorage;
+
+// const { gameID } = sessionStorage;
   const nextIssue = (): void => {
     socket.emit('NEXT_ISSUE', gameID);
   };
@@ -60,6 +60,7 @@ const { gameID } = sessionStorage;
             socket.emit('RESET_VISIBIL_CARD', gameID);
             resultFormVisib(false);
             nextIssue();
+            socket.emit('VIEW_GAME_SCORE', gameID, false);
           }}
         >
           Clear

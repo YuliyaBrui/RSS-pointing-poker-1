@@ -50,7 +50,10 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: './index.html' }),
+    new HtmlWebpackPlugin({
+      template: './index.html',
+      favicon: './favicon.ico',
+    }),
     new MiniCssExtractPlugin({ filename: '[name].css' }),
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     // new CopyPlugin({

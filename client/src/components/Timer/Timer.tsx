@@ -4,23 +4,45 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import styles from './Timer.module.scss';
+import { socket } from '../../socket';
 
-const Timer = (): JSX.Element => {
-  const time = useSelector((state: RootState) => state.gameSetting.roundTime);
-  const [seconds, setSeconds] = useState(time);
+interface setRunning {
+  running: (a: boolean) => void;
+  changeVisibil: (a: number) => void;
+}
+
+const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
   const [isRunning, setIsRunning] = useState(false);
+  const time = useSelector(
+    (state: RootState) => state.chatReducer.setting.roundTime,
+  );
+  const [seconds, setSeconds] = useState(+time);
 
   const location = useLocation();
- /* const gameID = useSelector(
+
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-*/
-  const { gameID } = sessionStorage;
+  const viewGameScore = useSelector(
+    (state: RootState) => state.chatReducer.setting.changingCard,
+  );
+
+  // const { gameID } = sessionStorage;
   useEffect(() => {
+    socket.on('ROUND_RUN', () => {
+      console.log('ROUND RUN IN TIMER');
+      setIsRunning(true);
+    });
     if (isRunning) {
       const id = window.setInterval(() => {
         if (seconds > 0) {
           setSeconds((second: number) => second - 1);
+        } else if (seconds === 0) {
+          socket.emit('VIEW_GAME_SCORE', gameID, viewGameScore);
+          running(false);
+          setIsRunning(false);
+          changeVisibil(-1);
+          setSeconds(+time);
         }
       }, 1000);
       return () => window.clearInterval(id);
@@ -37,6 +59,7 @@ const Timer = (): JSX.Element => {
               type="primary"
               onClick={() => {
                 setIsRunning(true);
+                socket.emit('ROUND_RUN', gameID);
               }}
             >
               Run Round
@@ -46,7 +69,8 @@ const Timer = (): JSX.Element => {
               type="primary"
               onClick={() => {
                 setIsRunning(false);
-                setSeconds(time);
+                setSeconds(+time);
+                socket.emit('REPEAT_VOTING', gameID);
               }}
             >
               Restart Round
@@ -54,6 +78,7 @@ const Timer = (): JSX.Element => {
           )}
         </div>
       )}
+      <div>Timer</div>
       <div className={styles.timer}>
         <span className={styles.timer_seconds}>{seconds}</span>
         <span className={styles.timer_seconds}> sec</span>

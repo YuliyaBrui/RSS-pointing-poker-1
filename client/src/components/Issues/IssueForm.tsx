@@ -21,13 +21,12 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
   const [priority, setPriority] = useState('');
-  const [newIssues, setNewIssues] = useState([]);
 
   const dispatch = useDispatch();
- /* const gameID = useSelector(
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  );*/
-  const { gameID } = sessionStorage;
+  );
+  // const { gameID } = sessionStorage;
   const id = shortid();
 
   const [form] = Form.useForm();
@@ -81,11 +80,14 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
     });
 
     promise.then((d: any) => {
-      setNewIssues(d);
+      d.forEach((el: any) => {
+        dispatch(addIssue({ ...el }));
+        socket.emit('GAME_NEW_ISSUE', { gameID, ...el });
+      });
+      resetForm();
     });
   };
 
-  console.log(newIssues);
   return (
     <div
       className={

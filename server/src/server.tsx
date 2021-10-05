@@ -52,7 +52,7 @@ export const games = new Map();
 app.post('/', (req, res) => {
   const { master } = req.body;
   const gameID = guid();
-  console.log(gameID);
+  console.log(gameID, 'post');
   games.set(
     gameID,
     new Map([
@@ -92,7 +92,7 @@ app.get('/result/:id', async (req, res) => {
 
 app.get('/:id', async (req, res) => {
   const gameID = req.params.id;
-  console.log(gameID);
+  console.log(gameID, 'get');
   if (games.has(gameID)) {
     const members = [...games.get(gameID).get('members').values()];
     const observers = [...games.get(gameID).get('observers').values()];
@@ -294,10 +294,9 @@ io.on('connection', (socket: Socket) => {
     const members = [...games.get(gameID).get('members').keys()];
     members.forEach((el) => {
       io.to(el).emit('KICK_DATA', kickData);
-    })
-   
-  //  io.sockets.in(gameID).emit('KICK_DATA', kickData);
-    
+    });
+
+    //  io.sockets.in(gameID).emit('KICK_DATA', kickData);
   });
 
   socket.on('KICK_USER_BY_MASTER', (gameID, id) => {
@@ -315,7 +314,6 @@ io.on('connection', (socket: Socket) => {
     games.get(gameID).get('kickForm').get('inform').yes.push(id);
     console.log('yes');
     kickVoiting(gameID);
-   
   });
 
   socket.on('DISAGREE_KICK_MEMBER', (gameID, id) => {
@@ -406,6 +404,18 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('RESET_VISIBIL_CARD', (gameID) => {
     io.sockets.in(gameID).emit('RESET_VISIBIL_CARD', -1);
+  });
+
+  socket.on('ROUND_RUN', (gameID) => {
+    io.sockets.in(gameID).emit('ROUND_RUN');
+  });
+
+  socket.on('NEXT_CURRENT_ISSUE', (gameID, value) => {
+    io.sockets.in(gameID).emit('NEXT_CURRENT_ISSUE', value);
+  });
+
+  socket.on('VIEW_GAME_SCORE', (gameID, value) => {
+    io.sockets.in(gameID).emit('VIEW_GAME_SCORE', value);
   });
 
   socket.on('disconnect', () => {
