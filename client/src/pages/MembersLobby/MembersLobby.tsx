@@ -34,12 +34,12 @@ const MembersLobby = (): JSX.Element => {
     (state: RootState) => state.chatReducer.users.observers,
   );
   
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
-  // const { gameID } = sessionStorage;
-  const socketID = sessionStorage.getItem('socket.id');
+*/
+  const { gameID } = sessionStorage;
+ 
   const currentUser = JSON.parse(sessionStorage.user);
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
@@ -50,12 +50,6 @@ const MembersLobby = (): JSX.Element => {
   }, []);
 
   window.onload = () => {
-    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
-    const ID = sessionStorage.getItem('socket.id');
-    if (ID === 'undefined') {
-      window.location.reload();
-    }
-    console.log(currentUser);
     const joinState = {
       user: {
         name: currentUser.name,
@@ -68,12 +62,13 @@ const MembersLobby = (): JSX.Element => {
     };
     if (currentUser.role === 'member') {
       socket.emit('GAME_JOIN_MEMBER', joinState);
-      dispatch(getUsersParams(gameID));
+     
     }
     if (currentUser.role === 'observer') {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
-      dispatch(getUsersParams(gameID));
+    
     }
+    dispatch(getUsersParams(gameID));
   };
   socket.on('MEMBER_LEAVED', getUsers);
   // const currentUser = useSelector((state: RootState) => state.currentUser);
@@ -124,7 +119,7 @@ const MembersLobby = (): JSX.Element => {
                   avatar={user.avatarURL}
                   position={user.jobPosition}
                   visibil={
-                      socketID === `"${user.id}"` || currentUser.id === user.id
+                      socket.id === `"${user.id}"` || currentUser.id === user.id
                         ? 'hidden'
                         : 'visible'
                     }

@@ -32,10 +32,11 @@ const SettingPage = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   ); 
-  // const { gameID } = sessionStorage;
+  */
+  const { gameID } = sessionStorage;
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
@@ -55,12 +56,6 @@ const SettingPage = (): JSX.Element => {
 
   window.onload = () => {
     const currentUser = JSON.parse(sessionStorage.user);
-    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
-    const ID = sessionStorage.getItem('socket.id');
-    if (ID === 'undefined') {
-      window.location.reload();
-    }
-
     const joinState = {
       master: {
         name: currentUser.name,

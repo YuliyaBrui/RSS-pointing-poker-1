@@ -42,14 +42,13 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       };
       socket.emit('GAME_JOIN_MASTER', joinState);
       sessionStorage.setItem('gameID', gameID);
-      sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
       reset();
       form.resetFields();
       setActive(false);
       history.push(`/setting/${gameID}`);
      
     };
-    dispatch(addCurrentUser(value));
+    //dispatch(addCurrentUser(value));
     sessionStorage.setItem('user', JSON.stringify(value));
     dispatch(saveMasterParams(value, callback));
   };
