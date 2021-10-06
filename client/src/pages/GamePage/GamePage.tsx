@@ -102,15 +102,14 @@ const GamePage = (): JSX.Element => {
   //   (state: RootState) => state.chatReducer.setting.roundTime,
   // );
 
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
-  // const { gameID } = sessionStorage;
+*/
+  const { gameID } = sessionStorage;
   const { Option } = Select;
   const carouselRef: RefObject<any> = React.createRef();
   const dispatch = useDispatch();
-
   const sorting = (sortby: string): void => {
     switch (sortby) {
       case 'asc':
@@ -158,7 +157,20 @@ const GamePage = (): JSX.Element => {
       setIsRunning(true);
     });
   }, [gameScore]);
-
+  window.onload = () => {
+    const joinState = {
+      master: {
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        jobPosition: currentUser.jobPosition,
+        avatarURL: currentUser.avatarURL,
+        id: socket.id,
+      },
+      gameID,
+    };
+    socket.emit('GAME_JOIN_MASTER', joinState);
+    dispatch(getUsersParams(gameID));
+  };
   const SampleNextArrow = (props: any): JSX.Element => {
     const { className, style, onClick } = props;
     return (
@@ -199,7 +211,7 @@ const GamePage = (): JSX.Element => {
   };
 
   window.onload = () => {
-    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+ 
 
     const joinState = {
       master: {
@@ -278,7 +290,7 @@ const GamePage = (): JSX.Element => {
                       onSelect={(value) => sorting(`${value}`)}
                     >
                       <Option value="first">FIRST ORDER</Option>
-                      <Option value="ask">ASC</Option>
+                      <Option value="asc">ASC</Option>
                       <Option value="desc">DESC</Option>
                     </Select>
                   </FormItem>

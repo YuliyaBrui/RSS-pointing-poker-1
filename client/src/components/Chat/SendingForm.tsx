@@ -12,10 +12,10 @@ export const SendingForm = (): JSX.Element => {
   const [message, setMessage] = useState('');
   // const user = useSelector((state: RootState) => state.currentUser);
   const user = JSON.parse(sessionStorage.user);
-  // const { gameID } = sessionStorage;
-  const gameID = useSelector(
+   const { gameID } = sessionStorage;
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
-  );
+  );*/
   const sendMessage = (): void => {
     const newMessage = {
       text: message,
@@ -26,7 +26,6 @@ export const SendingForm = (): JSX.Element => {
     };
     if (message !== '') {
       socket.emit('GAME_NEW_MESSAGE', newMessage);
-      dispatch(newMessageParams(newMessage));
     }
     setMessage('');
   };

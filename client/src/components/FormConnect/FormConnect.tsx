@@ -58,7 +58,7 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       };
       socket.emit('GAME_JOIN_OBSERVER', joinState);
       sessionStorage.setItem('user', JSON.stringify(userStorage));
-      sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+     
     } else {
       const userStorage = {
         role: 'member',
@@ -70,9 +70,10 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       };
       socket.emit('GAME_JOIN_MEMBER', joinState);
       sessionStorage.setItem('user', JSON.stringify(userStorage));
-      sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
+     
     }
-    dispatch(addCurrentUser(value));
+    sessionStorage.setItem('gameID', gameID);
+   // dispatch(addCurrentUser(value));
     reset();
     form.resetFields();
     setActive(false);
