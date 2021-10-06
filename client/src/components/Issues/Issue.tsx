@@ -18,19 +18,19 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
 
   const location = useLocation();
 
-  const gameID = useSelector(
+  /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
-// const { gameID } = sessionStorage;
+*/
+  const { gameID } = sessionStorage;
   useEffect(() => {
     dispatch(getUsersParams(gameID));
   }, []);
-  const issues = useSelector((state: RootState) => state.chatReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const [issueName, setIssueName] = useState(title);
   const [editIssueName, setEditIssueName] = useState(false);
   const changeTitle = (): void => {
-    issues.issues.map((issue: IIssue) => {
+    issues.map((issue: IIssue) => {
       const newIssue = issue;
       if (newIssue.id === id) {
         newIssue.title = issueName;
@@ -43,14 +43,14 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
       title: issueName,
     };
     socket.emit('GAME_CHANGE_ISSUE', changeIssue);
-    dispatch(gameIssues(issues.issues));
+    dispatch(gameIssues(issues));
   };
 
   const removeIssue = (): void => {
-    issues.issues.map((issue: IIssue, index: number) => {
+    issues.map((issue: IIssue, index: number) => {
       const newIssue = issue;
       if (newIssue.id === id) {
-        issues.issues.splice(index, 1);
+        issues.splice(index, 1);
 
         const issueDelete = {
           gameID,
@@ -60,7 +60,7 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
       }
       return newIssue;
     });
-    dispatch(gameIssues(issues.issues));
+    dispatch(gameIssues(issues));
   };
 
   return (
@@ -104,7 +104,10 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
           </div>
         )}
       </div>
-      <p className={styles.main__priority}>priority: {priority}</p>
+      <p className={styles.main__priority}>
+        priority:
+        {priority}
+      </p>
     </Card>
   );
 };

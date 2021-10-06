@@ -50,7 +50,7 @@ export const kickVoiting = (gameID: string): void => {
         
         };
         games.get(gameID).get('messages').push(message);
-        console.log(games.get(gameID));
+        console.log(`${games.get(gameID)}-kick member`);
         io.sockets.in(gameID).emit('KICKED_MEMBER', users(gameID));
         io.sockets.in(gameID).emit('STOP_JOIN', kickedUser.id);
 

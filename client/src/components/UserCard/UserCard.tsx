@@ -54,19 +54,13 @@ const UserCard = ({
     dispatch(chatParams({ members, observers, master }));
   };
   const sendKickData = (): void => {
-    const socketID = sessionStorage.getItem('socket.id');
-    console.log(socketID, `"${gameMaster.id}"`);
-    const ID = sessionStorage.getItem('socket.id');
-    if (ID === 'undefined') {
-      window.location.reload();
-    }
-    if (socketID === `"${gameMaster.id}"`) {
+    if (socket.id === gameMaster.id ) {
       socket.emit('KICK_USER_BY_MASTER', gameID, id);
-      console.log('master', socketID, `"${gameMaster.id}"`, id);
+      console.log('master', socket.id, gameMaster.id, id);
     }
     else {
       socket.emit('KICK_DATA', gameID, kickData);
-      console.log('member', socketID, `"${gameMaster.id}"`, id);
+      console.log('member', socket.id, gameMaster.id, id);
     }
     socket.on('KICKED_MEMBER', getUsers);
     socket.on('STAY_MEMBER', getUsers);

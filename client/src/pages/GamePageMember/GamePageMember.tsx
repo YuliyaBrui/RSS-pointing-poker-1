@@ -23,6 +23,7 @@ import ScoreCard from '../../components/ScoreCard/ScoreCard';
 import { SERVER_URL, socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import Chat from '../../components/Chat/Chat';
+import { gameIssues } from '../../redux/actions/chat';
 
 type IGameScore = {
   name: string;
@@ -40,7 +41,7 @@ const GamePageMember = (): JSX.Element => {
   const [vivsibGameScore, setVivsibGameScore] = useState(false);
   const dispatch = useDispatch();
   const currentUser = JSON.parse(sessionStorage.user);
-  const issues = useSelector((state: RootState) => state.chatReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
@@ -52,11 +53,11 @@ const GamePageMember = (): JSX.Element => {
 
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-
-  // const { gameID } = sessionStorage;
+*/
+  const { gameID } = sessionStorage;
   const history = useHistory();
   const carouselRef: RefObject<any> = React.createRef();
   const exit = (): void => {
@@ -83,14 +84,17 @@ const GamePageMember = (): JSX.Element => {
     res(true);
   });
 
+  const getIssues = (issuesGame: IIssue[]): void => {
+    dispatch(gameIssues(issuesGame));
+  };
   useEffect(() => {
     axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
-    // dispatch(getUsersParams(gameID));
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
+    socket.on('GAME_SORT_ISSUES', getIssues);
     socket.on('ROUND_RUN', () => {
       changeVisibilCard(-1);
       setIsRunning(true);
@@ -104,10 +108,8 @@ const GamePageMember = (): JSX.Element => {
   }, [gameScore, gameCards, carouselRef, currentIssue]);
 
   window.onload = () => {
-    sessionStorage.setItem('socket.id', JSON.stringify(socket.id));
-
     const joinState = {
-      master: {
+      user: {
         name: currentUser.name,
         lastName: currentUser.lastName,
         jobPosition: currentUser.jobPosition,
@@ -116,8 +118,15 @@ const GamePageMember = (): JSX.Element => {
       },
       gameID,
     };
-    socket.emit('GAME_JOIN_MASTER', joinState);
-    dispatch(getUsersParams(gameID));
+    if (currentUser.role === 'member') {
+      socket.emit('GAME_JOIN_MEMBER', joinState);
+     
+    }
+    if (currentUser.role === 'observer') {
+      socket.emit('GAME_JOIN_OBSERVER', joinState);
+    
+    }
+  dispatch(getUsersParams(gameID));
   };
 
   const SampleNextArrow = (props: any): JSX.Element => {
@@ -193,7 +202,7 @@ const GamePageMember = (): JSX.Element => {
                   style={{ display: 'flex', justifyContent: 'center' }}
                 >
                   {issues &&
-                    issues.issues.map((issue: IIssue, i) => (
+                    issues.map((issue: IIssue, i) => (
                       <div className={styles.issues_wrapper}>
                         <div
                           style={{

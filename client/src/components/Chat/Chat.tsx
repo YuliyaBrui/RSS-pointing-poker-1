@@ -2,7 +2,7 @@ import { ArrowsAltOutlined, ShrinkOutlined } from '@ant-design/icons/lib/icons';
 import { Button, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { newMessageParams } from '../../redux/actions/chat';
+import { chatMessageParams, newMessageParams } from '../../redux/actions/chat';
 import { IMessage } from '../../redux/types/chat';
 import { socket } from '../../socket';
 import styles from './Chat.module.scss';
@@ -11,8 +11,8 @@ import SendingForm from './SendingForm';
 
 const Chat = (): JSX.Element => {
   const dispatch = useDispatch();
-  const addMessage = (message: IMessage): void => {
-    dispatch(newMessageParams(message));
+  const addMessage = (message: IMessage[]): void => {
+    dispatch(chatMessageParams(message));
   };
   const [collapsed, setCollapsed] = useState(false);
   const [dragState, setDragState] = useState({});

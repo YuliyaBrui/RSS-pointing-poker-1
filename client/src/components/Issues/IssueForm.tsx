@@ -23,12 +23,12 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [priority, setPriority] = useState('');
 
   const dispatch = useDispatch();
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-  // const { gameID } = sessionStorage;
+  */
+  const { gameID } = sessionStorage;
   const id = shortid();
-
   const [form] = Form.useForm();
 
   const resetForm = (): void => {
@@ -60,16 +60,12 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
     const promise = new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(file);
-
       fileReader.onload = (e) => {
         if (!e.target) return;
         const bufferArray = e.target.result;
-
         const wb = XLSX.read(bufferArray, { type: 'buffer' });
-
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
-
         const data = XLSX.utils.sheet_to_json(ws);
         resolve(data);
       };
