@@ -258,8 +258,13 @@ const GamePage = (): JSX.Element => {
                         changeVisibilCard(-1);
                         carouselRef.current.goTo(currentIssue + 1);
                         setCurrentIssue((prev) => prev + 1);
-                        socket.emit('NEXT_CURRENT_ISSUE', gameID, currentIssue);
+                        socket.emit(
+                          'NEXT_CURRENT_ISSUE',
+                          gameID,
+                          currentIssue + 1,
+                        );
                         socket.emit('END_VOTING', gameID);
+                        socket.emit('RESET_TIME', gameID);
                       }}
                     >
                       Next Issues

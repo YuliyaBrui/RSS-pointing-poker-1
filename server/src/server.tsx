@@ -418,6 +418,10 @@ io.on('connection', (socket: Socket) => {
     io.sockets.in(gameID).emit('VIEW_GAME_SCORE', value);
   });
 
+  socket.on('RESET_TIME', (gameID) => {
+    io.sockets.in(gameID).emit('RESET_TIME');
+  });
+
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
       if (value.get('members').delete(socket.id) || value.get('observers').delete(socket.id)) {

@@ -30,8 +30,11 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
   // const { gameID } = sessionStorage;
   useEffect(() => {
     socket.on('ROUND_RUN', () => {
-      console.log('ROUND RUN IN TIMER');
       setIsRunning(true);
+    });
+    socket.on('RESET_TIME', () => {
+      setIsRunning(false);
+      setSeconds(+time);
     });
     if (isRunning) {
       const id = window.setInterval(() => {

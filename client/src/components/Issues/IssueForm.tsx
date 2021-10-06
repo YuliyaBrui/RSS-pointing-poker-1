@@ -146,7 +146,7 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
               onSelect={(value) => setPriority(`${value}`)}
             />
           </Form.Item>
-          <Form.Item wrapperCol={{ span: 14, offset: 4 }}>
+          <Form.Item name="summit" wrapperCol={{ span: 14, offset: 4 }}>
             <div style={{ display: 'flex' }}>
               <Button type="primary" size="large" htmlType="submit">
                 Submit

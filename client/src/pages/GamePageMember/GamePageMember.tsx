@@ -77,6 +77,12 @@ const GamePageMember = (): JSX.Element => {
     setVisibilCard(visivArr);
   };
 
+  const promese = (data: number): Promise<boolean> =>
+    new Promise((res, req) => {
+    setCurrentIssue(data);
+    res(true);
+  });
+
   useEffect(() => {
     axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
@@ -90,8 +96,8 @@ const GamePageMember = (): JSX.Element => {
       setIsRunning(true);
     });
     socket.on('NEXT_CURRENT_ISSUE', (data) => {
-      setCurrentIssue(data);
-      carouselRef.current.goTo(currentIssue + 1);
+      promese(data).then(carouselRef.current.goTo(currentIssue + 1));
+      console.log(currentIssue);
     });
     socket.on('VIEW_GAME_SCORE', (data) => setVivsibGameScore(data));
     socket.emit('GET_GAME_CARDS', gameID);
@@ -220,57 +226,59 @@ const GamePageMember = (): JSX.Element => {
                 </Carousel>
               </div>
               <div>
-                <Row style={{ width: '100%' }} justify="center">
-                  <div className={styles.card_button_wrapper}>
-                    <button
-                      type="button"
-                      disabled={timer ? !isRunning : false}
-                      style={{
-                        border: 'none',
-                        padding: '0',
-                        height: '100%',
-                        background: 'none',
-                        zIndex: visibilCard[0],
-                        margin: '-5px',
-                      }}
-                      onClick={() => {
-                        setUserPoint(0);
-                        changeVisibilCard(0);
-                      }}
-                    >
-                      <CoffeeGameCard />
-                    </button>
-                  </div>
-                  {gameCards.map((gameCard: IGameCard, i: number) => (
-                    <div
-                      className={styles.card_button_wrapper}
-                      key={gameCard.id}
-                    >
+                <div className={styles.process}>
+                  <Row style={{ width: '100%' }} justify="center">
+                    <div className={styles.card_button_wrapper}>
                       <button
                         type="button"
                         disabled={timer ? !isRunning : false}
                         style={{
                           border: 'none',
-                          opacity: visibilCard[i + 1],
-                          background: 'none',
-                          padding: 0,
+                          padding: '0',
                           height: '100%',
+                          background: 'none',
+                          zIndex: visibilCard[0],
                           margin: '-5px',
                         }}
                         onClick={() => {
-                          setUserPoint(gameCard.cardValue);
-                          changeVisibilCard(i + 1);
+                          setUserPoint(0);
+                          changeVisibilCard(0);
                         }}
                       >
-                        <GameCard
-                          cardValue={gameCard.cardValue}
-                          id={gameCard.id}
-                          key={gameCard.id}
-                        />
+                        <CoffeeGameCard />
                       </button>
                     </div>
-                  ))}
-                </Row>
+                    {gameCards.map((gameCard: IGameCard, i: number) => (
+                      <div
+                        className={styles.card_button_wrapper}
+                        key={gameCard.id}
+                      >
+                        <button
+                          type="button"
+                          disabled={timer ? !isRunning : false}
+                          style={{
+                            border: 'none',
+                            opacity: visibilCard[i + 1],
+                            background: 'none',
+                            padding: 0,
+                            height: '100%',
+                            margin: '-5px',
+                          }}
+                          onClick={() => {
+                            setUserPoint(gameCard.cardValue);
+                            changeVisibilCard(i + 1);
+                          }}
+                        >
+                          <GameCard
+                            cardValue={gameCard.cardValue}
+                            id={gameCard.id}
+                            key={gameCard.id}
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </Row>
+                </div>
               </div>
             </div>
           </div>
@@ -301,7 +309,9 @@ const GamePageMember = (): JSX.Element => {
                 </div>
               ))
             ) : (
-              <div>Waiting for the votes of the players...</div>
+              <p style={{ textAlign: 'center' }}>
+                Waiting for the votes of the players...
+              </p>
             )}
           </Col>
         </div>

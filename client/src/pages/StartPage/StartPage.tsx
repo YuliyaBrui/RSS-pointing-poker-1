@@ -55,47 +55,49 @@ const StartPage = (): JSX.Element => {
   };
 
   return (
-    <div>
+    <>
       <div className={styles.wrapper}>
-        <div className={styles.main_poker}> </div>
-        <h2 className={styles.title}>Start your planning:</h2>
-        <div className={styles.session}>
-          <p
-            className={styles.subtitle}
-            style={{ width: '260px', textAlign: 'left' }}
-          >
-            Create session:
+        <div className={styles.content}>
+          <div className={styles.main_poker}> </div>
+          <h2 className={styles.title}>Start your planning:</h2>
+          <div className={styles.session}>
+            <p
+              className={styles.subtitle}
+              style={{ width: '260px', textAlign: 'left' }}
+            >
+              Create session:
+            </p>
+            <Button
+              type="primary"
+              style={{ width: '260px' }}
+              onClick={() => setActiveFormCreate(true)}
+            >
+              Start new game
+            </Button>
+          </div>
+          <h2 className={styles.title}>OR:</h2>
+          <p className={styles.subtitle}>Connect to lobby by URL:</p>
+          <div className={styles.session}>
+            <Input
+              placeholder="Basic usage"
+              style={{ width: '260px', height: '32px' }}
+              value={URLValue}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                URLValueHandler(e);
+              }}
+            />
+            <Button
+              type="primary"
+              style={{ width: '260px' }}
+              onClick={checkGameID}
+            >
+              Connect
+            </Button>
+          </div>
+          <p className={styles.error}>
+            {URLError && <span className={styles.error}>{URLError}</span>}
           </p>
-          <Button
-            type="primary"
-            style={{ width: '260px' }}
-            onClick={() => setActiveFormCreate(true)}
-          >
-            Start new game
-          </Button>
         </div>
-        <h2 className={styles.title}>OR:</h2>
-        <p className={styles.subtitle}>Connect to lobby by URL:</p>
-        <div className={styles.session}>
-          <Input
-            placeholder="Basic usage"
-            style={{ width: '260px', height: '32px' }}
-            value={URLValue}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              URLValueHandler(e);
-            }}
-          />
-          <Button
-            type="primary"
-            style={{ width: '260px' }}
-            onClick={checkGameID}
-          >
-            Connect
-          </Button>
-        </div>
-        <p className={styles.error}>
-          {URLError && <span className={styles.error}>{URLError}</span>}
-        </p>
       </div>
       <Modal active={activeFormCreate}>
         <FormCreateGame setActive={setActiveFormCreate} />
@@ -106,7 +108,7 @@ const StartPage = (): JSX.Element => {
       <Modal active={activeFormError}>
         <ErrorGameID setActive={setActiveFormError} />
       </Modal>
-    </div>
+    </>
   );
 };
 
