@@ -1,8 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
-import {
- Button, Carousel, Space, Spin 
-} from 'antd';
+import { Button, Carousel, Space, Spin } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -53,7 +51,7 @@ const GamePageMember = (): JSX.Element => {
 
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
- /* const gameID = useSelector(
+  /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
 */
@@ -62,7 +60,7 @@ const GamePageMember = (): JSX.Element => {
   const carouselRef: RefObject<any> = React.createRef();
   const handleExitClick = (): void => {
     socket.emit('USER_EXIT', gameID, socket.id);
-};
+  };
 
   const setUserPoint = (point: number): void => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
@@ -78,11 +76,10 @@ const GamePageMember = (): JSX.Element => {
     setVisibilCard(visivArr);
   };
 
-  const promese = (data: number): Promise<boolean> =>
-    new Promise((res, req) => {
-    setCurrentIssue(data);
-    res(true);
-  });
+  const promese = (data: number): Promise<boolean> => new Promise((res, req) => {
+      setCurrentIssue(data);
+      res(true);
+    });
 
   useEffect(() => {
     axios
@@ -116,15 +113,12 @@ const GamePageMember = (): JSX.Element => {
     };
     if (currentUser.role === 'member') {
       socket.emit('GAME_JOIN_MEMBER', joinState);
-     
     }
     if (currentUser.role === 'observer') {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
-    
+      dispatch(getUsersParams(gameID));
     }
-  dispatch(getUsersParams(gameID));
   };
-
   const SampleNextArrow = (props: any): JSX.Element => {
     const { className, style, onClick } = props;
     return (
@@ -183,7 +177,11 @@ const GamePageMember = (): JSX.Element => {
                 </div>
               )}
               <div>
-                <Button type="primary" className={styles.button} onClick={handleExitClick}>
+                <Button
+                  type="primary"
+                  className={styles.button}
+                  onClick={handleExitClick}
+                >
                   EXIT
                 </Button>
               </div>
@@ -253,35 +251,41 @@ const GamePageMember = (): JSX.Element => {
                         <CoffeeGameCard />
                       </button>
                     </div>
-                    {gameCards.map((gameCard: IGameCard, i: number) => (
-                      <div
-                        className={styles.card_button_wrapper}
-                        key={gameCard.id}
-                      >
-                        <button
-                          type="button"
-                          disabled={timer ? !isRunning : false}
-                          style={{
-                            border: 'none',
-                            opacity: visibilCard[i + 1],
-                            background: 'none',
-                            padding: 0,
-                            height: '100%',
-                            margin: '-5px',
-                          }}
-                          onClick={() => {
-                            setUserPoint(gameCard.cardValue);
-                            changeVisibilCard(i + 1);
-                          }}
-                        >
-                          <GameCard
-                            cardValue={gameCard.cardValue}
-                            id={gameCard.id}
+                    <div>
+                      {currentUser.role === 'member' ? (
+                        gameCards.map((gameCard: IGameCard, i: number) => (
+                          <div
+                            className={styles.card_button_wrapper}
                             key={gameCard.id}
-                          />
-                        </button>
-                      </div>
-                    ))}
+                          >
+                            <button
+                              type="button"
+                              disabled={timer ? !isRunning : false}
+                              style={{
+                                border: 'none',
+                                opacity: visibilCard[i + 1],
+                                background: 'none',
+                                padding: 0,
+                                height: '100%',
+                                margin: '-5px',
+                              }}
+                              onClick={() => {
+                                setUserPoint(gameCard.cardValue);
+                                changeVisibilCard(i + 1);
+                              }}
+                            >
+                              <GameCard
+                                cardValue={gameCard.cardValue}
+                                id={gameCard.id}
+                                key={gameCard.id}
+                              />
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div />
+                      )}
+                    </div>
                   </Row>
                 </div>
               </div>

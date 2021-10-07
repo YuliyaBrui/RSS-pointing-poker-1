@@ -19,10 +19,12 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
   const [seconds, setSeconds] = useState(+time);
 
   const location = useLocation();
-
+/*
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
+  */
+  const { gameID } = sessionStorage;
   const viewGameScore = useSelector(
     (state: RootState) => state.chatReducer.setting.changingCard,
   );

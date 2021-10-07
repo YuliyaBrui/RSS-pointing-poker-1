@@ -92,7 +92,7 @@ const GamePage = (): JSX.Element => {
 
   const history = useHistory();
   const result = (): void => {
-    history.push('/result/gameID');
+    history.push(`/result/${gameID}`);
   };
 
   const setUserPoint = (point: number): void => {
