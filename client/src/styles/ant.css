@@ -79,3 +79,7 @@
 .ant-form-item-label > label::after {
   content: "";
 }
+
+.ant-carousel .slick-dots  {
+  z-index: 2;
+}

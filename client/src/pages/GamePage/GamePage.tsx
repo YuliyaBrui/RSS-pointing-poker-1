@@ -417,7 +417,7 @@ const GamePage = (): JSX.Element => {
       </div>
       <Chat />
       {alertResultGame && (
-        <div style={{ position: 'fixed' }}>
+        <div style={{ position: 'fixed', zIndex: 2 }}>
           <AverageScoreForm
             alertResultGame
             resultFormVisib={setAlertResultGame}
