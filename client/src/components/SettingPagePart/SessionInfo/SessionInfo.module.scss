@@ -1,0 +1,47 @@
+
+.main__link_wrapper {
+    display: flex;
+  }
+
+.main__card_link_wrapper {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+.main__input_session_name {
+    font-size: 1.2rem;
+    border: none;
+  }
+
+.main__wrapper_icon {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+.card__wrapper {
+    width: 300px;
+    height: 100%; 
+}
+
+.main__input_session_name~.ant-input-disabled, .ant-input[disabled] {
+  background: none;
+  color: black;
+  cursor: default; 
+}
+
+@media (max-width: 768px) {
+  .main__card_link_wrapper {
+    height: 100%;
+    display: block;
+  }
+
+  .card__wrapper {
+   margin: 10px 0px;
+  
+}
+}
