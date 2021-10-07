@@ -73,7 +73,7 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
      
     }
     sessionStorage.setItem('gameID', gameID);
-   // dispatch(addCurrentUser(value));
+    dispatch(addCurrentUser(value));
     reset();
     form.resetFields();
     setActive(false);

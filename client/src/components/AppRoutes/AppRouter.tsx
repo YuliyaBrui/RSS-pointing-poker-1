@@ -61,6 +61,9 @@ const AppRouter = (): JSX.Element => {
     socket.on('START_GAME', (address: string): void => {
       history.push(address);
     });
+    socket.on('GAME_RESULTS', (address: string): void => {
+      history.push(address);
+    });
     socket.on('GAME_DELETED', (address: string): void => {
       history.push(address);
     });

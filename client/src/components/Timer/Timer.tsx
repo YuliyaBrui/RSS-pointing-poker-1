@@ -29,7 +29,6 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
     (state: RootState) => state.chatReducer.setting.changingCard,
   );
 
-  // const { gameID } = sessionStorage;
   useEffect(() => {
     socket.on('ROUND_RUN', () => {
       setIsRunning(true);
@@ -63,7 +62,7 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
             <Button
               type="primary"
               onClick={() => {
-                setIsRunning(true);
+                //setIsRunning(true);
                 socket.emit('ROUND_RUN', gameID);
               }}
             >
@@ -73,8 +72,8 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
             <Button
               type="primary"
               onClick={() => {
-                setIsRunning(false);
-                setSeconds(+time);
+               // setIsRunning(false);
+              //  setSeconds(+time);
                 socket.emit('REPEAT_VOTING', gameID);
               }}
             >

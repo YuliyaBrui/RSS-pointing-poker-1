@@ -22,6 +22,7 @@ import { SERVER_URL, socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import Chat from '../../components/Chat/Chat';
 import { gameIssues } from '../../redux/actions/chat';
+import AverageScoreForm from '../GamePage/AverageScoreForm';
 
 type IGameScore = {
   name: string;
@@ -33,6 +34,7 @@ type IGameScore = {
 };
 
 const GamePageMember = (): JSX.Element => {
+  const [alertResultGame, setAlertResultGame] = useState(false);
   const [sessionName, setSessionName] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(0);
@@ -87,6 +89,10 @@ const GamePageMember = (): JSX.Element => {
       .then((res) => setSessionName(res.data));
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
+    socket.on('END_VOTING', (data) => {
+      setGameScore(data);
+      setAlertResultGame(true);
+    });
     socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
     socket.on('ROUND_RUN', () => {
       changeVisibilCard(-1);
@@ -231,26 +237,30 @@ const GamePageMember = (): JSX.Element => {
               <div>
                 <div className={styles.process}>
                   <Row style={{ width: '100%' }} justify="center">
-                    <div className={styles.card_button_wrapper}>
-                      <button
-                        type="button"
-                        disabled={timer ? !isRunning : false}
-                        style={{
-                          border: 'none',
-                          padding: '0',
-                          height: '100%',
-                          background: 'none',
-                          zIndex: visibilCard[0],
-                          margin: '-5px',
-                        }}
-                        onClick={() => {
-                          setUserPoint(0);
-                          changeVisibilCard(0);
-                        }}
-                      >
-                        <CoffeeGameCard />
-                      </button>
-                    </div>
+                    {currentUser.role === 'member' ? (
+                      <div className={styles.card_button_wrapper}>
+                        <button
+                          type="button"
+                          disabled={timer ? !isRunning : false}
+                          style={{
+                            border: 'none',
+                            padding: '0',
+                            height: '100%',
+                            background: 'none',
+                            zIndex: visibilCard[0],
+                            margin: '-5px',
+                          }}
+                          onClick={() => {
+                            setUserPoint(0);
+                            changeVisibilCard(0);
+                          }}
+                        >
+                          <CoffeeGameCard />
+                        </button>
+                      </div>
+                    ) : (
+                      <div />
+                    )}
                     {currentUser.role === 'member' ? (
                       gameCards.map((gameCard: IGameCard, i: number) => (
                         <div
@@ -322,6 +332,14 @@ const GamePageMember = (): JSX.Element => {
             )}
           </Col>
         </div>
+        {alertResultGame && (
+          <div style={{ position: 'fixed' }}>
+            <AverageScoreForm
+              alertResultGame
+              resultFormVisib={setAlertResultGame}
+            />
+          </div>
+        )}
       </div>
       <Chat />
     </div>
