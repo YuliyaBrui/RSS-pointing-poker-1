@@ -70,3 +70,12 @@
   width: 350px;
   margin: 0 auto;
 }
+
+
+.ant-form-item-label {
+  white-space: pre-wrap;
+}
+
+.ant-form-item-label > label::after {
+  content: "";
+}
