@@ -23,9 +23,6 @@ const Issue = ({ title, priority, link, id }: IIssue): JSX.Element => {
   );
 */
   const { gameID } = sessionStorage;
-  useEffect(() => {
-    dispatch(getUsersParams(gameID));
-  }, []);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
   const [issueName, setIssueName] = useState(title);
   const [editIssueName, setEditIssueName] = useState(false);

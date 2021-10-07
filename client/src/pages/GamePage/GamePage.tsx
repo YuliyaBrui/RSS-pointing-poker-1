@@ -45,52 +45,13 @@ const GamePage = (): JSX.Element => {
   const [alertResultGame, setAlertResultGame] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(0);
 
-  // const gameScore = [
-  //   {
-  //     name: 'asd',
-  //     lastName: 'asd',
-  //     avatarURL: 'asd',
-  //     jobPosition: 'sdf',
-  //     id: 'sdf',
-  //     point: 3,
-  //   },
-  // ];
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
-  // const gameCards = [
-  //   {
-  //     cardValue: 2,
-  //     id: 1,
-  //   },
-  //   {
-  //     cardValue: 3,
-  //     id: 1,
-  //   },
-  // ];
+ 
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
-  // const issues = [
-  //   {
-  //     id: 'asdas',
-  //     title: 'asd',
-  //     link: 'asd',
-  //     priority: 'asd',
-  //   },
-  //   {
-  //     id: '123',
-  //     title: '123',
-  //     link: '123',
-  //     priority: '123',
-  //   },
-  //   {
-  //     id: '3',
-  //     title: '3',
-  //     link: '3',
-  //     priority: '3',
-  //   },
-  // ];
-
+  
   // const masters = useSelector(
   //   (state: RootState) => state.chatReducer.setting.masterPlayer,
   // );
@@ -131,7 +92,7 @@ const GamePage = (): JSX.Element => {
 
   const history = useHistory();
   const result = (): void => {
-    history.push('/result');
+    history.push('/result/gameID');
   };
 
   const setUserPoint = (point: number): void => {
@@ -211,8 +172,6 @@ const GamePage = (): JSX.Element => {
   };
 
   window.onload = () => {
- 
-
     const joinState = {
       master: {
         name: currentUser.name,

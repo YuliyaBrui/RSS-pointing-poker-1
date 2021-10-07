@@ -60,9 +60,9 @@ const GamePageMember = (): JSX.Element => {
   const { gameID } = sessionStorage;
   const history = useHistory();
   const carouselRef: RefObject<any> = React.createRef();
-  const exit = (): void => {
-    history.push('/');
-  };
+  const handleExitClick = (): void => {
+    socket.emit('USER_EXIT', gameID, socket.id);
+};
 
   const setUserPoint = (point: number): void => {
     socket.emit('SET_USER_POINT', gameID, { ...currentUser, point });
@@ -84,9 +84,6 @@ const GamePageMember = (): JSX.Element => {
     res(true);
   });
 
-  const getIssues = (issuesGame: IIssue[]): void => {
-    dispatch(gameIssues(issuesGame));
-  };
   useEffect(() => {
     axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
@@ -94,7 +91,6 @@ const GamePageMember = (): JSX.Element => {
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('RESET_VISIBIL_CARD', (data) => changeVisibilCard(data));
-    socket.on('GAME_SORT_ISSUES', getIssues);
     socket.on('ROUND_RUN', () => {
       changeVisibilCard(-1);
       setIsRunning(true);
@@ -187,7 +183,7 @@ const GamePageMember = (): JSX.Element => {
                 </div>
               )}
               <div>
-                <Button type="primary" className={styles.button} onClick={exit}>
+                <Button type="primary" className={styles.button} onClick={handleExitClick}>
                   EXIT
                 </Button>
               </div>
