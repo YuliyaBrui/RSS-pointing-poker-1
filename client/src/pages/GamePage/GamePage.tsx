@@ -391,10 +391,10 @@ const GamePage = (): JSX.Element => {
             {gameScore.length > 0 ? (
               gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
-                  <div>
+                  <div className={styles.scorecard} >
                     <ScoreCard visibil point={user.point} />
                   </div>
-                  <div>
+                  <div className={styles.usercard}>
                     <UserCard
                       name={user.name}
                       lastName={user.lastName}

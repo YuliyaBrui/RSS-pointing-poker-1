@@ -97,3 +97,23 @@ justify-content: space-evenly;
   text-align: center;
   justify-content: space-between;
   }
+
+  @media (max-width: 960px) {
+    .score {
+      display: block;
+    }
+  }
+  
+  @media (max-width: 785px) {
+    .game  {
+      display: block;
+    }
+  
+    .game__part_score {
+      width: 100%;
+      max-width: 785px;
+    }
+    .score {
+      display: flex;
+    }
+  }

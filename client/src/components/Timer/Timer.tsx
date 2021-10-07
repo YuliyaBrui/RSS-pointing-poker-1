@@ -83,10 +83,11 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
           )}
         </div>
       )}
-      <div>Timer</div>
       <div className={styles.timer}>
-        <span className={styles.timer_seconds}>{seconds}</span>
-        <span className={styles.timer_seconds}> sec</span>
+        <span className={styles.timer_seconds}>
+          {seconds}
+          sec
+        </span>
       </div>
     </div>
   );

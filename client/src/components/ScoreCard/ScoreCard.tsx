@@ -16,7 +16,10 @@ const ScoreCard = ({ visibil, point }: IScoreCard): JSX.Element => {
   );
 
   return (visibil ? (
-    <Card style={{ width: '150px', height: '80px', margin: '5px' }} bodyStyle={{width: '100%', height: '100%'}}>
+    <Card
+      style={{ width: '150px', height: '80px', margin: '5px' }}
+      bodyStyle={{ width: '100%', height: '100%' }}
+    >
       <div className={styles.score_info}>
         {point}
         {shortType}
