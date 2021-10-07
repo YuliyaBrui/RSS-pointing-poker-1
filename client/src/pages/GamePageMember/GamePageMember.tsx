@@ -251,41 +251,39 @@ const GamePageMember = (): JSX.Element => {
                         <CoffeeGameCard />
                       </button>
                     </div>
-                    <div>
-                      {currentUser.role === 'member' ? (
-                        gameCards.map((gameCard: IGameCard, i: number) => (
-                          <div
-                            className={styles.card_button_wrapper}
-                            key={gameCard.id}
+                    {currentUser.role === 'member' ? (
+                      gameCards.map((gameCard: IGameCard, i: number) => (
+                        <div
+                          className={styles.card_button_wrapper}
+                          key={gameCard.id}
+                        >
+                          <button
+                            type="button"
+                            disabled={timer ? !isRunning : false}
+                            style={{
+                              border: 'none',
+                              opacity: visibilCard[i + 1],
+                              background: 'none',
+                              padding: 0,
+                              height: '100%',
+                              margin: '-5px',
+                            }}
+                            onClick={() => {
+                              setUserPoint(gameCard.cardValue);
+                              changeVisibilCard(i + 1);
+                            }}
                           >
-                            <button
-                              type="button"
-                              disabled={timer ? !isRunning : false}
-                              style={{
-                                border: 'none',
-                                opacity: visibilCard[i + 1],
-                                background: 'none',
-                                padding: 0,
-                                height: '100%',
-                                margin: '-5px',
-                              }}
-                              onClick={() => {
-                                setUserPoint(gameCard.cardValue);
-                                changeVisibilCard(i + 1);
-                              }}
-                            >
-                              <GameCard
-                                cardValue={gameCard.cardValue}
-                                id={gameCard.id}
-                                key={gameCard.id}
-                              />
-                            </button>
-                          </div>
-                        ))
-                      ) : (
-                        <div />
-                      )}
-                    </div>
+                            <GameCard
+                              cardValue={gameCard.cardValue}
+                              id={gameCard.id}
+                              key={gameCard.id}
+                            />
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <div />
+                    )}
                   </Row>
                 </div>
               </div>
