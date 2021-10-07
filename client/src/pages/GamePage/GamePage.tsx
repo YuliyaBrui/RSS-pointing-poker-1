@@ -25,6 +25,8 @@ import { SERVER_URL, socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import CreateIssue from '../../components/Issues/CreateIssueButton';
 import AverageScoreForm from './AverageScoreForm';
+import { chatParams } from '../../redux/actions/chat';
+import { IChatUsers } from '../../redux/types/chat';
 
 type IGameScore = {
   name: string;
@@ -52,21 +54,13 @@ const GamePage = (): JSX.Element => {
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
   
-  // const masters = useSelector(
-  //   (state: RootState) => state.chatReducer.setting.masterPlayer,
-  // );
-  const masters = true;
+   const masterAsPlayer = useSelector(
+     (state: RootState) => state.chatReducer.setting.masterPlayer,
+   );
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
-  // const time = useSelector(
-  //   (state: RootState) => state.chatReducer.setting.roundTime,
-  // );
 
- /* const gameID = useSelector(
-    (state: RootState) => state.formCreateReducer.IDGame,
-  );
-*/
   const { gameID } = sessionStorage;
   const { Option } = Select;
   const carouselRef: RefObject<any> = React.createRef();
@@ -90,9 +84,10 @@ const GamePage = (): JSX.Element => {
     }
   };
 
-  const history = useHistory();
+ 
   const result = (): void => {
-    history.push(`/result/${gameID}`);
+    socket.emit('GAME_RESULTS', gameID, `/result/${gameID}`)
+   
   };
 
   const setUserPoint = (point: number): void => {
@@ -108,7 +103,10 @@ const GamePage = (): JSX.Element => {
     if (index !== -1) visivArr.splice(index, 1, 0.3);
     setVisibilCard(visivArr);
   };
-
+  const getUsers = ({ members, observers, master }: IChatUsers): void => {
+    dispatch(chatParams({ members, observers, master }));
+  };
+ 
   useEffect(() => {
     axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
@@ -117,6 +115,10 @@ const GamePage = (): JSX.Element => {
     socket.on('ROUND_RUN', () => {
       setIsRunning(true);
     });
+if(
+    socket.on('MEMBER_JOINED', getUsers)){
+      console.log('1');
+    };
   }, [gameScore]);
   window.onload = () => {
     const joinState = {
@@ -238,7 +240,7 @@ const GamePage = (): JSX.Element => {
                         socket.emit('RESET_TIME', gameID);
                       }}
                     >
-                      Next Issues
+                      Next Issue
                     </Button>
                   </div>
                 </div>
@@ -321,7 +323,7 @@ const GamePage = (): JSX.Element => {
                 </Carousel>
               </div>
             </div>
-            {masters && (
+            {masterAsPlayer && (
               <div className={styles.process}>
                 <Row style={{ width: '100%' }} justify="center">
                   <div className={styles.card_button_wrapper}>

@@ -240,7 +240,9 @@ io.on('connection', (socket: Socket) => {
     console.log(`${address}-START_GAME`);
     socket.to(gameID).emit('START_GAME', address);
   });
-
+  socket.on('GAME_RESULTS', (gameID, address) => {
+    io.sockets.in(gameID).emit('GAME_RESULTS', address);
+  });
   socket.on(
     'ADD_GAME_SETTING',
     (
@@ -393,7 +395,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('END_VOTING', (gameID) => {
     getVotingResult(gameID);
-    io.sockets.in(gameID).emit('GET_USER_POINT', []);
+    io.sockets.in(gameID).emit('END_VOTING', []);
   });
 
   socket.on('REPEAT_VOTING', (gameID) => {
@@ -447,7 +449,7 @@ io.on('connection', (socket: Socket) => {
             console.log('delete-master');
             socket.to(gameID).emit('MASTER_LEAVED', gameID);
           }
-        }, 15000);
+        }, 20000);
       }
     });
   });
