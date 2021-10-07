@@ -26,5 +26,5 @@ export const privateRoutes: IRoute[] = [
   { path: '/lobby/:id', exact: true, component: MembersLobby },
   { path: '/game/:id', exact: true, component: GamePage },
   { path: '/game-member/:id', exact: true, component: GamePageMember },
-  { path: '/result', exact: true, component: ResultPage },
+  { path: '/result/:id', exact: true, component: ResultPage },
 ];

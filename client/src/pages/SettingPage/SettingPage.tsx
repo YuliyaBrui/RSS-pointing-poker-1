@@ -40,9 +40,9 @@ const SettingPage = (): JSX.Element => {
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
-    socket.on('GAME_NEW_MESSAGE', (message) => {
+  /*  socket.on('GAME_NEW_MESSAGE', (message) => {
       dispatch(newMessageParams(message));
-    });
+    });*/
     dispatch(getUsersParams(gameID));
   }, []);
 
@@ -67,7 +67,7 @@ const SettingPage = (): JSX.Element => {
       gameID,
     };
     socket.emit('GAME_JOIN_MASTER', joinState);
-    // dispatch(getUsersParams(gameID));
+    dispatch(getUsersParams(gameID));
   };
   const nextCardValue = (): IGameCard => {
     const cardValue =

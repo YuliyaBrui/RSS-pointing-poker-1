@@ -48,7 +48,9 @@ const MembersLobby = (): JSX.Element => {
       .get(`${SERVER_URL}/session-name/${gameID}`)
       .then((res) => setSessionName(res.data));
   }, []);
-
+  const handleExitClick = (): void => {
+    socket.emit('USER_EXIT', gameID, socket.id);
+};
   window.onload = () => {
     const joinState = {
       user: {
@@ -84,7 +86,7 @@ const MembersLobby = (): JSX.Element => {
                 Wait for the session to start...
               </h2>
               <h2>or</h2>
-              <Button type="primary" onClick={() => history.push('/')}>
+              <Button type="primary" onClick={handleExitClick}>
                 Exit
               </Button>
             </div>

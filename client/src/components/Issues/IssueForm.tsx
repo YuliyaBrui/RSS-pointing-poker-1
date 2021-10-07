@@ -21,7 +21,6 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
   const [priority, setPriority] = useState('');
-
   const dispatch = useDispatch();
  /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
@@ -30,12 +29,10 @@ const IssueForm = ({ formVisible, setFormVisible }: IIsueform): JSX.Element => {
   const { gameID } = sessionStorage;
   const id = shortid();
   const [form] = Form.useForm();
-
   const resetForm = (): void => {
     form.resetFields();
     setFormVisible(false);
   };
-
   const handleSubmit = (): void => {
     const newIssue = {
       title,

@@ -13,11 +13,11 @@ const SessionInfo = (): JSX.Element => {
   const [editSession, setEditSession] = useState(false);
   const [sessionName, setSessionName] = useState('New session');
   const [copySuccess, setCopySuccess] = useState('');
-  const gameID = useSelector(
+ /* const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
-  
-  // const { gameID } = sessionStorage;
+  */
+  const { gameID } = sessionStorage;
   const [URL, setURL] = useState(`http://localhost:3000/lobby/${gameID}`);
 
   useEffect(() => {
@@ -29,7 +29,9 @@ const SessionInfo = (): JSX.Element => {
   const sendSessionName = (): void => {
     socket.emit('SET_SESSION_NAME', gameID, sessionName);
   };
-
+  window.onload = () => {
+    setURL(`http://localhost:3000/lobby/${gameID}`);
+  };
   return (
     <div className="main__card-link-wrapper">
       <ScramMasterInfo />

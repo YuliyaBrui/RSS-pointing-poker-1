@@ -6,6 +6,8 @@ import {
 } from '../types/chat';
 import { IIssue } from '../types/issues';
 import { createGameAction, CreateGameActionTypes } from '../types/forms';
+import { IGameSetting } from '../types/gameSetting';
+import { IGameCard } from '../types/gameCard';
 
 export const chatParams = (users: IChatUsers): chatInfoAction => ({
   type: GetUsersInfoActionTypes.FETCH_SET_USERS,
@@ -31,4 +33,13 @@ export const gameIssues = (issues: IIssue[]): chatInfoAction => ({
 export const addGameID = (gameID: string): createGameAction => ({
   type: CreateGameActionTypes.FETCH_CREATE_GAME_SUCCESS,
   payload: { IDGame: gameID },
+});
+export const setSettingGame = (setting: IGameSetting): chatInfoAction => ({
+  type: GetUsersInfoActionTypes.FETCH_SET_SETTING,
+  payload: { setting },
+});
+
+export const setGameCards = (gameCards: IGameCard[]): chatInfoAction => ({
+  type: GetUsersInfoActionTypes.FETCH_SET_GAME_CARDS,
+  payload: { gameCards },
 });

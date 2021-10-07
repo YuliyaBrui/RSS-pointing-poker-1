@@ -6,10 +6,12 @@ import { privateRoutes } from '../../route/route';
 import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
 import { socket } from '../../socket';
-import { chatParams, gameIssues } from '../../redux/actions/chat';
+import { chatParams, gameIssues, setGameCards, setSettingGame } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { kickForm } from '../../redux/actions/kickForm';
 import { IIssue } from '../../redux/types/issues';
+import { IGameSetting } from '../../redux/types/gameSetting';
+import { IGameCard } from '../../redux/types/gameCard';
 
 const { Header, Footer, Content } = Layout;
 
@@ -18,25 +20,38 @@ const AppRouter = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
+ 
   const getIssues = (issues: IIssue[]): void => {
     dispatch(gameIssues(issues));
   };
   const formData = (kickData: any): void => {
     dispatch(kickForm(kickData));
   };
-  const addIssue = (issue: IIssue): void => {
-    dispatch(addIssue(issue));
+  const getSetting = (setting: IGameSetting): void => {
+    dispatch(setSettingGame(setting));
+  };
+  const getGameCards = (gameCards: IGameCard[]): void => {
+    dispatch(setGameCards(gameCards));
   };
   const history = useHistory();
   useEffect(() => {
     socket.on('MASTER_JOINED', ({ master }) => {});
     socket.on('MEMBER_JOINED', getUsers);
+    socket.on('MASTER_LEAVED', (gameID): void => {
+      if (gameID === sessionStorage.gameID) {
+        history.push('/');
+      }
+    });
+   
     socket.on('MEMBER_LEAVED', getUsers);
-    socket.on('GAME_ADD_ISSUE', addIssue);
+    socket.on('GAME_ADD_ISSUE', getIssues);
     socket.on('GAME_DELETE_ISSUE', getIssues);
     socket.on('GAME_CHANGE_ISSUE', getIssues);
     socket.on('GAME_SORT_ISSUES', getIssues);
+    socket.on('ADDED_GAME_SETTING', getSetting);
+    socket.on('ADDED_GAME_CARDS', getGameCards);
     socket.on('KICKED_MEMBER', getUsers);
+    socket.on('USER_EXIT', getUsers);
     socket.on('FINISH_VOITING', formData);
     socket.on('STOP_JOIN', (id): void => {
       if (socket.id === id) {
@@ -44,6 +59,9 @@ const AppRouter = (): JSX.Element => {
       }
     });
     socket.on('START_GAME', (address: string): void => {
+      history.push(address);
+    });
+    socket.on('GAME_DELETED', (address: string): void => {
       history.push(address);
     });
   }, []);

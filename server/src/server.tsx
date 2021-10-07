@@ -178,7 +178,6 @@ io.on('connection', (socket: Socket) => {
   socket.on('GAME_NEW_MESSAGE', ({
  gameID, name, lastName, text, avatar 
 }) => {
- 
     const message = {
       name,
       lastName,
@@ -192,8 +191,7 @@ io.on('connection', (socket: Socket) => {
 
   // issue
   socket.on('GAME_NEW_ISSUE', ({
- gameID, title, link, priority, id 
-}) => {
+ gameID, title, link, priority, id, }) => {
     const issue = {
       id,
       title,
@@ -203,7 +201,7 @@ io.on('connection', (socket: Socket) => {
     games.get(gameID).get('issues').set(`${id}`, issue);
     games.get(gameID).get('issuesCopy').set(`${id}`, issue);
     console.log(`issues-copy-${games.get(gameID).get('issuesCopy')}`);
-    socket.to(gameID).emit('GAME_ADD_ISSUE', issue);
+    io.sockets.in(gameID).emit('GAME_ADD_ISSUE', [...games.get(gameID).get('issues').values()]);
   });
   socket.on('SORT_ISSUES_ASC', (gameID) => {
     const issues = [...games.get(gameID).get('issues').values()].slice().sort(sortASC('priority'));
@@ -239,7 +237,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('START_GAME', (gameID, address) => {
-    console.log(address);
+    console.log(`${address}-START_GAME`);
     socket.to(gameID).emit('START_GAME', address);
   });
 
@@ -247,7 +245,8 @@ io.on('connection', (socket: Socket) => {
     'ADD_GAME_SETTING',
     (
       gameID,
-      { masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime }: ISetting,
+      { masterPlayer, changingCard, needTimer, scoreType, shortScoreType, roundTime 
+}: ISetting,
     ) => {
       games.get(gameID).delete('setting');
       games.get(gameID).set('setting', {
@@ -258,11 +257,13 @@ io.on('connection', (socket: Socket) => {
         shortScoreType,
         roundTime,
       });
+      console.log(`${games.get(gameID).get('setting')}-added setting`);
+      io.sockets.in(gameID).emit('ADDED_GAME_SETTING', games.get(gameID).get('setting'));
     },
   );
-
   socket.on('SET_SESSION_NAME', (gameID, sessionName) => {
     games.get(gameID).set('sessionName', sessionName);
+    console.log(sessionName);
     io.sockets.in(gameID).emit('GET_SESSION_NAME', sessionName);
   });
 
@@ -271,11 +272,13 @@ io.on('connection', (socket: Socket) => {
       .get(gameID)
       .get('gameCards')
       .push(...gameCards);
+    console.log(games.get(gameID).get('gameCards'));
+    io.sockets.in(gameID).emit('ADDED_GAME_CARDS', games.get(gameID).get('gameCards'));
   });
 
   socket.on('KICK_DATA', (gameID, kickData) => {
     games.get(gameID).get('kickForm').set('inform', kickData);
-    console.log(games.get(gameID).get('kickForm').get('inform'));
+    console.log(`${games.get(gameID).get('kickForm').get('inform')}-KICK_DATA`);
     const master = games.get(gameID).get('master');
     io.to(master.id).emit('KICK_DATA', kickData);
     const members = [...games.get(gameID).get('members').keys()];
@@ -296,7 +299,16 @@ io.on('connection', (socket: Socket) => {
       io.sockets.in(gameID).emit('STOP_JOIN', id);
     }
   });
-
+  socket.on('USER_EXIT', (gameID, id) => {
+    if (
+      games.get(gameID).get('members').delete(id)
+      || games.get(gameID).get('observers').delete(id)
+    ) {
+      console.log('USER_EXIT');
+      io.sockets.in(gameID).emit('USER_EXIT', users(gameID));
+      io.sockets.in(gameID).emit('STOP_JOIN', id);
+    }
+  });
   socket.on('AGREE_KICK_MEMBER', (gameID, id) => {
     games.get(gameID).get('kickForm').get('inform').yes.push(id);
     console.log('yes-kick');
@@ -322,7 +334,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('GET_AVERAGE_RESULT', (gameID) => {
     const arrUserPoints = [...games.get(gameID).get('gameScore').values()];
-    console.log(arrUserPoints);
+    console.log(`${arrUserPoints}-GET_AVERAGE_RESULT`);
     const oneIssueStats = {
       quantity: arrUserPoints.length,
       average: 0,
@@ -408,7 +420,19 @@ io.on('connection', (socket: Socket) => {
   socket.on('RESET_TIME', (gameID) => {
     io.sockets.in(gameID).emit('RESET_TIME');
   });
-
+  socket.on('GAME_DELETE', (gameID, address) => {
+    games.get(gameID).get('observers').clear();
+    games.get(gameID).get('members').clear();
+    console.log( [...games.get(gameID).get('members').values()]);
+    socket.to(gameID).emit('GAME_DELETED', address);
+  
+   
+    setTimeout(() => {
+      games.delete(gameID);
+      console.log([...games.values()]);
+      console.log('delete-master');
+    }, 3000);
+  });
   socket.on('disconnect', () => {
     games.forEach((value, gameID) => {
       if (value.get('members').delete(socket.id) || value.get('observers').delete(socket.id)) {
@@ -416,7 +440,14 @@ io.on('connection', (socket: Socket) => {
         console.log('delete');
       }
       if (value.get('master').id === socket.id) {
-        socket.to(gameID).emit('MASTER_LEAVED', users(gameID));
+        setTimeout(() => {
+          if (!games.get(gameID).get('master').id) {
+            games.delete(gameID);
+            console.log([...games.values()]);
+            console.log('delete-master');
+            socket.to(gameID).emit('MASTER_LEAVED', gameID);
+          }
+        }, 15000);
       }
     });
   });
