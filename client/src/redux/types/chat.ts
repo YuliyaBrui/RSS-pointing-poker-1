@@ -15,6 +15,7 @@ export interface IMessage {
   avatar: string | ArrayBuffer | null;
 }
 export interface IChatState {
+  sessionName: string;
   users: IChatUsers;
   messages: IMessage[];
   issues: IIssue[];
@@ -22,6 +23,7 @@ export interface IChatState {
   gameCards: IGameCard[];
 }
 export type chatInfoAction =
+  | IFetchSessionNameAction
   | IFetchUsersAction
   | IFetchMessagesAction
   | IFetchNewMessageAction
@@ -30,6 +32,7 @@ export type chatInfoAction =
   | IFetchGameCardsAction
   | IFetchSettingAction;
 export enum GetUsersInfoActionTypes {
+  FETCH_SET_SESSION_NAME = 'FETCH_SET_SESSION_NAME',
   FETCH_SET_USERS = 'FETCH_SET_USERS',
   FETCH_SET_MESSAGES = 'FETCH_SET_MESSAGES',
   FETCH_ADD_MESSAGE = 'FETCH_ADD_MESSAGE',
@@ -37,6 +40,12 @@ export enum GetUsersInfoActionTypes {
   FETCH_ADD_ISSUE = 'FETCH_ADD_ISSUE',
   FETCH_SET_SETTING = 'FETCH_SET_SETTING',
   FETCH_SET_GAME_CARDS = 'FETCH_SET_GAME_CARDS',
+}
+export interface IFetchSessionNameAction {
+  type: GetUsersInfoActionTypes.FETCH_SET_SESSION_NAME;
+  payload: {
+    sessionName: string;
+  };
 }
 
 export interface IFetchUsersAction {

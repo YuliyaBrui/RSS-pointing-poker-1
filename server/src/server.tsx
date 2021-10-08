@@ -67,13 +67,6 @@ app.post('/', (req, res) => {
       ['kickForm', new Map()],
       ['gameScore', new Map()],
       ['percentScore', new Map()],
-      // [
-      //   'finalScore',
-      //   {
-      //     0: { 1: 53, 3: 23, 0: 33 },
-      //     1: { 1: 53, 3: 23 },
-      //   },
-      // ],
       ['finalScore', []],
       ['sessionName', 'New session'],
     ]),
@@ -82,10 +75,10 @@ app.post('/', (req, res) => {
   console.log(games.keys());
 });
 
-app.get('/session-name/:id', async (req, res) => {
+/*app.get('/session-name/:id', async (req, res) => {
   res.send(games.get(req.params.id).get('sessionName'));
 });
-
+*/
 app.get('/result/:id', async (req, res) => {
   res.send(games.get(req.params.id).get('finalScore'));
 });
@@ -93,6 +86,7 @@ app.get('/result/:id', async (req, res) => {
 app.get('/:id', async (req, res) => {
   const gameID = req.params.id;
   console.log(gameID, 'get');
+  
   if (games.has(gameID)) {
     const members = [...games.get(gameID).get('members').values()];
     const observers = [...games.get(gameID).get('observers').values()];
@@ -148,6 +142,7 @@ app.get('/:id', async (req, res) => {
       sessionName: '',
     });
   }
+  console.log(games.get(gameID).get('sessionName'));
 });
 
 io.on('connection', (socket: Socket) => {
@@ -264,9 +259,11 @@ io.on('connection', (socket: Socket) => {
     },
   );
   socket.on('SET_SESSION_NAME', (gameID, sessionName) => {
+    games.get(gameID).delete('sessionName');
     games.get(gameID).set('sessionName', sessionName);
-    console.log(sessionName);
-    io.sockets.in(gameID).emit('GET_SESSION_NAME', sessionName);
+    console.log(games.get(gameID));
+    console.log(`${games.get(gameID).get('sessionName')}-session name`);
+    io.sockets.in(gameID).emit('GET_SESSION_NAME', games.get(gameID).get('sessionName'));
   });
 
   socket.on('ADD_GAME_CARDS', (gameID, [...gameCards]) => {
@@ -291,12 +288,19 @@ io.on('connection', (socket: Socket) => {
     //  io.sockets.in(gameID).emit('KICK_DATA', kickData);
   });
 
-  socket.on('KICK_USER_BY_MASTER', (gameID, id) => {
+  socket.on('KICK_USER_BY_MASTER', (gameID, name,
+    lastName, id) => {
     if (
       games.get(gameID).get('members').delete(id)
       || games.get(gameID).get('observers').delete(id)
     ) {
-      console.log('KICK_USER_BY_MASTER');
+      const message = {
+        name: 'system notification',
+        lastName: '',
+        text: `${name} ${lastName} is removed from the game`,
+      
+      };
+      games.get(gameID).get('messages').push(message);
       io.sockets.in(gameID).emit('KICKED_MEMBER', users(gameID));
       io.sockets.in(gameID).emit('STOP_JOIN', id);
     }
@@ -442,7 +446,7 @@ io.on('connection', (socket: Socket) => {
         socket.to(gameID).emit('MEMBER_LEAVED', users(gameID));
         console.log('delete');
       }
-      if (value.get('master').id === socket.id) {
+    /*  if (value.get('master').id === socket.id) {
         setTimeout(() => {
           if (!games.get(gameID).get('master').id) {
             games.delete(gameID);
@@ -451,7 +455,7 @@ io.on('connection', (socket: Socket) => {
             socket.to(gameID).emit('MASTER_LEAVED', gameID);
           }
         }, 20000);
-      }
+      }*/
     });
   });
 });

@@ -46,6 +46,8 @@ export const kickVoiting = (gameID: string): void => {
         games.get(gameID).get('observers').delete(kickedUser.id)
       ) {
         const message = {
+          name: 'system notification',
+          lastName: '',
           text: `${kickedUser.name} ${kickedUser.name} is removed from the game`,
         
         };

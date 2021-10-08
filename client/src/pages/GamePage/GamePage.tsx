@@ -1,8 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
-import {
- Button, Row, Spin, Space, Carousel, Select 
-} from 'antd';
+import { Button, Row, Spin, Space, Carousel, Select } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -41,7 +39,7 @@ const GamePage = (): JSX.Element => {
   // const currentUser = useSelector((state: RootState) => state.currentUser);
   const currentUser = JSON.parse(sessionStorage.user);
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('ddd');
+  // const [sessionName, setSessionName] = useState('ddd');
   const [isRunning, setIsRunning] = useState(false);
   const [gameScore, setGameScore] = useState([]);
   const [alertResultGame, setAlertResultGame] = useState(false);
@@ -69,6 +67,9 @@ const GamePage = (): JSX.Element => {
     (state: RootState) => state.chatReducer.users.master,
   );
 
+  const sessionName = useSelector(
+    (state: RootState) => state.chatReducer.sessionName,
+  );
   const { gameID } = sessionStorage;
   const { Option } = Select;
   const carouselRef: RefObject<any> = React.createRef();
@@ -113,10 +114,9 @@ const GamePage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    // axios
-    //   .get(`${SERVER_URL}/session-name/${gameID}`)
-    //   .then((res) => setSessionName(res.data));
-    console.log('I RENDER IN MASTER');
+    /*  axios
+      .get(`${SERVER_URL}/session-name/${gameID}`)
+      .then((res) => setSessionName(res.data)); */
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('ROUND_RUN', () => {
       setIsRunning(true);
