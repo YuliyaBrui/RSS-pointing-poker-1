@@ -70,7 +70,7 @@ const AppRouter = (): JSX.Element => {
   }, []);
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ background: '#FFC482' }}>
+      <Header style={{ background: '#66999B' }}>
         <HeaderPoker />
       </Header>
       <Content>

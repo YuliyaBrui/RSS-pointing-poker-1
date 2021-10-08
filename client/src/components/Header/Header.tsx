@@ -1,10 +1,12 @@
 import React from 'react';
 import styles from './Header.module.scss';
 
-export function HeaderPoker(): JSX.Element {
+export const HeaderPoker = (): JSX.Element => {
   return (
     <>
-      <div className={styles.header}> </div>
+      <div className={styles.header}>
+        <div className={styles.logo}></div>
+      </div>
     </>
   );
 }
