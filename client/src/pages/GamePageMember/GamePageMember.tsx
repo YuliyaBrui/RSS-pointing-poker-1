@@ -45,7 +45,9 @@ const GamePageMember = (): JSX.Element => {
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
-
+  const sessionName = useSelector(
+    (state: RootState) => state.chatReducer.sessionName,
+  );
   const [gameScore, setGameScore] = useState([]);
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
