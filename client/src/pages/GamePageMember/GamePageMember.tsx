@@ -35,7 +35,7 @@ type IGameScore = {
 
 const GamePageMember = (): JSX.Element => {
   const [alertResultGame, setAlertResultGame] = useState(false);
-  const [sessionName, setSessionName] = useState('');
+  //const [sessionName, setSessionName] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(0);
   const [vivsibGameScore, setVivsibGameScore] = useState(false);
@@ -84,9 +84,9 @@ const GamePageMember = (): JSX.Element => {
     });
 
   useEffect(() => {
-    axios
+  /*  axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));
+      .then((res) => setSessionName(res.data));*/
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('END_VOTING', (data) => {
@@ -122,8 +122,8 @@ const GamePageMember = (): JSX.Element => {
     }
     if (currentUser.role === 'observer') {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
-      dispatch(getUsersParams(gameID));
     }
+    dispatch(getUsersParams(gameID));
   };
   const SampleNextArrow = (props: any): JSX.Element => {
     const { className, style, onClick } = props;
@@ -301,47 +301,80 @@ const GamePageMember = (): JSX.Element => {
           </div>
         </div>
         <div className={styles.game__part_score}>
-          <div className={styles.score_title}>
-            <h1>Score:</h1>
-            <h1>Players:</h1>
+          <div className={styles.game_score}>
+            <div className={styles.score_title}>
+              <h2>Score:</h2>
+              <h2>Players:</h2>
+            </div>
+            <Col style={{ width: '100%' }}>
+              {gameScore.length > 0 ? (
+                gameScore.map((user: IGameScore) => (
+                  <div className={styles.score}>
+                    <div className={styles.scorecard}>
+                      <ScoreCard visibil point={user.point} />
+                    </div>
+                    <div className={styles.usercard}>
+                      <UserCard
+                        name={user.name}
+                        lastName={user.lastName}
+                        avatar={user.avatarURL}
+                        position={user.jobPosition}
+                        visibil="visible"
+                        id={user.id}
+                        key={user.id}
+                      />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ textAlign: 'center' }}>
+                  Waiting for the votes of the players...
+                </p>
+              )}
+            </Col>
           </div>
-          <Col style={{ width: '100%' }}>
-            {gameScore.length > 0 ? (
-              gameScore.map((user: IGameScore) => (
-                <div className={styles.score}>
-                  <div>
-                    <ScoreCard visibil={vivsibGameScore} point={user.point} />
-                  </div>
-                  <div>
-                    <UserCard
-                      name={user.name}
-                      lastName={user.lastName}
-                      avatar={user.avatarURL}
-                      position={user.jobPosition}
-                      visibil="visible"
-                      id={user.id}
-                      key={user.id}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p style={{ textAlign: 'center' }}>
-                Waiting for the votes of the players...
-              </p>
+          <div className={styles.players}>
+            <h2 style={{ textAlign: 'center' }}>
+              Participating in the voting:
+            </h2>
+            {masterAsPlayer && (
+              <div className={styles.usercard}>
+                <UserCard
+                  name={masterInfo.name}
+                  lastName={masterInfo.lastName}
+                  avatar={masterInfo.avatarURL}
+                  position={masterInfo.jobPosition}
+                  visibil="visible"
+                  id={masterInfo.id}
+                  key={masterInfo.id}
+                />
+              </div>
             )}
-          </Col>
-        </div>
-        {alertResultGame && (
-          <div style={{ position: 'fixed' }}>
-            <AverageScoreForm
-              alertResultGame
-              resultFormVisib={setAlertResultGame}
-            />
+            {players.map((user) => (
+              <div className={styles.usercard}>
+                <UserCard
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
+                  id={user.id}
+                  key={user.id}
+                />
+              </div>
+            ))}
           </div>
-        )}
+        </div>
       </div>
       <Chat />
+      {alertResultGame && (
+        <div style={{ position: 'fixed', zIndex: 2 }}>
+          <AverageScoreForm
+            alertResultGame
+            resultFormVisib={setAlertResultGame}
+          />
+        </div>
+      )}
     </div>
   ) : (
     <div className={styles.wrapper}>
