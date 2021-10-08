@@ -21,7 +21,6 @@ interface TStatistics extends Object {
 }
 
 const ResultPage = (): JSX.Element => {
-  const [sessionName, setSessionName] = useState('');
   const [gameResults, setGameResults] = useState<TStatistics>({});
 
   // const { gameID } = sessionStorage;
@@ -29,21 +28,19 @@ const ResultPage = (): JSX.Element => {
     (state: RootState) => state.formCreateReducer.IDGame,
   );
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
-    console.log(issues)
+  const sessionName = useSelector(
+    (state: RootState) => state.chatReducer.sessionName,
+  );
   const savedResults: any = [];
   for (let i = 0; i < issues.length; i += 1) {
     savedResults.push(issues[i]);
     savedResults.push(gameResults[i]);
   }
-  console.log(gameResults);
   useEffect(() => {
-    axios
-      .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));
     axios
       .get(`${SERVER_URL}/result/${gameID}`)
       .then((res) => setGameResults(res.data));
-  }, []);
+  }, [gameResults, gameID]);
 
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -57,7 +54,7 @@ const ResultPage = (): JSX.Element => {
     FileSaver.saveAs(data, `results${fileExtension}`);
   };
 
-  return sessionName.length > 0 ? (
+  return savedResults.length > 0 ? (
     <div className={styles.wrapper}>
       <div className={styles.result_wrapper}>
         <div className={styles.header_wrapper}>

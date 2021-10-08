@@ -403,6 +403,10 @@ io.on('connection', (socket: Socket) => {
     io.sockets.in(gameID).emit('END_VOTING', []);
   });
 
+  socket.on('VIEW_ROUND_RESULT', (gameID) => {
+    io.sockets.in(gameID).emit('VIEW_ROUND_RESULT', []);
+  });
+
   socket.on('REPEAT_VOTING', (gameID) => {
     games.get(gameID).get('gameScore').clear();
     io.sockets.in(gameID).emit('GET_USER_POINT', []);

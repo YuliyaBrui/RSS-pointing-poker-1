@@ -243,6 +243,7 @@ const GamePage = (): JSX.Element => {
                           currentIssue + 1,
                         );
                         socket.emit('RESET_TIME', gameID);
+                        socket.emit('VIEW_ROUND_RESULT', gameID);
                       }}
                     >
                       Next Issue

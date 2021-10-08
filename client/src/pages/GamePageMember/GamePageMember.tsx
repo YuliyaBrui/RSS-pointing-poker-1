@@ -1,6 +1,8 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
-import { Button, Carousel, Space, Spin } from 'antd';
+import {
+ Button, Carousel, Space, Spin 
+} from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -35,7 +37,7 @@ type IGameScore = {
 
 const GamePageMember = (): JSX.Element => {
   const [alertResultGame, setAlertResultGame] = useState(false);
-  //const [sessionName, setSessionName] = useState('');
+  // const [sessionName, setSessionName] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(0);
   const [vivsibGameScore, setVivsibGameScore] = useState(false);
@@ -51,6 +53,16 @@ const GamePageMember = (): JSX.Element => {
   const [gameScore, setGameScore] = useState([]);
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
+  );
+  const masterAsPlayer = useSelector(
+    (state: RootState) => state.chatReducer.setting.masterPlayer,
+  );
+  const players = useSelector(
+    (state: RootState) => state.chatReducer.users.members,
+  );
+
+  const masterInfo = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
   );
 
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
@@ -80,18 +92,19 @@ const GamePageMember = (): JSX.Element => {
     setVisibilCard(visivArr);
   };
 
-  const promese = (data: number): Promise<boolean> => new Promise((res, req) => {
-      setCurrentIssue(data);
-      res(true);
-    });
+  const promese = (data: number): Promise<boolean> =>
+    new Promise((res, req) => {
+    setCurrentIssue(data);
+    res(true);
+  });
 
   useEffect(() => {
-  /*  axios
+    /*  axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));*/
+      .then((res) => setSessionName(res.data)); */
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
-    socket.on('END_VOTING', (data) => {
+    socket.on('VIEW_ROUND_RESULT', (data) => {
       setGameScore(data);
       setAlertResultGame(true);
     });
