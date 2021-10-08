@@ -9,6 +9,10 @@ import { createGameAction, CreateGameActionTypes } from '../types/forms';
 import { IGameSetting } from '../types/gameSetting';
 import { IGameCard } from '../types/gameCard';
 
+export const sessionNameParams = (sessionName: string): chatInfoAction => ({
+  type: GetUsersInfoActionTypes.FETCH_SET_SESSION_NAME,
+  payload: { sessionName },
+});
 export const chatParams = (users: IChatUsers): chatInfoAction => ({
   type: GetUsersInfoActionTypes.FETCH_SET_USERS,
   payload: { users },

@@ -6,7 +6,7 @@ import Button from 'antd/lib/button/button';
 import { useSelector } from 'react-redux';
 import ScramMasterInfo from '../../ScramMasterCard/ScramMasterCard';
 import { RootState, store } from '../../../redux';
-import { socket } from '../../../socket';
+import { CLIENT_URL, socket } from '../../../socket';
 import styles from './SessionInfo.module.scss';
 
 const SessionInfo = (): JSX.Element => {
@@ -18,7 +18,7 @@ const SessionInfo = (): JSX.Element => {
   );
   */
   const { gameID } = sessionStorage;
-  const [URL, setURL] = useState(`http://localhost:3000/lobby/${gameID}`);
+  const [URL, setURL] = useState(`${CLIENT_URL}/lobby/${gameID}`);
 
   useEffect(() => {
     window.addEventListener('click', () => {
@@ -30,7 +30,8 @@ const SessionInfo = (): JSX.Element => {
     socket.emit('SET_SESSION_NAME', gameID, sessionName);
   };
   window.onload = () => {
-    setURL(`http://localhost:3000/lobby/${gameID}`);
+    setURL(`${CLIENT_URL}/lobby/${gameID}`);
+
   };
   return (
     <div className={styles.main__card_link_wrapper}>
@@ -57,12 +58,14 @@ const SessionInfo = (): JSX.Element => {
             className={!editSession ? styles.main__input_session_name : ''}
             size="middle"
             disabled={!editSession}
-            defaultValue={sessionName}
+            //defaultValue={sessionName}
+            value={sessionName}
             onChange={(e) => setSessionName(e.target.value)}
             onPressEnter={() => {
               setEditSession(!editSession);
               sendSessionName();
             }}
+           
           />
         </div>
       </Card>
