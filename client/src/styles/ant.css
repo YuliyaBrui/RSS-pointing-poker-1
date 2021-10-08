@@ -83,3 +83,9 @@
 .ant-carousel .slick-dots  {
   z-index: 2;
 }
+
+.ant-input[disabled] {
+  color: black;
+  background-color: white;
+  cursor: pointer;
+}
