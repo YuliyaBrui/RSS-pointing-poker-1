@@ -12,11 +12,6 @@
     margin-bottom: 30px;
   }
 
-.main__input_session_name {
-    font-size: 1.2rem;
-    border: none;
-  }
-
 .main__wrapper_icon {
     &:hover {
       cursor: pointer;
@@ -29,9 +24,12 @@
 }
 
 .main__input_session_name~.ant-input-disabled, .ant-input[disabled] {
+  width: 250px;
   background: none;
   color: black;
   cursor: default; 
+  font-size: 1.2rem;
+  border: none;
 }
 
 @media (max-width: 768px) {

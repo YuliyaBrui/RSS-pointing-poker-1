@@ -20,11 +20,16 @@ const AverageScoreForm = ({
     coffee: '',
   });
 
- const gameID = useSelector(
+  const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
 
-// const { gameID } = sessionStorage;
+  const currnetUser = useSelector((state: RootState) => state.currentUser.name);
+  const master = useSelector(
+    (state: RootState) => state.chatReducer.users.master.name,
+  );
+
+  // const { gameID } = sessionStorage;
   const nextIssue = (): void => {
     socket.emit('NEXT_ISSUE', gameID);
   };
@@ -32,7 +37,6 @@ const AverageScoreForm = ({
   useEffect(() => {
     socket.emit('GET_AVERAGE_RESULT', gameID);
     socket.on('GET_AVERAGE_RESULT', (data) => {
-      console.log(data, 'AVERAGE');
       setAveragePoints(data);
     });
   }, []);
@@ -57,10 +61,13 @@ const AverageScoreForm = ({
         <Button
           type="primary"
           onClick={() => {
-            socket.emit('RESET_VISIBIL_CARD', gameID);
             resultFormVisib(false);
-            nextIssue();
-            socket.emit('VIEW_GAME_SCORE', gameID, false);
+            if (currnetUser === master) {
+              socket.emit('VIEW_GAME_SCORE', gameID, false);
+              socket.emit('RESET_VISIBIL_CARD', gameID);
+              console.log('SEND RESULT VOTING');
+              nextIssue();
+            }
           }}
         >
           Clear

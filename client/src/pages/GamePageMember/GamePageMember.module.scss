@@ -27,6 +27,11 @@
     border: 1px solid #f0f0f0;
     padding: 1%;
     margin: 1%;
+    display: grid;
+    grid-template-areas: "score"
+      "players";
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -43,6 +48,11 @@
 
 .none { 
   display: none;
+}
+
+.players {
+  justify-self: center;
+  justify-items: center;
 }
 
 .game_title {

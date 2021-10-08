@@ -48,7 +48,7 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       history.push(`/setting/${gameID}`);
      
     };
-    //dispatch(addCurrentUser(value));
+    dispatch(addCurrentUser(value));
     sessionStorage.setItem('user', JSON.stringify(value));
     dispatch(saveMasterParams(value, callback));
   };

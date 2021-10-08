@@ -29,13 +29,13 @@ const ResultPage = (): JSX.Element => {
     (state: RootState) => state.formCreateReducer.IDGame,
   );
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
-
+    console.log(issues)
   const savedResults: any = [];
   for (let i = 0; i < issues.length; i += 1) {
     savedResults.push(issues[i]);
     savedResults.push(gameResults[i]);
   }
-
+  console.log(gameResults);
   useEffect(() => {
     axios
       .get(`${SERVER_URL}/session-name/${gameID}`)

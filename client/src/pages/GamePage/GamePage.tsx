@@ -50,15 +50,23 @@ const GamePage = (): JSX.Element => {
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
- 
+
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
-  
-   const masterAsPlayer = useSelector(
-     (state: RootState) => state.chatReducer.setting.masterPlayer,
-   );
+
+  const masterAsPlayer = useSelector(
+    (state: RootState) => state.chatReducer.setting.masterPlayer,
+  );
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
+  );
+
+  const players = useSelector(
+    (state: RootState) => state.chatReducer.users.members,
+  );
+
+  const masterInfo = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
   );
 
   const { gameID } = sessionStorage;
@@ -83,11 +91,8 @@ const GamePage = (): JSX.Element => {
         break;
     }
   };
-
- 
   const result = (): void => {
-    socket.emit('GAME_RESULTS', gameID, `/result/${gameID}`)
-   
+    socket.emit('GAME_RESULTS', gameID, `/result/${gameID}`);
   };
 
   const setUserPoint = (point: number): void => {
@@ -106,19 +111,19 @@ const GamePage = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
- 
+
   useEffect(() => {
-    axios
-      .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));
+    // axios
+    //   .get(`${SERVER_URL}/session-name/${gameID}`)
+    //   .then((res) => setSessionName(res.data));
+    console.log('I RENDER IN MASTER');
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('ROUND_RUN', () => {
       setIsRunning(true);
     });
-if(
-    socket.on('MEMBER_JOINED', getUsers)){
+    if (socket.on('MEMBER_JOINED', getUsers)) {
       console.log('1');
-    };
+    }
   }, [gameScore]);
   window.onload = () => {
     const joinState = {
@@ -214,8 +219,8 @@ if(
                       className={styles.button}
                       style={{ width: '100%' }}
                       onClick={() => {
-                        result();
                         socket.emit('END_VOTING', gameID);
+                        result();
                       }}
                     >
                       Stop game
@@ -226,6 +231,7 @@ if(
                       type="primary"
                       className={styles.button}
                       style={{ width: '100%' }}
+                      disabled={isRunning}
                       onClick={() => {
                         setAlertResultGame(true);
                         changeVisibilCard(-1);
@@ -236,7 +242,6 @@ if(
                           gameID,
                           currentIssue + 1,
                         );
-                        socket.emit('END_VOTING', gameID);
                         socket.emit('RESET_TIME', gameID);
                       }}
                     >
@@ -385,36 +390,69 @@ if(
           />
         </div>
         <div className={styles.game__part_score}>
-          <div className={styles.score_title}>
-            <h2>Score:</h2>
-            <h2>Players:</h2>
+          <div className={styles.game_score}>
+            <div className={styles.score_title}>
+              <h2>Score:</h2>
+              <h2>Players:</h2>
+            </div>
+            <Col style={{ width: '100%' }}>
+              {gameScore.length > 0 ? (
+                gameScore.map((user: IGameScore) => (
+                  <div className={styles.score}>
+                    <div className={styles.scorecard}>
+                      <ScoreCard visibil point={user.point} />
+                    </div>
+                    <div className={styles.usercard}>
+                      <UserCard
+                        name={user.name}
+                        lastName={user.lastName}
+                        avatar={user.avatarURL}
+                        position={user.jobPosition}
+                        visibil="visible"
+                        id={user.id}
+                        key={user.id}
+                      />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ textAlign: 'center' }}>
+                  Waiting for the votes of the players...
+                </p>
+              )}
+            </Col>
           </div>
-          <Col style={{ width: '100%' }}>
-            {gameScore.length > 0 ? (
-              gameScore.map((user: IGameScore) => (
-                <div className={styles.score}>
-                  <div className={styles.scorecard} >
-                    <ScoreCard visibil point={user.point} />
-                  </div>
-                  <div className={styles.usercard}>
-                    <UserCard
-                      name={user.name}
-                      lastName={user.lastName}
-                      avatar={user.avatarURL}
-                      position={user.jobPosition}
-                      visibil="visible"
-                      id={user.id}
-                      key={user.id}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p style={{ textAlign: 'center' }}>
-                Waiting for the votes of the players...
-              </p>
+          <div className={styles.players}>
+            <h2 style={{ textAlign: 'center' }}>
+              Participating in the voting:
+            </h2>
+            {masterAsPlayer && (
+              <div className={styles.usercard}>
+                <UserCard
+                  name={masterInfo.name}
+                  lastName={masterInfo.lastName}
+                  avatar={masterInfo.avatarURL}
+                  position={masterInfo.jobPosition}
+                  visibil="visible"
+                  id={masterInfo.id}
+                  key={masterInfo.id}
+                />
+              </div>
             )}
-          </Col>
+            {players.map((user) => (
+              <div className={styles.usercard}>
+                <UserCard
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
+                  id={user.id}
+                  key={user.id}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <Chat />

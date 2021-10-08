@@ -27,6 +27,11 @@
     border: 1px solid #f0f0f0;
     padding: 1%;
     margin: 1%;
+    display: grid;
+    grid-template-areas: "score"
+      "players";
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -41,7 +46,14 @@
   color: green;
 }
 
-.none { 
+.players {
+  justify-self: center;
+  justify-items: center;
+}
+
+
+
+.none {
   display: none;
 }
 
@@ -148,7 +160,7 @@
 }
 
 @media (max-width: 785px) {
-  .game  {
+  .game {
     display: block;
   }
 
@@ -156,6 +168,7 @@
     width: 100%;
     max-width: 785px;
   }
+
   .score {
     display: flex;
   }

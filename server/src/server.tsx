@@ -331,12 +331,12 @@ io.on('connection', (socket: Socket) => {
     games.get(gameID).get('gameScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     games.get(gameID).get('percentScore').set(`${scoreData.name}${scoreData.lastName}`, scoreData);
     const allUserPoints = [...games.get(gameID).get('gameScore').values()];
+    console.log(allUserPoints, 'allUserPoints')
     io.sockets.in(gameID).emit('GET_USER_POINT', allUserPoints);
   });
 
   socket.on('GET_AVERAGE_RESULT', (gameID) => {
     const arrUserPoints = [...games.get(gameID).get('gameScore').values()];
-    console.log(`${arrUserPoints}-GET_AVERAGE_RESULT`);
     const oneIssueStats = {
       quantity: arrUserPoints.length,
       average: 0,
@@ -383,8 +383,9 @@ io.on('connection', (socket: Socket) => {
     for (const value in statistics) {
       percent[value] = +((statistics[value].length / arrUserPoints.length) * 100).toFixed(1);
     }
-
+    console.log(percent, 'percent');
     games.get(gameID).get('finalScore').push(percent);
+    console.log(games.get(gameID).get('finalScore'));
   };
 
   socket.on('NEXT_ISSUE', (gameID) => {

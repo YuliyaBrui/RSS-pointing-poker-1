@@ -54,10 +54,10 @@ const GameSetting = (): JSX.Element => {
         <FormItem labelCol={{ span: 10 }} name="slider" label="Round time">
           <Slider
             trackStyle={{ width: '200px' }}
-            max={1000}
+            max={200}
             marks={{
               0: '0sec',
-              1000: '1000sec',
+              200: '200sec',
             }}
             onChange={(value) => dispatch(setRoundTime(value))}
           />
