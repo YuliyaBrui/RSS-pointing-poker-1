@@ -5,6 +5,7 @@ import {
 } from '../types/chat';
 
 const initialUsersState: IChatState = {
+  sessionName: 'New session',
   users: {
     members: [],
     observers: [],
@@ -33,6 +34,11 @@ export const chatReducer = (
   action: chatInfoAction,
 ): IChatState => {
   switch (action.type) {
+    case GetUsersInfoActionTypes.FETCH_SET_SESSION_NAME:
+      return {
+        ...state,
+        sessionName: action.payload.sessionName,
+      };
     case GetUsersInfoActionTypes.FETCH_SET_USERS:
       return {
         ...state,

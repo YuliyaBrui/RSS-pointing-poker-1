@@ -24,7 +24,7 @@ import Chat from '../../components/Chat/Chat';
 import { socket } from '../../socket';
 import { IChatUsers } from '../../redux/types/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
-import { chatParams, newMessageParams } from '../../redux/actions/chat';
+import { chatParams, newMessageParams, sessionNameParams } from '../../redux/actions/chat';
 import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
 const SettingPage = (): JSX.Element => {
@@ -40,6 +40,9 @@ const SettingPage = (): JSX.Element => {
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     socket.on('MEMBER_LEAVED', getUsers);
+    socket.on('GET_SESSION_NAME', (name) => {
+      dispatch(sessionNameParams(name));
+    });
   /*  socket.on('GAME_NEW_MESSAGE', (message) => {
       dispatch(newMessageParams(message));
     });*/

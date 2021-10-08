@@ -1,8 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
-import {
- Button, Row, Spin, Space, Carousel, Select 
-} from 'antd';
+import { Button, Row, Spin, Space, Carousel, Select } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -41,7 +39,7 @@ const GamePage = (): JSX.Element => {
   // const currentUser = useSelector((state: RootState) => state.currentUser);
   const currentUser = JSON.parse(sessionStorage.user);
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('ddd');
+  // const [sessionName, setSessionName] = useState('ddd');
   const [isRunning, setIsRunning] = useState(false);
   const [gameScore, setGameScore] = useState([]);
   const [alertResultGame, setAlertResultGame] = useState(false);
@@ -50,17 +48,19 @@ const GamePage = (): JSX.Element => {
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
- 
+
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
   const issues = useSelector((state: RootState) => state.chatReducer.issues);
-  
-   const masterAsPlayer = useSelector(
-     (state: RootState) => state.chatReducer.setting.masterPlayer,
-   );
+
+  const masterAsPlayer = useSelector(
+    (state: RootState) => state.chatReducer.setting.masterPlayer,
+  );
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
   );
-
+  const sessionName = useSelector(
+    (state: RootState) => state.chatReducer.sessionName,
+  );
   const { gameID } = sessionStorage;
   const { Option } = Select;
   const carouselRef: RefObject<any> = React.createRef();
@@ -83,11 +83,8 @@ const GamePage = (): JSX.Element => {
         break;
     }
   };
-
- 
   const result = (): void => {
-    socket.emit('GAME_RESULTS', gameID, `/result/${gameID}`)
-   
+    socket.emit('GAME_RESULTS', gameID, `/result/${gameID}`);
   };
 
   const setUserPoint = (point: number): void => {
@@ -106,19 +103,18 @@ const GamePage = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
- 
+
   useEffect(() => {
-    axios
+    /*  axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));
+      .then((res) => setSessionName(res.data)); */
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('ROUND_RUN', () => {
       setIsRunning(true);
     });
-if(
-    socket.on('MEMBER_JOINED', getUsers)){
+    if (socket.on('MEMBER_JOINED', getUsers)) {
       console.log('1');
-    };
+    }
   }, [gameScore]);
   window.onload = () => {
     const joinState = {
@@ -393,7 +389,7 @@ if(
             {gameScore.length > 0 ? (
               gameScore.map((user: IGameScore) => (
                 <div className={styles.score}>
-                  <div className={styles.scorecard} >
+                  <div className={styles.scorecard}>
                     <ScoreCard visibil point={user.point} />
                   </div>
                   <div className={styles.usercard}>

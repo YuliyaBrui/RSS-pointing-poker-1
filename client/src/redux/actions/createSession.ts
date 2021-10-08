@@ -41,7 +41,12 @@ export const getUsersParams =  (IDGame: string, callback?: (master: IFormGameVal
       const response: AxiosResponse<IChatState> = await instance.get(
         `/${IDGame}`,
       );
-
+      dispatch({
+        type: GetUsersInfoActionTypes.FETCH_SET_SESSION_NAME,
+        payload: {
+        sessionName: response.data.sessionName,
+      },
+    });
     dispatch({
         type: GetUsersInfoActionTypes.FETCH_SET_USERS,
         payload: {

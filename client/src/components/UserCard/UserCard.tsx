@@ -55,7 +55,8 @@ const UserCard = ({
   };
   const sendKickData = (): void => {
     if (socket.id === gameMaster.id ) {
-      socket.emit('KICK_USER_BY_MASTER', gameID, id);
+      socket.emit('KICK_USER_BY_MASTER', gameID, name,
+      lastName, id);
       console.log('master', socket.id, gameMaster.id, id);
     }
     else {

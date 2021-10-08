@@ -13,7 +13,7 @@ import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 import ScramMasterCard from '../../components/ScramMasterCard/ScramMasterCard';
 import UserCard from '../../components/UserCard/UserCard';
 import { RootState } from '../../redux';
-import { chatParams } from '../../redux/actions/chat';
+import { chatParams, sessionNameParams } from '../../redux/actions/chat';
 import { getUsersParams } from '../../redux/actions/createSession';
 import { IChatUsers } from '../../redux/types/chat';
 import { SERVER_URL, socket } from '../../socket';
@@ -21,12 +21,16 @@ import styles from './MembersLobby.module.scss';
 
 const MembersLobby = (): JSX.Element => {
   const [formVisible, setFormVisible] = useState(false);
-  const [sessionName, setSessionName] = useState('');
+
+ // const [sessionName, setSessionName] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
+  const sessionName = useSelector(
+    (state: RootState) => state.chatReducer.sessionName,
+  );
   const members = useSelector(
     (state: RootState) => state.chatReducer.users.members,
   );
@@ -44,9 +48,12 @@ const MembersLobby = (): JSX.Element => {
   useEffect(() => {
     socket.on('MEMBER_JOINED', getUsers);
     dispatch(getUsersParams(gameID));
-    axios
+   socket.on('GET_SESSION_NAME', (name) => {
+      dispatch(sessionNameParams(name));
+    });
+   /* axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));
+      .then((res) => setSessionName(res.data));*/
   }, []);
   const handleExitClick = (): void => {
     socket.emit('USER_EXIT', gameID, socket.id);

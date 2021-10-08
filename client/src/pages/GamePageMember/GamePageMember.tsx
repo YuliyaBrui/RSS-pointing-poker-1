@@ -35,7 +35,7 @@ type IGameScore = {
 
 const GamePageMember = (): JSX.Element => {
   const [alertResultGame, setAlertResultGame] = useState(false);
-  const [sessionName, setSessionName] = useState('');
+  //const [sessionName, setSessionName] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(0);
   const [vivsibGameScore, setVivsibGameScore] = useState(false);
@@ -45,7 +45,9 @@ const GamePageMember = (): JSX.Element => {
   const gameCards = useSelector(
     (state: RootState) => state.chatReducer.gameCards,
   );
-
+  const sessionName = useSelector(
+    (state: RootState) => state.chatReducer.sessionName,
+  );
   const [gameScore, setGameScore] = useState([]);
   const timer = useSelector(
     (state: RootState) => state.chatReducer.setting.needTimer,
@@ -84,9 +86,9 @@ const GamePageMember = (): JSX.Element => {
     });
 
   useEffect(() => {
-    axios
+  /*  axios
       .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data));
+      .then((res) => setSessionName(res.data));*/
     // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('END_VOTING', (data) => {
@@ -122,8 +124,8 @@ const GamePageMember = (): JSX.Element => {
     }
     if (currentUser.role === 'observer') {
       socket.emit('GAME_JOIN_OBSERVER', joinState);
-      dispatch(getUsersParams(gameID));
     }
+    dispatch(getUsersParams(gameID));
   };
   const SampleNextArrow = (props: any): JSX.Element => {
     const { className, style, onClick } = props;

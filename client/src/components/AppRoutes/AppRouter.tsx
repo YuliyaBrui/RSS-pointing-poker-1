@@ -6,7 +6,7 @@ import { privateRoutes } from '../../route/route';
 import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
 import { socket } from '../../socket';
-import { chatParams, gameIssues, setGameCards, setSettingGame } from '../../redux/actions/chat';
+import { chatParams, gameIssues, sessionNameParams, setGameCards, setSettingGame } from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { kickForm } from '../../redux/actions/kickForm';
 import { IIssue } from '../../redux/types/issues';
@@ -42,7 +42,9 @@ const AppRouter = (): JSX.Element => {
         history.push('/');
       }
     });
-   
+    socket.on('GET_SESSION_NAME', (name) => {
+      dispatch(sessionNameParams(name));
+    });
     socket.on('MEMBER_LEAVED', getUsers);
     socket.on('GAME_ADD_ISSUE', getIssues);
     socket.on('GAME_DELETE_ISSUE', getIssues);
