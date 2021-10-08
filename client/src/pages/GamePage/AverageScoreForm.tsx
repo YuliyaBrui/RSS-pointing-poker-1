@@ -65,7 +65,6 @@ const AverageScoreForm = ({
             if (currnetUser === master) {
               socket.emit('VIEW_GAME_SCORE', gameID, false);
               socket.emit('RESET_VISIBIL_CARD', gameID);
-              console.log('SEND RESULT VOTING');
               nextIssue();
             }
           }}

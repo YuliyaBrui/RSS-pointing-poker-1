@@ -80,7 +80,7 @@ const GameCard = ({ cardValue, id }: IGameCard): JSX.Element => {
         </div>
         <Input
           className={!editCardValue ? styles.main__input_disabled : ''}
-          style={{ textAlign: 'center', fontSize: 40 }}
+          style={{ textAlign: 'center', fontSize: 40, cursor: 'pointer' }}
           size="large"
           disabled={!editCardValue}
           defaultValue={cardValue}

@@ -14,8 +14,6 @@ import {
 } from '../types/forms';
 
 export const saveMasterParams =  (value: IFormGameValue, callback: (gameID: string) => void) => async (dispatch: Dispatch<createGameAction>): Promise<void> => {
-      console.log(value);
-
       try {
         dispatch({
         type: CreateGameActionTypes.FETCH_CREATE_GAME,

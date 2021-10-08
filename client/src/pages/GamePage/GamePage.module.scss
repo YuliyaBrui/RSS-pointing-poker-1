@@ -93,14 +93,15 @@
   border-radius: 3px;
 }
 
-.score_title {
-  display: flex;
-  text-align: center;
-  justify-content: space-evenly;
+.score_title_wrapper {
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 1fr 1.5fr;
 }
 
-.score_title h1 {
-  font-weight: 600;
+.score_title {
+  align-self: center;
+  justify-self : center;
 }
 
 .score {

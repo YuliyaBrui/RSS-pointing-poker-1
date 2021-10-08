@@ -23,13 +23,16 @@
     height: 100%; 
 }
 
+.main__input_session_name {
+  font-size: 1.2rem;
+  border: none;
+  cursor: default; 
+}
+
 .main__input_session_name~.ant-input-disabled, .ant-input[disabled] {
   width: 250px;
   background: none;
   color: black;
-  cursor: default; 
-  font-size: 1.2rem;
-  border: none;
 }
 
 @media (max-width: 768px) {

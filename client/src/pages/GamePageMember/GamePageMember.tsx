@@ -3,16 +3,13 @@ import React, { RefObject, useEffect, useState } from 'react';
 import {
  Button, Carousel, Space, Spin 
 } from 'antd';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
 import styles from './GamePageMember.module.scss';
 import ScramMasterInfo from '../../components/ScramMasterCard/ScramMasterCard';
 import Issue from '../../components/Issues/Issue';
 import Timer from '../../components/Timer/Timer';
-import IssueForm from '../../components/Issues/IssueForm';
 import UserCard from '../../components/UserCard/UserCard';
 import GameCard from '../../components/GameCard/GameCard';
 import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
@@ -20,10 +17,9 @@ import { RootState } from '../../redux';
 import { IIssue } from '../../redux/types/issues';
 import { IGameCard } from '../../redux/types/gameCard';
 import ScoreCard from '../../components/ScoreCard/ScoreCard';
-import { SERVER_URL, socket } from '../../socket';
+import { socket } from '../../socket';
 import { getUsersParams } from '../../redux/actions/createSession';
 import Chat from '../../components/Chat/Chat';
-import { gameIssues } from '../../redux/actions/chat';
 import AverageScoreForm from '../GamePage/AverageScoreForm';
 
 type IGameScore = {
@@ -37,7 +33,6 @@ type IGameScore = {
 
 const GamePageMember = (): JSX.Element => {
   const [alertResultGame, setAlertResultGame] = useState(false);
-  // const [sessionName, setSessionName] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(0);
   const [vivsibGameScore, setVivsibGameScore] = useState(false);
@@ -67,12 +62,7 @@ const GamePageMember = (): JSX.Element => {
 
   const [visibilCard, setVisibilCard] = useState<number[]>([]);
 
-  /* const gameID = useSelector(
-    (state: RootState) => state.formCreateReducer.IDGame,
-  );
-*/
   const { gameID } = sessionStorage;
-  const history = useHistory();
   const carouselRef: RefObject<any> = React.createRef();
   const handleExitClick = (): void => {
     socket.emit('USER_EXIT', gameID, socket.id);
@@ -99,10 +89,6 @@ const GamePageMember = (): JSX.Element => {
   });
 
   useEffect(() => {
-    /*  axios
-      .get(`${SERVER_URL}/session-name/${gameID}`)
-      .then((res) => setSessionName(res.data)); */
-    // dispatch(setRoundTime());
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
     socket.on('VIEW_ROUND_RESULT', (data) => {
       setGameScore(data);
@@ -114,8 +100,7 @@ const GamePageMember = (): JSX.Element => {
       setIsRunning(true);
     });
     socket.on('NEXT_CURRENT_ISSUE', (data) => {
-      promese(data).then(carouselRef.current.goTo(currentIssue + 1));
-      console.log(currentIssue);
+      promese(data);
     });
     socket.on('VIEW_GAME_SCORE', (data) => setVivsibGameScore(data));
     socket.emit('GET_GAME_CARDS', gameID);
@@ -218,7 +203,7 @@ const GamePageMember = (): JSX.Element => {
                 >
                   {issues &&
                     issues.map((issue: IIssue, i) => (
-                      <div className={styles.issues_wrapper}>
+                      <div className={styles.issues_wrapper} key={issue.id}>
                         <div
                           style={{
                             height: '150px',
@@ -324,9 +309,9 @@ const GamePageMember = (): JSX.Element => {
             <Col style={{ width: '100%' }}>
               {gameScore.length > 0 ? (
                 gameScore.map((user: IGameScore) => (
-                  <div className={styles.score}>
+                  <div className={styles.score} key={user.id}>
                     <div className={styles.scorecard}>
-                      <ScoreCard visibil point={user.point} />
+                      <ScoreCard visibil={vivsibGameScore} point={user.point} />
                     </div>
                     <div className={styles.usercard}>
                       <UserCard
@@ -366,7 +351,7 @@ const GamePageMember = (): JSX.Element => {
               </div>
             )}
             {players.map((user) => (
-              <div className={styles.usercard}>
+              <div className={styles.usercard} key={user.id}>
                 <UserCard
                   name={user.name}
                   lastName={user.lastName}

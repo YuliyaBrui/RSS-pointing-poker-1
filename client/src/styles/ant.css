@@ -87,5 +87,5 @@
 .ant-input[disabled] {
   color: black;
   background-color: white;
-  cursor: pointer;
+  cursor: default;
 }

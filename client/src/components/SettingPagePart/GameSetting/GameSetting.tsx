@@ -25,12 +25,12 @@ const GameSetting = (): JSX.Element => {
       layout="horizontal"
       size="middle"
       style={{
-        width: '100%',
         display: 'flex',
         justifyContent: 'space-between',
+        marginRight: '6%',
       }}
     >
-      <Col span={10}>
+      <Col span={14}>
         <FormItem label="Scram master as player" valuePropName="checked">
           <Switch onChange={(checked) => dispatch(setMasterPlayer(checked))} />
         </FormItem>
@@ -41,7 +41,7 @@ const GameSetting = (): JSX.Element => {
           <Switch onChange={(checked) => dispatch(setNeedTimer(checked))} />
         </FormItem>
       </Col>
-      <Col span={10} style={{ paddingRight: '20px' }}>
+      <Col span={14} style={{ paddingRight: '20px' }}>
         <FormItem labelCol={{ span: 10 }} label="Score type">
           <Input onChange={(e) => dispatch(setScoreType(e.target.value))} />
         </FormItem>

@@ -8,14 +8,19 @@ interface deleteProps {
 export const DeleteGame = ({ setActive }: deleteProps): JSX.Element => {
   const history = useHistory();
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       <p>
-        {' '}
         The game was successfully deleted. You will automatically be taken to
         the home page.
       </p>
       <Button
-        type="default"
+        type="primary"
         htmlType="button"
         onClick={() => {
           setActive(false);

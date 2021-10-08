@@ -1,9 +1,7 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
 import { Button, Row, Spin, Space, Carousel, Select } from 'antd';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import Col from 'antd/lib/grid/col';
 import FormItem from 'antd/lib/form/FormItem';
 import styles from './GamePage.module.scss';
@@ -36,10 +34,8 @@ type IGameScore = {
 };
 
 const GamePage = (): JSX.Element => {
-  // const currentUser = useSelector((state: RootState) => state.currentUser);
   const currentUser = JSON.parse(sessionStorage.user);
   const [formVisible, setFormVisible] = useState(false);
-  // const [sessionName, setSessionName] = useState('ddd');
   const [isRunning, setIsRunning] = useState(false);
   const [gameScore, setGameScore] = useState([]);
   const [alertResultGame, setAlertResultGame] = useState(false);
@@ -121,9 +117,7 @@ const GamePage = (): JSX.Element => {
     socket.on('ROUND_RUN', () => {
       setIsRunning(true);
     });
-    if (socket.on('MEMBER_JOINED', getUsers)) {
-      console.log('1');
-    }
+    socket.on('MEMBER_JOINED', getUsers);
   }, [gameScore]);
   window.onload = () => {
     const joinState = {
@@ -220,6 +214,7 @@ const GamePage = (): JSX.Element => {
                       style={{ width: '100%' }}
                       onClick={() => {
                         socket.emit('END_VOTING', gameID);
+                        socket.emit('GET_RESULTS', gameID);
                         result();
                       }}
                     >
@@ -276,7 +271,7 @@ const GamePage = (): JSX.Element => {
                 >
                   {issues &&
                     issues.map((issue: IIssue, i) => (
-                      <div className={styles.issues_wrapper}>
+                      <div className={styles.issues_wrapper} key={issue.id}>
                         <div
                           style={{
                             height: '150px',
@@ -392,14 +387,14 @@ const GamePage = (): JSX.Element => {
         </div>
         <div className={styles.game__part_score}>
           <div className={styles.game_score}>
-            <div className={styles.score_title}>
-              <h2>Score:</h2>
-              <h2>Players:</h2>
+            <div className={styles.score_title_wrapper}>
+              <h2 className={styles.score_title}>Score:</h2>
+              <h2 className={styles.score_title}>Players:</h2>
             </div>
             <Col style={{ width: '100%' }}>
               {gameScore.length > 0 ? (
                 gameScore.map((user: IGameScore) => (
-                  <div className={styles.score}>
+                  <div className={styles.score} key={user.id}>
                     <div className={styles.scorecard}>
                       <ScoreCard visibil point={user.point} />
                     </div>
@@ -441,7 +436,7 @@ const GamePage = (): JSX.Element => {
               </div>
             )}
             {players.map((user) => (
-              <div className={styles.usercard}>
+              <div className={styles.usercard} key={user.id}>
                 <UserCard
                   name={user.name}
                   lastName={user.lastName}

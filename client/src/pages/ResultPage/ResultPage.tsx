@@ -14,7 +14,7 @@ import styles from './ResultPage.module.scss';
 import GameCard from '../../components/GameCard/GameCard';
 import CoffeeGameCard from '../../components/GameCard/CoffeeGameCard';
 import { RootState } from '../../redux';
-import { SERVER_URL } from '../../socket';
+import { SERVER_URL, socket } from '../../socket';
 
 interface TStatistics extends Object {
   [point: number]: number[];
@@ -37,9 +37,9 @@ const ResultPage = (): JSX.Element => {
     savedResults.push(gameResults[i]);
   }
   useEffect(() => {
-    axios
-      .get(`${SERVER_URL}/result/${gameID}`)
-      .then((res) => setGameResults(res.data));
+    socket.emit('GET_RESULTS', gameID);
+    socket.on('GET_RESULTS', (data) => setGameResults(data));
+    console.log(gameResults, 'gameResults');
   }, [gameResults, gameID]);
 
   const fileType =
@@ -54,7 +54,7 @@ const ResultPage = (): JSX.Element => {
     FileSaver.saveAs(data, `results${fileExtension}`);
   };
 
-  return savedResults.length > 0 ? (
+  return gameResults[0] ? (
     <div className={styles.wrapper}>
       <div className={styles.result_wrapper}>
         <div className={styles.header_wrapper}>
@@ -78,7 +78,7 @@ const ResultPage = (): JSX.Element => {
                   id={issue.id}
                   key={issue.id}
                 />
-                {Object.keys(gameResults).length > 1 && (
+                {gameResults[index] && (
                   <div className={styles.issue_votes}>
                     {Object.entries(gameResults[index]).map(([key, value]) => (
                       <div className={styles.card_wrapper}>

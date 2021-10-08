@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Input, Button, Avatar, Switch, Col, Row } from 'antd';
+import {
+ Form, Input, Button, Avatar, Switch, Col, Row 
+} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import shortid from 'shortid';
@@ -46,7 +48,7 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       user: value,
       gameID,
     };
-   
+
     if (isToggle) {
       const userStorage = {
         role: 'observer',
@@ -58,7 +60,6 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       };
       socket.emit('GAME_JOIN_OBSERVER', joinState);
       sessionStorage.setItem('user', JSON.stringify(userStorage));
-     
     } else {
       const userStorage = {
         role: 'member',
@@ -70,7 +71,6 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
       };
       socket.emit('GAME_JOIN_MEMBER', joinState);
       sessionStorage.setItem('user', JSON.stringify(userStorage));
-     
     }
     sessionStorage.setItem('gameID', gameID);
     dispatch(addCurrentUser(value));
@@ -79,17 +79,19 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
     setActive(false);
     history.push(`/lobby/${gameID}`);
   };
-  
+
   return (
     <div>
       <Row justify="space-between">
         <h2>Connect to lobby </h2>
-        <label htmlFor="observer_switch">Connect as observer</label>
-        <Switch
-          className="observer_switch"
-          checked={isToggle}
-          onChange={() => setToggle((prev) => !prev)}
-        />
+        <div className={styles.observer_wrapper}>
+          <label htmlFor="observer_switch">Connect as observer</label>
+          <Switch
+            className="observer_switch"
+            checked={isToggle}
+            onChange={() => setToggle((prev) => !prev)}
+          />
+        </div>
       </Row>
       <Form
         form={form}
@@ -112,7 +114,6 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
               setFirstName(value);
             }}
           />
-           
         </Form.Item>
 
         <Form.Item

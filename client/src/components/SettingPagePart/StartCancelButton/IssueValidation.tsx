@@ -5,10 +5,16 @@ interface issueProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const IssueValidation = ({ setActive }: issueProps): JSX.Element => (
-  <div>
-    <p>You don&apos;t have issue for game</p>
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }}
+  >
+    <p style={{ width: 'fit-content' }}>You don&apos;t have issue for game</p>
     <Button
-      type="default"
+      type="primary"
       htmlType="button"
       onClick={() => {
         setActive(false);

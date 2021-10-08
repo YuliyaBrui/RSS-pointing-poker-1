@@ -58,7 +58,6 @@ const SessionInfo = (): JSX.Element => {
             className={!editSession ? styles.main__input_session_name : ''}
             size="middle"
             disabled={!editSession}
-            //defaultValue={sessionName}
             value={sessionName}
             onChange={(e) => setSessionName(e.target.value)}
             onPressEnter={() => {

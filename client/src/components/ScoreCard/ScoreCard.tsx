@@ -21,8 +21,7 @@ const ScoreCard = ({ visibil, point }: IScoreCard): JSX.Element => {
       bodyStyle={{ width: '100%', height: '100%' }}
     >
       <div className={styles.score_info}>
-        {point}
-        {shortType}
+        {point === 0 ? 'coffee brake' : `${point}${shortType}`}
       </div>
     </Card>
   ) : (
