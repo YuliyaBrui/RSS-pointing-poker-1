@@ -1,3 +1,5 @@
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable operator-linebreak */
 import { games, io } from './server';
 
 export const users = (gameID: string): any => {
@@ -49,13 +51,11 @@ export const kickVoiting = (gameID: string): void => {
           name: 'system notification',
           lastName: '',
           text: `${kickedUser.name} ${kickedUser.name} is removed from the game`,
-        
         };
         games.get(gameID).get('messages').push(message);
         console.log(`${games.get(gameID)}-kick member`);
         io.sockets.in(gameID).emit('KICKED_MEMBER', users(gameID));
         io.sockets.in(gameID).emit('STOP_JOIN', kickedUser.id);
-
       } else {
         io.sockets.in(gameID).emit('STAY_MEMBER', users(gameID));
       }

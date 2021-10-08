@@ -4,7 +4,8 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: './src/server.tsx',
+  target: 'node',
+  entry: './src/server.ts',
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'server.js',

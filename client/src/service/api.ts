@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { SERVER_URL } from '../socket';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3002',
+  baseURL: SERVER_URL,
   timeout: 7000,
 });
 export default instance;
