@@ -9,7 +9,7 @@ import { getUsersParams } from '../../redux/actions/createSession';
 import { ErrorGameID } from '../../components/FormConnect/ErrorGameID';
 import { addGameID } from '../../redux/actions/chat';
 import { IFormGameValue } from '../../redux/types/forms';
-import { SERVER_URL } from '../../socket';
+import { CLIENT_URL, SERVER_URL } from '../../socket';
 
 const StartPage = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -25,12 +25,11 @@ const StartPage = (): JSX.Element => {
   ): void => {
     setURLValue(event.target.value);
     const regExp =
-      /http:\/\/(localhost:3000)\/(lobby)\/(\w){8}-(\w){4}-(\w){4}-(\w){4}-(\w){12}\/?$/;
+      /https:\/\/(planning-poker-asyalu-yuliyabrui-anutaguzova.netlify.app)\/(lobby)\/(\w){8}-(\w){4}-(\w){4}-(\w){4}-(\w){12}\/?$/;
     if (regExp.test(String(event.target.value))) {
-      console.log(event.target.value);
       setURLError('');
     } else {
-      setURLError(`the link should look like ${SERVER_URL}/lobby/:id`);
+      setURLError(`the link should look like ${CLIENT_URL}/lobby/:id`);
     }
   };
 
