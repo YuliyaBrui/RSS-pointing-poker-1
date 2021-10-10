@@ -35,6 +35,17 @@
   }
 }
 
+.timer_wrapper{
+ height:178px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.button{
+  width:70px;
+ 
+}
 .issues_wrapper {
   position: relative;
 }
@@ -73,6 +84,7 @@
   border: 1px solid #f0f0f0;
   padding: 1%;
   margin: 1%;
+  
 }
 
 .process {
@@ -114,9 +126,13 @@ justify-content: space-evenly;
     }
   }
   
-  @media (max-width: 785px) {
+  @media (max-width: 850px) {
     .game  {
       display: block;
+    }
+    
+    .wrapper{
+      padding: 2.5%;
     }
   
     .game__part_score {

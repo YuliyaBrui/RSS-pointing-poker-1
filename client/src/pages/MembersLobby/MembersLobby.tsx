@@ -103,8 +103,10 @@ const MembersLobby = (): JSX.Element => {
             >
               {sessionName}
             </Card>
+            
           </div>
         </div>
+        
         <div className={styles.lobby__panel}>
           <h3>Members:</h3>
           <Row style={{ width: '100%' }} justify="start">

@@ -17,7 +17,7 @@ const ScramMasterInfo = (): JSX.Element => {
     <Card title="Scram master:" className={styles.main__card}>
       <div className={styles.main__scram_master_info}>
         {typeof master.avatarURL !== 'string' || master.avatarURL === '' ? (
-          <UserOutlined style={{ fontSize: '500%' }} />
+          <UserOutlined style={{ fontSize: '400%' }} />
         ) : (
           <div className={styles.main__scram_master__container_img}>
             <img

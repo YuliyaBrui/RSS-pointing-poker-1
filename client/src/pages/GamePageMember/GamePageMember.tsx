@@ -1,8 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
-import {
- Button, Carousel, Space, Spin 
-} from 'antd';
+import { Button, Carousel, Space, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
@@ -82,11 +80,10 @@ const GamePageMember = (): JSX.Element => {
     setVisibilCard(visivArr);
   };
 
-  const promese = (data: number): Promise<boolean> =>
-    new Promise((res, req) => {
-    setCurrentIssue(data);
-    res(true);
-  });
+  const promese = (data: number): Promise<boolean> => new Promise((res, req) => {
+      setCurrentIssue(data);
+      res(true);
+    });
 
   useEffect(() => {
     socket.on('GET_USER_POINT', (data) => setGameScore(data));
@@ -174,15 +171,14 @@ const GamePageMember = (): JSX.Element => {
               <div>
                 <ScramMasterInfo />
               </div>
-              {timer && (
-                <div>
+              <div className={styles.timer_wrapper}>
+                {timer && (
                   <Timer
                     running={setIsRunning}
                     changeVisibil={changeVisibilCard}
                   />
-                </div>
-              )}
-              <div>
+                )}
+
                 <Button
                   type="primary"
                   className={styles.button}

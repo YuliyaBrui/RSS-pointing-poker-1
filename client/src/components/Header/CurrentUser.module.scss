@@ -1,0 +1,15 @@
+.user{
+  &_wrapper{
+    width: 150px;
+    display: grid;
+    grid-template-columns: 40px 90px;
+    grid-column-gap: 20px;
+    align-items: center;
+    overflow:hidden;
+}
+  &_info{
+    margin: 0;
+    word-break: break-all;
+    color: white;
+}
+}

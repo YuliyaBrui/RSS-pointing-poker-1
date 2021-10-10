@@ -19,7 +19,7 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
   const [seconds, setSeconds] = useState(+time);
 
   const location = useLocation();
-/*
+  /*
   const gameID = useSelector(
     (state: RootState) => state.formCreateReducer.IDGame,
   );
@@ -60,9 +60,10 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
         <div className={styles.timer_button}>
           {!isRunning ? (
             <Button
+              style={{ marginBottom: '10px' }}
               type="primary"
               onClick={() => {
-                //setIsRunning(true);
+                // setIsRunning(true);
                 socket.emit('ROUND_RUN', gameID);
               }}
             >
@@ -70,10 +71,11 @@ const Timer = ({ running, changeVisibil }: setRunning): JSX.Element => {
             </Button>
           ) : (
             <Button
+              style={{ marginBottom: '10px' }}
               type="primary"
               onClick={() => {
-               // setIsRunning(false);
-              //  setSeconds(+time);
+                // setIsRunning(false);
+                //  setSeconds(+time);
                 socket.emit('REPEAT_VOTING', gameID);
               }}
             >

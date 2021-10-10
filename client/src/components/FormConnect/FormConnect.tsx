@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
- Form, Input, Button, Avatar, Switch, Col, Row 
-} from 'antd';
+import { Form, Input, Button, Avatar, Switch, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import shortid from 'shortid';
 import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
 import { socket } from '../../socket';
-import { addCurrentUser } from '../../redux/actions/currentUser';
+
 import { RootState } from '../../redux';
+import { CurrentUser } from '../Header/CurrentUser';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,8 +57,9 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
         avatarURL,
         id: socket.id,
       };
-      socket.emit('GAME_JOIN_OBSERVER', joinState);
       sessionStorage.setItem('user', JSON.stringify(userStorage));
+      socket.emit('GAME_JOIN_OBSERVER', joinState);
+     
     } else {
       const userStorage = {
         role: 'member',
@@ -69,11 +69,11 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
         avatarURL,
         id: socket.id,
       };
-      socket.emit('GAME_JOIN_MEMBER', joinState);
       sessionStorage.setItem('user', JSON.stringify(userStorage));
+      socket.emit('GAME_JOIN_MEMBER', joinState);
+      
     }
     sessionStorage.setItem('gameID', gameID);
-    dispatch(addCurrentUser(value));
     reset();
     form.resetFields();
     setActive(false);
@@ -106,7 +106,14 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
         <Form.Item
           label="Your first name:"
           name="first-name"
-          rules={[{ required: true, message: 'Enter your name' }]}
+          rules={[
+            { required: true, message: 'Enter your name' },
+            {
+              pattern: /^[а-яёa-z][-а-яёa-z']{1,20}$/,
+              message:
+                "Only letters and symbols ' and - . Name should not exceed 20 symbols ",
+            },
+          ]}
         >
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

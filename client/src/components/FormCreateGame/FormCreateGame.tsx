@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Avatar, Col, Row } from 'antd';
+import {
+ Form, Input, Button, Avatar, Col, Row 
+} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +9,7 @@ import { IFormGameValue } from '../../redux/types/forms';
 import styles from './FormCreateGame.module.scss';
 import { socket } from '../../socket';
 import { saveMasterParams } from '../../redux/actions/createSession';
-import { addCurrentUser } from '../../redux/actions/currentUser';
+
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,17 +44,19 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
       };
       socket.emit('GAME_JOIN_MASTER', joinState);
       sessionStorage.setItem('gameID', gameID);
+      sessionStorage.setItem('user', JSON.stringify(value));
+     
       reset();
       form.resetFields();
       setActive(false);
       history.push(`/setting/${gameID}`);
-     
     };
-    dispatch(addCurrentUser(value));
-    sessionStorage.setItem('user', JSON.stringify(value));
+   
+    
     dispatch(saveMasterParams(value, callback));
+   
   };
-  
+
   return (
     <div>
       <Row>
@@ -71,7 +75,13 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
         <Form.Item
           label="Your first name:"
           name="first-name"
-          rules={[{ required: true, message: 'Enter your name' }]}
+          rules={[
+            { required: true, message: 'Enter your name' },
+            {
+              pattern: /^[а-яёa-z][-а-яёa-z']{1,20}$/,
+              message: "Only letters and symbols ' and - . Name should not exceed 20 symbols ",
+            },
+          ]}
         >
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +89,6 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
               setFirstName(value);
             }}
           />
-         
         </Form.Item>
         <Form.Item
           label="Your last name(optional):"

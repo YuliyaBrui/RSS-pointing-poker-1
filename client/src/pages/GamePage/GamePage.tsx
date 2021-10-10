@@ -1,6 +1,8 @@
 /* eslint-disable operator-linebreak */
 import React, { RefObject, useEffect, useState } from 'react';
-import { Button, Row, Spin, Space, Carousel, Select } from 'antd';
+import {
+ Button, Row, Spin, Space, Carousel, Select 
+} from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Col from 'antd/lib/grid/col';
 import FormItem from 'antd/lib/form/FormItem';
@@ -206,21 +208,7 @@ const GamePage = (): JSX.Element => {
                 </div>
               )}
               <div>
-                <div>
-                  <div>
-                    <Button
-                      type="primary"
-                      className={styles.button}
-                      style={{ width: '100%' }}
-                      onClick={() => {
-                        socket.emit('END_VOTING', gameID);
-                        socket.emit('GET_RESULTS', gameID);
-                        result();
-                      }}
-                    >
-                      Stop game
-                    </Button>
-                  </div>
+                <div className={styles.game_side__button_wrapper}>
                   <div>
                     <Button
                       type="primary"
@@ -242,6 +230,20 @@ const GamePage = (): JSX.Element => {
                       }}
                     >
                       Next Issue
+                    </Button>
+                  </div>
+                  <div>
+                    <Button
+                      type="primary"
+                      className={styles.button}
+                      style={{ width: '100%' }}
+                      onClick={() => {
+                        socket.emit('END_VOTING', gameID);
+                        socket.emit('GET_RESULTS', gameID);
+                        result();
+                      }}
+                    >
+                      Stop game
                     </Button>
                   </div>
                 </div>

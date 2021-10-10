@@ -1,17 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout } from 'antd';
-import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
+import {
+ Redirect, Route, Switch, useHistory 
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { privateRoutes } from '../../route/route';
 import { HeaderPoker } from '../Header/Header';
 import { FooterPoker } from '../Footer/Footer';
 import { socket } from '../../socket';
-import { chatParams, gameIssues, sessionNameParams, setGameCards, setSettingGame } from '../../redux/actions/chat';
+import {
+  chatParams,
+  gameIssues,
+  sessionNameParams,
+  setGameCards,
+  setSettingGame,
+} from '../../redux/actions/chat';
 import { IChatUsers } from '../../redux/types/chat';
 import { kickForm } from '../../redux/actions/kickForm';
 import { IIssue } from '../../redux/types/issues';
 import { IGameSetting } from '../../redux/types/gameSetting';
 import { IGameCard } from '../../redux/types/gameCard';
+import { CurrentUser } from '../Header/CurrentUser';
+import { RootState } from '../../redux';
 
 const { Header, Footer, Content } = Layout;
 
@@ -20,7 +30,7 @@ const AppRouter = (): JSX.Element => {
   const getUsers = ({ members, observers, master }: IChatUsers): void => {
     dispatch(chatParams({ members, observers, master }));
   };
- 
+
   const getIssues = (issues: IIssue[]): void => {
     dispatch(gameIssues(issues));
   };
@@ -33,6 +43,10 @@ const AppRouter = (): JSX.Element => {
   const getGameCards = (gameCards: IGameCard[]): void => {
     dispatch(setGameCards(gameCards));
   };
+  const masterGame = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
+  );
+
   const history = useHistory();
   useEffect(() => {
     socket.on('MASTER_JOINED', ({ master }) => {});
@@ -74,6 +88,11 @@ const AppRouter = (): JSX.Element => {
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{ background: '#66999B' }}>
         <HeaderPoker />
+        {masterGame.name.length && sessionStorage.gameID ? (
+          <CurrentUser />
+        ) : (
+          <div />
+        )}
       </Header>
       <Content>
         <Switch>

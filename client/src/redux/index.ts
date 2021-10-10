@@ -17,6 +17,7 @@ const rootReducer = combineReducers({
   chatReducer,
   currentUser: addCurrentUser,
   kickUserData: kickForm,
+  
 });
 
 export const store = createStore(
