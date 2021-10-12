@@ -1,0 +1,176 @@
+.wrapper {
+  width: 100%;
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1%;
+}
+
+.game {
+  width: 98%;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+
+  &__part_game {
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    padding: 1%;
+    margin: 1%;
+  }
+
+  &__part_score {
+    width: 50%;
+    max-width: 500px;
+    border: 1px solid #f0f0f0;
+    padding: 1%;
+    margin: 1%;
+    display: grid;
+    grid-template-areas: "score"
+      "players";
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+  }
+}
+
+.issues_wrapper {
+  position: relative;
+}
+
+.currnt_issues {
+  height: 100%;
+  position: absolute;
+  bottom: -38px;
+  color: green;
+}
+
+.players {
+  justify-self: center;
+  justify-items: center;
+}
+
+
+
+.none {
+  display: none;
+}
+
+.game_title {
+  text-align: center;
+  font-weight: 600;
+}
+
+.game_info {
+  display: flex;
+  flex-direction: column;
+}
+
+.game_side {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  border: 1px solid #f0f0f0;
+  padding: 1%;
+  margin: 1%;
+}
+
+.process {
+  border: 1px solid #f0f0f0;
+  padding: 1%;
+  margin: 1%;
+}
+
+.card_button_wrapper {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  background-color: rgb(18%, 76%, 40%, 0.7);
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.score_title_wrapper {
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 1fr 1.5fr;
+}
+
+.score_title {
+  align-self: center;
+  justify-self : center;
+}
+
+.score {
+  display: flex;
+  align-items: flex-start;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.button {
+  margin-bottom: 10px;
+}
+
+.game_info {
+  background-color: white;
+  padding: 2%;
+}
+
+.info_wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.issues_sort {
+  width: 100%;
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
+  margin-bottom: 10px;
+}
+
+.issues_title {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: center;
+  font-weight: 600;
+}
+
+.sort {
+  grid-column: 3;
+  align-self: center;
+  justify-self: end;
+}
+
+@media (max-width: 960px) {
+  .score {
+    display: block;
+  }
+}
+
+@media (max-width: 785px) {
+  .game {
+    display: block;
+  }
+
+  .game__part_score {
+    width: 100%;
+    max-width: 785px;
+  }
+
+  .score {
+    display: flex;
+  }
+}

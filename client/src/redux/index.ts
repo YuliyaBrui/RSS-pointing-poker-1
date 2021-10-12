@@ -1,22 +1,22 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import {
-  formConnectMemberReducer,
-  formConnectObserverReducer,
-} from './reducers/formConnect';
+import { chatReducer } from './reducers/chat';
+import { addCurrentUser } from './reducers/currentUser';
 import { formCreateReducer } from './reducers/formCreateGame';
 import { addGameCards } from './reducers/gameCards';
-import { addIssue } from './reducers/issues';
+import { addIssueReducer } from './reducers/issues';
+import { kickForm } from './reducers/kickForm';
 import { setGameSetting } from './reducers/setGameSetting';
 
 const rootReducer = combineReducers({
   gameSetting: setGameSetting,
-  issues: addIssue,
+  addIssueReducer,
   gameCards: addGameCards,
   formCreateReducer,
-  formConnectObserverReducer,
-  formConnectMemberReducer,
+  chatReducer,
+  currentUser: addCurrentUser,
+  kickUserData: kickForm,
 });
 
 export const store = createStore(

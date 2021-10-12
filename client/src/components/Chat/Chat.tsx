@@ -1,15 +1,24 @@
 import { ArrowsAltOutlined, ShrinkOutlined } from '@ant-design/icons/lib/icons';
 import { Button, Input } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { chatMessageParams, newMessageParams } from '../../redux/actions/chat';
+import { IMessage } from '../../redux/types/chat';
+import { socket } from '../../socket';
 import styles from './Chat.module.scss';
 import MessagesPlace from './MessagesPlace';
 import SendingForm from './SendingForm';
 
 const Chat = (): JSX.Element => {
+  const dispatch = useDispatch();
+  const addMessage = (message: IMessage[]): void => {
+    dispatch(chatMessageParams(message));
+  };
   const [collapsed, setCollapsed] = useState(false);
   const [dragState, setDragState] = useState({});
   const [offset, setOffset] = useState({ offsetX: 0, offsetY: 0 });
   const sizeHidingField = 270;
+
   const dragStart = (e: any): void => {
     setOffset({
       offsetX: e.nativeEvent.offsetX,
@@ -31,6 +40,10 @@ const Chat = (): JSX.Element => {
     }
   };
 
+  useEffect(() => {
+    socket.on('GAME_ADD_MESSAGE', addMessage);
+  }, []);
+
   return (
     <div
       className={styles.chat__wrapper}
@@ -39,7 +52,7 @@ const Chat = (): JSX.Element => {
       draggable
       style={
         collapsed
-          ? { height: '30px', marginTop: `${sizeHidingField}px`, ...dragState }
+          ? { height: '45px', marginTop: `${sizeHidingField}px`, ...dragState }
           : { ...dragState, cursor: 'grab' }
       }
     >
@@ -51,7 +64,7 @@ const Chat = (): JSX.Element => {
           style={{
             border: 'none',
             padding: 0,
-            height: '30px',
+            height: '45px',
           }}
           htmlType="button"
         >

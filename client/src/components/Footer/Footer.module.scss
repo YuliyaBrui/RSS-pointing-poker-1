@@ -7,19 +7,20 @@
 	margin: 0 auto;
 }
 
+
 .github {
 	display: block;
-	width: 200px;
-	line-height: 45px;
-	color:rgb(214, 213, 213);
+	width: 100px;
+	line-height: 16px;
 	font-size: 16px;
 	transition: 0.3s;
-    text-align: center;
+	color: white;
+  text-align: center;
 }
 
 .github:hover {
-	color: #FFC482;
-    cursor: pointer;
+	color: white;
+  cursor: pointer;
 }
 
 .rss {

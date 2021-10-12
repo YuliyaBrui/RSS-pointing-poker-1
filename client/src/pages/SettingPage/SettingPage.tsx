@@ -1,11 +1,13 @@
 /* eslint-disable operator-linebreak */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Content } from 'antd/lib/layout/layout';
 import Row from 'antd/lib/grid/row';
+import Space from 'antd/lib/space';
+import Spin from 'antd/lib/spin';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './SettingPage.module.scss';
 import SessionInfo from '../../components/SettingPagePart/SessionInfo/SessionInfo';
-import StartCancelButtons from '../../components/SettingPagePart/StartCancelButton/StartCancelButton';
+import { StartCancelButtons } from '../../components/SettingPagePart/StartCancelButton/StartCancelButton';
 import UserCard from '../../components/UserCard/UserCard';
 import Issue from '../../components/Issues/Issue';
 import CreateIssue from '../../components/Issues/CreateIssueButton';
@@ -19,14 +21,57 @@ import { IIssue } from '../../redux/types/issues';
 import { addGameCards } from '../../redux/actions/gameCards';
 import { IGameCard } from '../../redux/types/gameCard';
 import Chat from '../../components/Chat/Chat';
+import { socket } from '../../socket';
+import { IChatUsers } from '../../redux/types/chat';
+import { getUsersParams } from '../../redux/actions/createSession';
+import { chatParams, newMessageParams, sessionNameParams } from '../../redux/actions/chat';
+import KickMemberForm from '../../components/KickMemberForm/KickMemberForm';
 
 const SettingPage = (): JSX.Element => {
   const dispatch = useDispatch();
+  const getUsers = ({ members, observers, master }: IChatUsers): void => {
+    dispatch(chatParams({ members, observers, master }));
+  };
+ /* const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  ); 
+  */
+  const { gameID } = sessionStorage;
+  useEffect(() => {
+    socket.on('MEMBER_JOINED', getUsers);
+    socket.on('MEMBER_LEAVED', getUsers);
+    socket.on('GET_SESSION_NAME', (name) => {
+      dispatch(sessionNameParams(name));
+    });
+  /*  socket.on('GAME_NEW_MESSAGE', (message) => {
+      dispatch(newMessageParams(message));
+    });*/
+    dispatch(getUsersParams(gameID));
+  }, []);
 
-  const issues = useSelector((state: RootState) => state.issues);
+  const joinMember = useSelector((state: RootState) => state.chatReducer);
+  const issues = useSelector((state: RootState) => state.chatReducer);
   const gameCards = useSelector((state: RootState) => state.gameCards);
   const [formVisible, setFormVisible] = useState(false);
+  const masterName = useSelector(
+    (state: RootState) => state.chatReducer.users.master.name,
+  );
 
+  window.onload = () => {
+    const currentUser = JSON.parse(sessionStorage.user);
+    const joinState = {
+      master: {
+        name: currentUser.name,
+        lastName: currentUser.lastName,
+        jobPosition: currentUser.jobPosition,
+        avatarURL: currentUser.avatarURL,
+        id: socket.id,
+      },
+      gameID,
+    };
+    socket.emit('GAME_JOIN_MASTER', joinState);
+    dispatch(getUsersParams(gameID));
+  };
   const nextCardValue = (): IGameCard => {
     const cardValue =
       gameCards[gameCards.length - 1].cardValue +
@@ -34,22 +79,7 @@ const SettingPage = (): JSX.Element => {
     return { cardValue, id: cardValue };
   };
 
-  const users = [
-    {
-      name: 'Keanu Reeves',
-      position: 'JS-developer',
-      avatar:
-        'https://avatars.mds.yandex.net/get-pdb/2846431/30e3043d-7e95-4653-bca7-5bb61219df86/s1200?webp=false',
-    },
-    {
-      name: 'Tom Cruise',
-      position: 'Backend-developer',
-      avatar:
-        'https://avatars.mds.yandex.net/get-zen_doc/1245815/pub_5bc9d59d3491a600a9655d81_5bc9d9229989ff00ae413c2a/scale_1200',
-    },
-  ];
-
-  return (
+  return masterName.length > 0 ? (
     <Content className={styles.wrapper}>
       <div className={styles.main}>
         <div className={styles.main__panel}>
@@ -59,22 +89,42 @@ const SettingPage = (): JSX.Element => {
         <div className={styles.main__panel}>
           <h3>Members:</h3>
           <Row style={{ width: '100%' }} justify="start">
-            {users.map((user) => (
-              <UserCard
-                name={user.name}
-                avatar={user.avatar}
-                position={user.position}
-                visibil="visible"
-                key={user.name}
-              />
-            ))}
+            {joinMember.users.members &&
+              joinMember.users.members.map((user) => (
+                <UserCard
+                  id={user.id}
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
+                  key={user.name}
+                />
+              ))}
+          </Row>
+        </div>
+        <div className={styles.main__panel}>
+          <h3>Observers:</h3>
+          <Row style={{ width: '100%' }} justify="start">
+            {joinMember.users.observers &&
+              joinMember.users.observers.map((user) => (
+                <UserCard
+                  id={user.id}
+                  name={user.name}
+                  lastName={user.lastName}
+                  avatar={user.avatarURL}
+                  position={user.jobPosition}
+                  visibil="visible"
+                  key={user.name}
+                />
+              ))}
           </Row>
         </div>
         <div className={styles.main__panel}>
           <h3>Issues:</h3>
           <Row style={{ width: '100%' }} justify="start">
             {issues &&
-              issues.map((issue: IIssue) => (
+              issues.issues.map((issue: IIssue) => (
                 <Issue
                   title={issue.title}
                   priority={issue.priority}
@@ -86,7 +136,9 @@ const SettingPage = (): JSX.Element => {
             <button
               className={styles.main__button_invis}
               type="button"
-              onClick={() => setFormVisible(true)}
+              onClick={() => {
+                setFormVisible(true);
+              }}
             >
               <CreateIssue />
             </button>
@@ -119,7 +171,17 @@ const SettingPage = (): JSX.Element => {
       </div>
       <IssueForm formVisible={formVisible} setFormVisible={setFormVisible} />
       <Chat />
+      <KickMemberForm
+        formVisible={formVisible}
+        setFormVisible={() => console.log('asd')}
+      />
     </Content>
+  ) : (
+    <div className={styles.wrapper}>
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
+    </div>
   );
 };
 

@@ -1,25 +1,32 @@
-.start_page {
-    height: 85vh;
-}
-
 .wrapper {
     width: 80%;
-    padding: 5% 1%;
-    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 10vh;
+}
+
+.content {
+    width: 80%;
 }
 
 .main_poker {
     background-image: url(../../assets/images/poker.png);
     height: 149px;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: center; 
+    background-size: contain;
 }
 
 .session {
-    max-width: 500px;
+    max-width: 550px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .session p {
@@ -28,13 +35,10 @@
 
 .title {
     font-style: normal;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 48px;
     line-height: 56px;
     text-align: left;
-    color: #66999B;
-    padding-left: 1%;
-    padding-bottom: 3%;
 }
 
 .subtitle {
@@ -45,16 +49,34 @@
     color: #000000;
 }
 
-.button {
-    max-width: 241px;
-    height: 47px;
-    border: none;
-    border-radius: 3px;
-    font-size: 24px;
-    line-height: 30px;
+.connect {
+    max-width: 550px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.error{
+    color: red;
+    font-size: 14px;
+   
 }
 
-.input {
-    max-width: 276px;
-    height: 47px;   
+
+.game_info {
+    position: absolute;
+    width: 300px;
+    height: 150px;
 }
+
+.info_wrapper {
+    width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: scale(0);
+}
+

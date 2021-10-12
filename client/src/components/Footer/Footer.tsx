@@ -1,9 +1,10 @@
+import { Footer } from 'antd/lib/layout/layout';
 import React from 'react';
 import styles from './Footer.module.scss';
 
 export function FooterPoker(): JSX.Element {
   return (
-    <>
+    <Footer style={{ background: '#66999B', padding: '10px 10px' }}>
       <div className={styles.footer_container}>
         <a
           className={styles.github}
@@ -38,6 +39,6 @@ export function FooterPoker(): JSX.Element {
           <span className={styles.rss_year}>&apos;21</span>
         </a>
       </div>
-    </>
+    </Footer>
   );
 }

@@ -1,19 +1,19 @@
-import { ADD_ISSUE, CHANGE_ISSUE, DELETE_ISSUE } from '../actions/issues';
-import { IIssue } from '../types/issues';
+import { IFetchAddIssueAction, IIssue, IIssueState, IssueActionTypes } from '../types/issues';
 
-const initialState: IIssue[] = [];
+const initialState: IIssueState = {
+  issues: [],
+}
 
-export const addIssue = (
-  state = initialState,
-  action: { type: string; issue: IIssue },
-): any => {
+export const addIssueReducer = (
+  state: IIssueState = initialState,
+  action: IFetchAddIssueAction,
+): IIssueState => {
   switch (action.type) {
-    case ADD_ISSUE:
-      return [...state, action.issue];
-    case CHANGE_ISSUE:
-      return [...state, action.issue];
-    case DELETE_ISSUE:
-      return state.filter((el: IIssue) => el.id !== action.issue.id);
+    case IssueActionTypes.ADD_ISSUE:
+      return {
+        ...state,
+        issues: [...state.issues, action.payload.issue],
+      }
     default:
       return state;
   }

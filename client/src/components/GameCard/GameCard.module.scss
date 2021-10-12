@@ -14,6 +14,7 @@
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-between;
+    cursor: pointer;
   }
 
   &__title {
@@ -27,6 +28,7 @@
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
+    cursor: pointer;
   }
 
   &__close_icon{

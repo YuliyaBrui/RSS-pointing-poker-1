@@ -1,31 +1,35 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable indent */
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Card from 'antd/lib/card';
 import { UserOutlined } from '@ant-design/icons';
+import { RootState } from '../../redux';
+import { getUsersParams } from '../../redux/actions/createSession';
 import styles from './ScramMasterCard.module.scss';
-import { RootState, store } from '../../redux';
 
 const ScramMasterInfo = (): JSX.Element => {
-  const state: RootState = store.getState();
+  const master = useSelector(
+    (state: RootState) => state.chatReducer.users.master,
+  );
+
   return (
-    <Card title="Scram master:" style={{ width: '30%', height: '100%' }}>
+    <Card title="Scram master:" className={styles.main__card}>
       <div className={styles.main__scram_master_info}>
-        {typeof state.formCreateReducer.masters[0].avatarURL !== 'string' ||
-        state.formCreateReducer.masters[0].avatarURL === '' ? (
+        {typeof master.avatarURL !== 'string' || master.avatarURL === '' ? (
           <UserOutlined style={{ fontSize: '500%' }} />
         ) : (
           <div className={styles.main__scram_master__container_img}>
             <img
               className={styles.main__scram_master__img}
-              src={state.formCreateReducer.masters[0].avatarURL}
+              src={master.avatarURL}
               alt="avatar"
             />
           </div>
         )}
         <div className={styles.main__scram_master_description}>
-          <h3>{`${state.formCreateReducer.masters[0].name} ${state.formCreateReducer.masters[0].lastName}`}</h3>
-          <p>{state.formCreateReducer.masters[0].jobPosition}</p>
+          <h3>{`${master.name} ${master.lastName}`}</h3>
+          <p>{master.jobPosition}</p>
         </div>
       </div>
     </Card>

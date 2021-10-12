@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Form, Input, Button, Avatar, Col, Row,
-} from 'antd';
+import { Form, Input, Button, Avatar, Col, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IFormGameValue } from '../../redux/types/forms';
-import { saveMasterParams } from '../../redux/actions/formCreateGame';
 import styles from './FormCreateGame.module.scss';
+import { socket } from '../../socket';
+import { saveMasterParams } from '../../redux/actions/createSession';
+import { addCurrentUser } from '../../redux/actions/currentUser';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,7 +19,6 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
   const reset = (): void => {
     setFirstName('');
     setLastName('');
@@ -27,20 +26,33 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
     setAvatarURL('');
   };
   const history = useHistory();
+  const dispatch = useDispatch();
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
       lastName,
       jobPosition,
       avatarURL,
+      id: socket.id,
     };
-    dispatch(saveMasterParams(value));
-    setActive(false);
-    reset();
-    form.resetFields();
-    history.push('/setting');
+    const callback = (gameID: string): void => {
+      const joinState = {
+        master: value,
+        gameID,
+      };
+      socket.emit('GAME_JOIN_MASTER', joinState);
+      sessionStorage.setItem('gameID', gameID);
+      reset();
+      form.resetFields();
+      setActive(false);
+      history.push(`/setting/${gameID}`);
+     
+    };
+    dispatch(addCurrentUser(value));
+    sessionStorage.setItem('user', JSON.stringify(value));
+    dispatch(saveMasterParams(value, callback));
   };
-
+  
   return (
     <div>
       <Row>
@@ -63,10 +75,11 @@ export const FormCreateGame = ({ setActive }: formProps): JSX.Element => {
         >
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const newValue = e.target.value;
-              setFirstName(newValue);
+              const { value } = e.target;
+              setFirstName(value);
             }}
           />
+         
         </Form.Item>
         <Form.Item
           label="Your last name(optional):"

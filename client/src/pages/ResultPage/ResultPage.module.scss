@@ -1,0 +1,64 @@
+.wrapper {
+    width: 100%;
+    display: flex;
+    min-height: 75vh;
+    justify-content: center;
+    padding: 1%;
+}
+
+.result_wrapper {
+    width: 80%;
+    margin: 1%;
+    padding: 1%;
+    border: 1px solid #f0f0f0;
+}
+ 
+.header_wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    margin-bottom: 10px;
+}
+
+.result_title {
+    text-align: center;
+    font-weight: 600;
+    grid-column: 2;
+}
+
+.save_button {
+    grid-column: 3;
+    align-self: center;
+    justify-self: end;
+}
+
+.card_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.issues_results {
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    padding: 1%;
+    margin-bottom: 1%;
+}
+
+.value {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.issue_votes {
+    display: flex;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    margin: 10px 0;
+}

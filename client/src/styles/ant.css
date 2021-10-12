@@ -13,3 +13,79 @@
 .ant-space-vertical {
   flex-direction: row;
 }
+
+/* .ant-btn {
+  font-size: 24px;
+  line-height: 30px;
+  height: 47px;
+} */
+
+.ant-btn-primary {
+  background-color: #496A81;
+  border:#496A81;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:active,
+.ant-btn-primary:focus {
+  background-color: #66999B;
+  border:#66999B;
+}
+
+.ant-switch-checked,
+.ant-slider-track {
+  background-color: #496A81;
+  border:#496A81;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background: red;
+}
+
+.ant-carousel .slick-dots-bottom {
+  bottom: 0px;
+}
+
+.ant-carousel .slick-dots li button {
+  background: #496A81;
+  height: 5px;
+}
+
+.ant-carousel .slick-dots li {
+  width: 40px;
+  height: 5px;
+}
+
+.slick-slide {
+  width: 260px;
+}
+
+.slick-slide .slick-active,
+.slick-slide .slick-current {
+  width: 260px;
+  left: -260px;
+}
+
+.ant-carousel {
+  width: 350px;
+  margin: 0 auto;
+}
+
+
+.ant-form-item-label {
+  white-space: pre-wrap;
+}
+
+.ant-form-item-label > label::after {
+  content: "";
+}
+
+.ant-carousel .slick-dots  {
+  z-index: 2;
+}
+
+.ant-input[disabled] {
+  color: black;
+  background-color: white;
+  cursor: default;
+}

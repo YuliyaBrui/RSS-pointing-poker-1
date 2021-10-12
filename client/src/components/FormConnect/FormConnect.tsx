@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Form, Input, Button, Avatar, Switch, Col, Row,
+ Form, Input, Button, Avatar, Switch, Col, Row 
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import shortid from 'shortid';
 import styles from './FormConnect.module.scss';
 import { IFormGameValue } from '../../redux/types/forms';
-import {
-  saveMemberParams,
-  saveObserverParams,
-} from '../../redux/actions/formConnectGame';
+import { socket } from '../../socket';
+import { addCurrentUser } from '../../redux/actions/currentUser';
+import { RootState } from '../../redux';
 
 interface formProps {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,45 +22,76 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobPosition, setJobPosition] = useState('');
+  const dispatch = useDispatch();
 
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
   const reset = (): void => {
     setFirstName('');
     setLastName('');
     setJobPosition('');
     setAvatarURL('');
   };
+
   const history = useHistory();
+  const gameID = useSelector(
+    (state: RootState) => state.formCreateReducer.IDGame,
+  );
   const handleSubmit = (): void => {
     const value: IFormGameValue = {
       name: firstName,
       lastName,
       jobPosition,
       avatarURL,
+      id: socket.id,
     };
-    setActive(false);
+    const joinState = {
+      user: value,
+      gameID,
+    };
+
     if (isToggle) {
-      dispatch(saveObserverParams(value));
-      history.push('/observer');
+      const userStorage = {
+        role: 'observer',
+        name: firstName,
+        lastName,
+        jobPosition,
+        avatarURL,
+        id: socket.id,
+      };
+      socket.emit('GAME_JOIN_OBSERVER', joinState);
+      sessionStorage.setItem('user', JSON.stringify(userStorage));
     } else {
-      dispatch(saveMemberParams(value));
-      history.push('/team_member');
+      const userStorage = {
+        role: 'member',
+        name: firstName,
+        lastName,
+        jobPosition,
+        avatarURL,
+        id: socket.id,
+      };
+      socket.emit('GAME_JOIN_MEMBER', joinState);
+      sessionStorage.setItem('user', JSON.stringify(userStorage));
     }
+    sessionStorage.setItem('gameID', gameID);
+    dispatch(addCurrentUser(value));
     reset();
     form.resetFields();
+    setActive(false);
+    history.push(`/lobby/${gameID}`);
   };
 
   return (
     <div>
       <Row justify="space-between">
         <h2>Connect to lobby </h2>
-        <label htmlFor="observer_switch">Connect as observer</label>
-        <Switch
-          className="observer_switch"
-          checked={isToggle}
-          onChange={() => setToggle((prev) => !prev)}
-        />
+        <div className={styles.observer_wrapper}>
+          <label htmlFor="observer_switch">Connect as observer</label>
+          <Switch
+            className="observer_switch"
+            checked={isToggle}
+            onChange={() => setToggle((prev) => !prev)}
+          />
+        </div>
       </Row>
       <Form
         form={form}
@@ -79,8 +110,8 @@ export const FormConnect = ({ setActive }: formProps): JSX.Element => {
         >
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const newValue = e.target.value;
-              setFirstName(newValue);
+              const { value } = e.target;
+              setFirstName(value);
             }}
           />
         </Form.Item>
